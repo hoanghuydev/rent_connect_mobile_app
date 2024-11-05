@@ -1,34 +1,75 @@
-HELP.md
-target/
-src/main/resources/application.properties
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+client_react_native/node_modules/
+
+# Expo
+client_react_native/.expo/
+client_react_native/dist/
+client_react_native/web-build/
+
+# Native
+client_react_native/*.orig.*
+client_react_native/*.jks
+client_react_native/*.p8
+client_react_native/*.p12
+client_react_native/*.key
+client_react_native/*.mobileprovision
+
+# Metro
+client_react_native/.metro-health-check*
+
+# debug
+client_react_native/npm-debug.*
+client_react_native/yarn-debug.*
+client_react_native/yarn-error.*
+
+# macOS
+client_react_native/.DS_Store
+client_react_native/*.pem
+
+# local env files
+client_react_native/.env*.local
+client_react_native/.env
+
+
+# typescript
+client_react_native/*.tsbuildinfo
+
+
+
+server_java_spring/HELP.md
+server_java_spring/target/
+server_java_spring/src/main/resources/application.properties
+server_java_spring/!.mvn/wrapper/maven-wrapper.jar
+server_java_spring/!**/src/main/**/target/
+server_java_spring/!**/src/test/**/target/
 
 ### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+server_java_spring/.apt_generated
+server_java_spring/.classpath
+server_java_spring/.factorypath
+server_java_spring/.project
+server_java_spring/.settings
+server_java_spring/.springBeans
+server_java_spring/.sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
+server_java_spring/.idea
+server_java_spring/*.iws
+server_java_spring/*.iml
+server_java_spring/*.ipr
 
 ### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+server_java_spring/nbproject/private/
+server_java_spring/nbbuild/
+server_java_spring/dist/
+server_java_spring/nbdist/
+server_java_spring/.nb-gradle/
+server_java_spring/build/
+server_java_spring/!**/src/main/**/build/
+server_java_spring/!**/src/test/**/build/
 
 ### VS Code ###
-.vscode/
+server_java_spring/.vscode/
+
