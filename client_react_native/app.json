@@ -1,6 +1,9 @@
 {
   "expo": {
     "name": "client_react_native",
+    "web": {
+      "bundler": "metro"
+    },
     "slug": "client_react_native",
     "version": "1.0.0",
     "orientation": "portrait",
