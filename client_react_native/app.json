@@ -2,9 +2,9 @@
   "expo": {
     "name": "client_react_native",
     "web": {
-      "bundler": "metro"
+      "favicon": "./assets/favicon.png"
     },
-    "slug": "client_react_native",
+    "slug": "rent-connect",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,8 +23,11 @@
         "backgroundColor": "#ffffff"
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+    "extra": {
+      "eas": {
+        "projectId": "07bcce45-2f74-4221-bc12-b603578c09fe"
+      }
+    },
+    "owner": "hoanghuydev1"
   }
 }

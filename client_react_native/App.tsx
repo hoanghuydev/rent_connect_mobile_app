@@ -11,7 +11,7 @@ const App: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text className={classNames.join(" ")}>Open up App.tsx to start working on your app!</Text>
+      <Text className={classNames.join(" ")}>Open up App.tsx to start working on your appp!</Text>
       <StatusBar style="auto" />
     </View>
   );
