@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+
 public class UserRequestDTO {
     List<CarRequestDTO> cars;
     List<RentalRequestDTO> rentalsAsCustomer;
@@ -29,5 +30,6 @@ public class UserRequestDTO {
     Boolean verified = false;
     Constants.LoginPlatform loginPlatform;
     String platformId;
+    String token;
     LocalDateTime deletedAt;
 }
