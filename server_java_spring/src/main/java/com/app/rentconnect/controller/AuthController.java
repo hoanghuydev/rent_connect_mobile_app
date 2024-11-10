@@ -1,5 +1,6 @@
 package com.app.rentconnect.controller;
 
+import com.app.rentconnect.dto.request.LoginRequestDTO;
 import com.app.rentconnect.dto.request.RegisterRequestDTO;
 import com.app.rentconnect.dto.request.UserRequestDTO;
 import com.app.rentconnect.dto.response.ApiResponse;
@@ -39,6 +40,17 @@ public class AuthController {
                 "user",
                 userRequestDTO
         );
+    }
+
+    @PostMapping("/login")
+    public ApiResponse<UserRequestDTO> login(LoginRequestDTO loginRequestDTO) {
+        UserRequestDTO userRequestDTO = userService.login(loginRequestDTO);
+        if (userRequestDTO != null) {
+            return new ApiResponse<>(HttpStatus.OK, "Login successfully",
+                    "user",userRequestDTO);
+        } else
+            return new ApiResponse<>(HttpStatus.BAD_REQUEST, "Login failed",
+                "user",null);
     }
 
 }
