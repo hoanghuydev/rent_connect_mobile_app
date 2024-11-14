@@ -4,6 +4,8 @@ package com.app.rentconnect.exception;
 import com.app.rentconnect.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +16,17 @@ import java.util.Map;
 
 @ControllerAdvice // Annotation để đánh dấu lớp này là nơi xử lý ngoại lệ chung cho toàn bộ ứng dụng.
 public class GlobalExceptionHandler {
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse> badCredentials(BadCredentialsException ex, WebRequest request) {
+        ApiResponse<String> apiResponse = new ApiResponse<>(
+                HttpStatus.UNAUTHORIZED,
+                "Invalid username or password",
+                "error",
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class) // Đánh dấu phương thức này xử lý ngoại lệ IllegalArgumentException.
     public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
         ApiResponse<String> apiResponse = new ApiResponse<>(
@@ -22,6 +35,15 @@ public class GlobalExceptionHandler {
                 "error", ex.getMessage()
         );
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> handleUsernameNotFoundException(UsernameNotFoundException ex, WebRequest request) {
+        ApiResponse<String> apiResponse = new ApiResponse<>(HttpStatus.NOT_FOUND,
+                "User not found",
+                "error", ex.getMessage());
+        return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+
     }
 
     @ExceptionHandler(RuntimeException.class)
