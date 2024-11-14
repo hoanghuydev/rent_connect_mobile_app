@@ -2,7 +2,7 @@ package com.app.rentconnect;
 
 public class Constants {
     public enum UserType {
-        CUSTOMER, OWNER
+        CUSTOMER, OWNER, ADMIN
     }
 
     public enum LoginPlatform {

@@ -37,6 +37,7 @@ public class User {
     @Column(nullable = false, length = 100)
      String fullName;
 
+
     @Column(nullable = false, unique = true, length = 100)
      String email;
 
