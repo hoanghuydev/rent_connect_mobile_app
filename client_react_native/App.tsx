@@ -1,4 +1,5 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import './App.css';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,12 +10,14 @@ import ExploreScreen from '@/screens/ExploreScreen';
 import MessageScreen from '@/screens/MessageScreen';
 import RideScreen from '@/screens/RideScreen';
 import SupportScreen from '@/screens/SupportScreen';
+import { store } from '@/store/store';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <PaperProvider>
+    <Provider store={store}>
+   <PaperProvider>
       <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
@@ -56,5 +59,7 @@ export default function App() {
         </Tab.Navigator>
       </NavigationContainer>
     </PaperProvider>
+  </Provider>
+ 
   );
 }
