@@ -12,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-
 public class RegisterRequestDTO {
     @NotEmpty(message = "Full name cannot be empty")
     String fullName;

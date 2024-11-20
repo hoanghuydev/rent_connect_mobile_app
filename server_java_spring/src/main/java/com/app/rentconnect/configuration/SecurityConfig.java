@@ -31,7 +31,9 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
     private final String[] PUBLIC_POST_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/login"};
     private final String[] PUBLIC_GET_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/login"};
-
+    private final String[] ROLE_ADMIN_ENDPOINT = {};
+    private final String[] ROLE_OWNER_ENDPOINT = {};
+    private final String[] ROLE_CUSTOMER_ENDPOINT = {};
     @Value("${jwt.secret}")
     private String jwtSecret;
 
@@ -47,6 +49,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST,this.ROLE_ADMIN_ENDPOINT).hasRole("admin")
+                        .requestMatchers(HttpMethod.POST,this.ROLE_OWNER_ENDPOINT).hasRole("owner")
+                        .requestMatchers(HttpMethod.POST,this.ROLE_CUSTOMER_ENDPOINT).hasRole("customer")
                         .requestMatchers(HttpMethod.POST,this.PUBLIC_POST_ENDPOINT).permitAll()
                         .requestMatchers(HttpMethod.GET,this.PUBLIC_GET_ENDPOINT).permitAll()
                         .anyRequest().authenticated()

@@ -17,19 +17,19 @@ import java.util.List;
 public class User {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<Car> cars;
+     List<Car> cars;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Rental> rentalsAsCustomer;
+     List<Rental> rentalsAsCustomer;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<Rental> rentalsAsOwner;
+     List<Rental> rentalsAsOwner;
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
-    private List<Message> messages;
+     List<Message> messages;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Address> addresses;
+     List<Address> addresses;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
      Long userId;
@@ -48,7 +48,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-     Constants.UserType userType;
+     Constants.USER_TYPE userType = Constants.USER_TYPE.customer;
+
     @Column(nullable = false)
      LocalDateTime createdAt = LocalDateTime.now();
 
@@ -56,7 +57,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-     Constants.LoginPlatform loginPlatform;
+     Constants.LOGIN_PLATFORM loginPlatform = Constants.LOGIN_PLATFORM.email;
 
      String platformId;
 

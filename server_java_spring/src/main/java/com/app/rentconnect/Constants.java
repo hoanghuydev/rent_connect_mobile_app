@@ -1,19 +1,27 @@
 package com.app.rentconnect;
 
 public class Constants {
-    public enum UserType {
-        CUSTOMER, OWNER, ADMIN
+    public static enum USER_TYPE{
+        admin,
+        owner,
+        customer
     }
-
-    public enum LoginPlatform {
-        EMAIL, GOOGLE, FACEBOOK, OTHER
+    public static enum LOGIN_PLATFORM {
+        email,
+        google,
+        facebook,
+        other
     }
-
-    public enum RentalStatus {
-        REQUESTED, APPROVED, REJECTED, COMPLETED, CANCELED
+    public static enum ADDRESS_TYPE {
+        home,
+        company,
+        other
     }
-
-    public enum AddressType {
-        HOME, COMPANY, OTHER
+    public static enum RENTAL_BOOKING_STATUS {
+        requested,
+        approved,
+        rejected,
+        completed,
+        canceled
     }
 }
