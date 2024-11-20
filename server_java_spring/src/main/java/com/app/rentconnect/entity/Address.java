@@ -24,7 +24,7 @@ public class Address {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    Constants.AddressType addressType;
+    Constants.AddressType addressType = Constants.AddressType.other;
 
     @Column(nullable = false, length = 255)
     String addressLine;

@@ -1,10 +1,6 @@
 package com.app.rentconnect.configuration;
 import com.app.rentconnect.security.JwtAuthenticationFilter;
-import com.app.rentconnect.service.UserDetailsService;
-import com.app.rentconnect.service.UserService;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import com.app.rentconnect.service.query.UserDetailsQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,12 +27,14 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
     private final String[] PUBLIC_POST_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/login"};
     private final String[] PUBLIC_GET_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/login"};
-
+    private final String[] ROLE_ADMIN_ENDPOINT = {};
+    private final String[] ROLE_OWNER_ENDPOINT = {};
+    private final String[] ROLE_CUSTOMER_ENDPOINT = {};
     @Value("${jwt.secret}")
     private String jwtSecret;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsQueryService userDetailsQueryService;
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -47,6 +45,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST,this.ROLE_ADMIN_ENDPOINT).hasRole("admin")
+                        .requestMatchers(HttpMethod.POST,this.ROLE_OWNER_ENDPOINT).hasRole("owner")
+                        .requestMatchers(HttpMethod.POST,this.ROLE_CUSTOMER_ENDPOINT).hasRole("customer")
                         .requestMatchers(HttpMethod.POST,this.PUBLIC_POST_ENDPOINT).permitAll()
                         .requestMatchers(HttpMethod.GET,this.PUBLIC_GET_ENDPOINT).permitAll()
                         .anyRequest().authenticated()
@@ -74,7 +75,7 @@ public class SecurityConfig {
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setUserDetailsService(userDetailsQueryService);
         authProvider.setPasswordEncoder(passwordEncoder());
 
         return authProvider;

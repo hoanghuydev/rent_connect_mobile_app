@@ -45,7 +45,7 @@ public class Rental {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    Constants.RentalStatus status = Constants.RentalStatus.REQUESTED;
+    Constants.RentalStatus status = Constants.RentalStatus.requested;
 
     @Column(nullable = false)
     @CreatedDate

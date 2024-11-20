@@ -1,4 +1,4 @@
-package com.app.rentconnect.service;
+package com.app.rentconnect.service.query;
 
 import com.app.rentconnect.Constants;
 import com.app.rentconnect.entity.User;
@@ -11,7 +11,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE, makeFinal = true)
-public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
+public class UserDetailsQueryService implements org.springframework.security.core.userdetails.UserDetailsService {
 
     UserRepository userRepository;
 
