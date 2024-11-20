@@ -48,7 +48,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-     Constants.USER_TYPE userType = Constants.USER_TYPE.customer;
+     Constants.UserType userType = Constants.UserType.customer;
 
     @Column(nullable = false)
      LocalDateTime createdAt = LocalDateTime.now();
@@ -57,7 +57,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-     Constants.LOGIN_PLATFORM loginPlatform = Constants.LOGIN_PLATFORM.email;
+     Constants.LoginPlatform loginPlatform = Constants.LoginPlatform.email;
 
      String platformId;
 

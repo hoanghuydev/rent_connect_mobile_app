@@ -1,6 +1,5 @@
-package com.app.rentconnect.dto.response;
+package com.app.rentconnect.dto.request;
 
-import com.app.rentconnect.dto.request.UserRequestDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LoginResponse {
-    UserRequestDTO user;
-    String token;
+public class EmailRequestDTO {
+    String email;
 }

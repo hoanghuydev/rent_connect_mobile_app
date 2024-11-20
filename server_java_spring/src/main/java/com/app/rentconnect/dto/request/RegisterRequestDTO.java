@@ -1,9 +1,6 @@
 package com.app.rentconnect.dto.request;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 @Data
@@ -16,6 +13,7 @@ public class RegisterRequestDTO {
     @NotEmpty(message = "Full name cannot be empty")
     String fullName;
 
+    @NotBlank(message = "Email must not be empty")
     @Email(message = "Invalid email format")
     String email;
 

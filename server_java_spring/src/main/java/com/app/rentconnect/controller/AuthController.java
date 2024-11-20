@@ -1,14 +1,15 @@
 package com.app.rentconnect.controller;
 
 import com.app.rentconnect.Constants;
-import com.app.rentconnect.dto.request.LoginRequestDTO;
-import com.app.rentconnect.dto.request.RegisterRequestDTO;
-import com.app.rentconnect.dto.request.UserRequestDTO;
+import com.app.rentconnect.dto.request.*;
 import com.app.rentconnect.dto.response.ApiResponse;
 import com.app.rentconnect.dto.response.LoginResponse;
+import com.app.rentconnect.entity.BookingHistory;
 import com.app.rentconnect.entity.User;
 import com.app.rentconnect.mapper.UserMapper;
 import com.app.rentconnect.repository.UserRepository;
+import com.app.rentconnect.service.AuthService;
+import com.app.rentconnect.service.OtpService;
 import com.app.rentconnect.service.UserService;
 import com.app.rentconnect.util.JwtUtil;
 import lombok.AccessLevel;
@@ -34,44 +35,24 @@ import java.util.Map;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class AuthController {
-    UserService userService;
-    UserMapper userMapper;
-    PasswordEncoder passwordEncoder;
-    UserRepository userRepository;
-    AuthenticationManager authenticationManager;
-    JwtUtil jwtUtil;
+    AuthService authService;
 
     @PostMapping("/register")
     public ApiResponse<UserRequestDTO> registerUser(@RequestBody RegisterRequestDTO registerRequest) {
-        if (userService.existsByEmail(registerRequest.getEmail())) {
-            throw new IllegalArgumentException("User with this email already exists.");
-        }
-        User user = userMapper.registerDTOtoEntity(registerRequest);
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        UserRequestDTO userResponse = userMapper.toRequestDTO(userService.save(user));
-        ApiResponse<UserRequestDTO> apiResponse = new ApiResponse<>(HttpStatus.CREATED,"Create user successfully","user",userResponse);
-        return apiResponse;
+        return authService.registerUser(registerRequest);
+    }
+
+
+    @PostMapping("/vertify")
+    public ApiResponse<String> vertifyWithOtp(@RequestBody VertifyRequestDTO vertifyRequestDTO) {
+        return authService.vertify(vertifyRequestDTO);
     }
 
     @PostMapping("/login")
     public ApiResponse<LoginResponse> authenticateUser(@RequestBody LoginRequestDTO loginRequestDTO) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequestDTO.getEmail(),
-                            loginRequestDTO.getPassword()
-                    )
-            );
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String jwt = jwtUtil.generateToken(userDetails);
-            LoginResponse loginResponse = new LoginResponse(userDetails.getUsername(),jwt);
-            return new ApiResponse<LoginResponse>(HttpStatus.ACCEPTED,"Logged in","user",loginResponse);
-
-        } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Invalid username or password");
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        return authService.login(loginRequestDTO);
     }
+
+
 
 }

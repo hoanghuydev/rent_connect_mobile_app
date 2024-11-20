@@ -24,7 +24,7 @@ public class BookingHistory {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    Constants.RentalStatus status;
+    Constants.RentalStatus status = Constants.RentalStatus.requested;
 
     @Column(nullable = false)
     @CreatedDate

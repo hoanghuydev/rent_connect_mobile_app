@@ -27,7 +27,7 @@ public class RentalRequestDTO {
     UserRequestDTO owner;
     LocalDateTime startDate;
     LocalDateTime endDate;
-    Constants.RentalStatus status = Constants.RentalStatus.REQUESTED;
+    Constants.RentalStatus status = Constants.RentalStatus.requested;
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime deletedAt;
 }
