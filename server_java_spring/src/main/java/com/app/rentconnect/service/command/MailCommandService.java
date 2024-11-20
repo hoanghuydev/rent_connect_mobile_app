@@ -1,4 +1,4 @@
-package com.app.rentconnect.service;
+package com.app.rentconnect.service.command;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 
 @Service
 
-public class MailService {
+public class MailCommandService {
     private final ExecutorService executorService = Executors.newFixedThreadPool(3);
 
     @Autowired

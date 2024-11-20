@@ -2,7 +2,7 @@ package com.app.rentconnect.controller;
 
 import com.app.rentconnect.dto.request.EmailRequestDTO;
 import com.app.rentconnect.dto.response.ApiResponse;
-import com.app.rentconnect.service.OtpService;
+import com.app.rentconnect.service.command.OtpCommandService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class OtpController {
-    private final OtpService otpService;
+    OtpCommandService otpCommandService;
 
     @PostMapping("/send-otp")
     public ApiResponse<String> resendOtp(@RequestBody EmailRequestDTO emailRequestDTO) {
-        return otpService.sendOtp(emailRequestDTO);
+        return otpCommandService.sendOtp(emailRequestDTO);
     }
 
 }

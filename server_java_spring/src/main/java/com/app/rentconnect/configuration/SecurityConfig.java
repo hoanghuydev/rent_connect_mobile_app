@@ -1,10 +1,6 @@
 package com.app.rentconnect.configuration;
 import com.app.rentconnect.security.JwtAuthenticationFilter;
-import com.app.rentconnect.service.UserDetailsService;
-import com.app.rentconnect.service.UserService;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import com.app.rentconnect.service.query.UserDetailsQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +34,7 @@ public class SecurityConfig {
     private String jwtSecret;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsQueryService userDetailsQueryService;
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -79,7 +75,7 @@ public class SecurityConfig {
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setUserDetailsService(userDetailsQueryService);
         authProvider.setPasswordEncoder(passwordEncoder());
 
         return authProvider;
