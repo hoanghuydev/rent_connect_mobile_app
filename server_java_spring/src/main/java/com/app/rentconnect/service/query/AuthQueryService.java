@@ -1,11 +1,12 @@
 package com.app.rentconnect.service.query;
 
-import com.app.rentconnect.dto.request.LoginRequestDTO;
+import com.app.rentconnect.dto.auth.request.LoginRequestDTO;
 import com.app.rentconnect.dto.request.UserRequestDTO;
 import com.app.rentconnect.dto.response.ApiResponse;
-import com.app.rentconnect.dto.response.LoginResponse;
+import com.app.rentconnect.dto.auth.response.LoginResponse;
 import com.app.rentconnect.mapper.UserMapper;
 import com.app.rentconnect.util.JwtUtil;
+import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -38,10 +39,10 @@ public class AuthQueryService {
             UserRequestDTO user = userMapper.toRequestDTO(userQueryService.findByEmail(userDetails.getUsername()));
             String jwt = jwtUtil.generateToken(userDetails);
             LoginResponse loginResponse = new LoginResponse(user,jwt);
-            return new ApiResponse<LoginResponse>(HttpStatus.ACCEPTED,"Logged in","user",loginResponse);
+            return new ApiResponse<LoginResponse>(HttpStatus.ACCEPTED,"Logged in","data",loginResponse);
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Invalid username or password");
-        } catch (Exception e) {
+        } catch (JOSEException e) {
             throw new RuntimeException();
         }
     }

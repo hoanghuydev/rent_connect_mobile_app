@@ -1,5 +1,6 @@
 package com.app.rentconnect.dto.request;
 import com.app.rentconnect.Constants;
+import com.app.rentconnect.dto.car.request.CarRequestDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

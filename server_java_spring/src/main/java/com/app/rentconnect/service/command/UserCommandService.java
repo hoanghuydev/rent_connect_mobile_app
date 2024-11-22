@@ -15,4 +15,7 @@ public class UserCommandService {
     public User save(User user) {
         return userRepository.save(user);
     }
+    public void verifyByEmail(String email,boolean isVerified) {
+        userRepository.vertifyUserByEmail(email,isVerified);
+    }
 }

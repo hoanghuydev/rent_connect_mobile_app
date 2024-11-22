@@ -1,6 +1,6 @@
 package com.app.rentconnect.service.command;
 
-import com.app.rentconnect.dto.request.EmailRequestDTO;
+import com.app.rentconnect.dto.otp.request.SendOtpRequestDTO;
 import com.app.rentconnect.dto.response.ApiResponse;
 import com.app.rentconnect.entity.OtpVerification;
 import com.app.rentconnect.entity.User;
@@ -15,22 +15,25 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Random;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OtpCommandService {
+    static final Logger logger = LoggerFactory.getLogger(OtpCommandService.class);
     OtpRepository otpRepository;
     OtpEncryptionUtil otpEncryptionUtil;
     UserQueryService userQueryService;
     MailCommandService mailCommandService;
 
-    public ApiResponse<String> sendOtp(EmailRequestDTO emailRequestDTO) {
+    public ApiResponse<String> sendOtp(SendOtpRequestDTO sendOtpRequestDTO) {
         try {
-            String email = emailRequestDTO.getEmail();
+            String email = sendOtpRequestDTO.getEmail();
             User user = userQueryService.findByEmail(email);
 
-            OtpVerification existingOtp = otpRepository.findByEmail(email).orElse(null);
+            OtpVerification existingOtp = otpRepository.findByUserEmail(email).orElse(null);
             if (existingOtp != null) {
                 LocalDateTime createdAt = existingOtp.getExpiresAt().minusMinutes(5);
                 if (createdAt.isAfter(LocalDateTime.now().minusMinutes(1))) {
@@ -50,7 +53,7 @@ public class OtpCommandService {
     private void createNewOtp(User user) throws Exception {
         String randomOtp = generateOtp(6);
         String encryptedOtp = otpEncryptionUtil.encrypt(randomOtp);
-
+        logger.info("Generated OTP for user {}: {}", user.getEmail(), randomOtp);
         OtpVerification otpVerification = OtpVerification.builder()
                 .otpCode(encryptedOtp)
                 .user(user)
@@ -64,7 +67,7 @@ public class OtpCommandService {
     private void updateExistingOtp(OtpVerification existingOtp, User user) throws Exception {
         String newOtp = generateOtp(6);
         String encryptedOtp = otpEncryptionUtil.encrypt(newOtp);
-
+        logger.info("Generated OTP for user {}: {}", user.getEmail(), newOtp);
         existingOtp.setOtpCode(encryptedOtp);
         existingOtp.setExpiresAt(LocalDateTime.now().plusMinutes(5));
         otpRepository.save(existingOtp);

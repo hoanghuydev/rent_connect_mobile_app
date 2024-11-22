@@ -1,11 +1,7 @@
 package com.app.rentconnect.dto.request;
 
-import com.app.rentconnect.entity.Car;
+import com.app.rentconnect.dto.car.request.CarRequestDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 
 import java.time.LocalDateTime;
 import java.util.List;

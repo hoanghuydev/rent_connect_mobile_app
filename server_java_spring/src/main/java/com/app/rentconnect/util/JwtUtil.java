@@ -22,7 +22,7 @@ public class JwtUtil {
     private int jwtExpirationMs;
 
     public String generateToken(UserDetails userDetails) throws JOSEException {
-        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS512)
+        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS256)
                 .type(JOSEObjectType.JWT)
                 .build();
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()

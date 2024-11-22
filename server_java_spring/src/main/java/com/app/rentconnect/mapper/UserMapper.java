@@ -1,7 +1,7 @@
 package com.app.rentconnect.mapper;
 
 import com.app.rentconnect.Constants;
-import com.app.rentconnect.dto.request.RegisterRequestDTO;
+import com.app.rentconnect.dto.auth.request.RegisterRequestDTO;
 import com.app.rentconnect.dto.request.UserRequestDTO;
 import com.app.rentconnect.entity.User;
 import org.mapstruct.AfterMapping;

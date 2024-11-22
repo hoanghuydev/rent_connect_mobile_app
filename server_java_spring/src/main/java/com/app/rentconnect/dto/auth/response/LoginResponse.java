@@ -1,5 +1,6 @@
-package com.app.rentconnect.dto.request;
+package com.app.rentconnect.dto.auth.response;
 
+import com.app.rentconnect.dto.request.UserRequestDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class VertifyRequestDTO {
-    String email;
-    String otpCode;
+public class LoginResponse {
+    UserRequestDTO user;
+    String token;
 }
