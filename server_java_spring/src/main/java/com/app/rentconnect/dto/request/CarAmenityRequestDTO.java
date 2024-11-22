@@ -1,10 +1,7 @@
 package com.app.rentconnect.dto.request;
 
-import com.app.rentconnect.entity.Amenity;
-import com.app.rentconnect.entity.Car;
+import com.app.rentconnect.dto.car.request.CarRequestDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 @Data

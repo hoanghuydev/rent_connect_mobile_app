@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OtpQueryService {
     OtpRepository otpRepository;
-    public OtpVerification findByEmail(String email) {
-        return otpRepository.findByEmail(email)
+    public OtpVerification findByUserEmail(String email) {
+        return otpRepository.findByUserEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("OTP not found or expired"));
     }
 }

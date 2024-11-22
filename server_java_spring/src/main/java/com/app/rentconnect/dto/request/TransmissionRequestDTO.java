@@ -2,6 +2,7 @@ package com.app.rentconnect.dto.request;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.app.rentconnect.dto.car.request.CarRequestDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

@@ -1,11 +1,9 @@
-package com.app.rentconnect.dto.request;
+package com.app.rentconnect.dto.car.request;
 
-import com.app.rentconnect.entity.*;
+import com.app.rentconnect.dto.request.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

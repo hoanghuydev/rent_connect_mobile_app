@@ -1,14 +1,10 @@
 package com.app.rentconnect.dto.request;
 
 import com.app.rentconnect.Constants;
-import com.app.rentconnect.entity.BookingHistory;
-import com.app.rentconnect.entity.Car;
-import com.app.rentconnect.entity.User;
+import com.app.rentconnect.dto.car.request.CarRequestDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.List;

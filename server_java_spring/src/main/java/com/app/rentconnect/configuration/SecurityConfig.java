@@ -25,7 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_POST_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/login"};
+    private final String[] PUBLIC_POST_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/verify","/api/v1/otp/send","/api/v1/auth/login"};
     private final String[] PUBLIC_GET_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/login"};
     private final String[] ROLE_ADMIN_ENDPOINT = {};
     private final String[] ROLE_OWNER_ENDPOINT = {};
@@ -62,8 +62,8 @@ public class SecurityConfig {
     }
     @Bean
     public JwtDecoder jwtDecoder(){
-        SecretKeySpec secretKey = new SecretKeySpec(jwtSecret.getBytes(), "HS512");
-        return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS512).build();
+        SecretKeySpec secretKey = new SecretKeySpec(jwtSecret.getBytes(), "HS256");
+        return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
     }
 
     @Bean
