@@ -20,31 +20,31 @@ public class SecurityConfig {
     private final String[] PUBLIC_POST_ENDPOINT = {"/register","/login"};
     private final String[] PUBLIC_GET_ENDPOINT = {"/register","/login"};
 
-//    @Value("${jwt.secret}")
-//    private String jwtSecret;
-//
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-////      Only allow access public url
-//        http
-//                .csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(HttpMethod.POST,this.PUBLIC_POST_ENDPOINT).permitAll()
-//                        .requestMatchers(HttpMethod.GET,this.PUBLIC_GET_ENDPOINT).permitAll()
-//                        .anyRequest().authenticated()
-//                )
-//                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));
-//
-//        return http.build();
-//    }
-//    @Bean
-//    public JwtDecoder jwtDecoder(){
-//        SecretKeySpec secretKey = new SecretKeySpec(jwtSecret.getBytes(), "HS512");
-//        return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS512).build();
-//    }
-//
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//      Only allow access public url
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST,this.PUBLIC_POST_ENDPOINT).permitAll()
+                        .requestMatchers(HttpMethod.GET,this.PUBLIC_GET_ENDPOINT).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));
+
+        return http.build();
+    }
+    @Bean
+    public JwtDecoder jwtDecoder(){
+        SecretKeySpec secretKey = new SecretKeySpec(jwtSecret.getBytes(), "HS512");
+        return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS512).build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
