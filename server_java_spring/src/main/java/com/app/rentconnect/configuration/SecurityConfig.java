@@ -17,7 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_POST_ENDPOINT = {"/register","/login"};
+    private final String[] PUBLIC_POST_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/login"};
     private final String[] PUBLIC_GET_ENDPOINT = {"/register","/login"};
 
     @Value("${jwt.secret}")

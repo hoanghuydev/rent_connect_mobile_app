@@ -12,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -25,10 +23,10 @@ import java.util.Map;
 public class AuthController {
     UserService userService;
     UserMapper userMapper;
-    PasswordEncoder passwordEncoder;
+
 
     @PostMapping("/register")
-    public ApiResponse<UserRequestDTO> register(RegisterRequestDTO registerRequestDTO) {
+    public ApiResponse<UserRequestDTO> register(@RequestBody RegisterRequestDTO registerRequestDTO) {
         if (userService.existsByEmail(registerRequestDTO.getEmail())) {
             throw new IllegalArgumentException("User with this email already exists.");
         }
@@ -43,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<UserRequestDTO> login(LoginRequestDTO loginRequestDTO) {
+    public ApiResponse<UserRequestDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         UserRequestDTO userRequestDTO = userService.login(loginRequestDTO);
         if (userRequestDTO != null) {
             return new ApiResponse<>(HttpStatus.OK, "Login successfully",
@@ -53,4 +51,9 @@ public class AuthController {
                 "user",null);
     }
 
+    @PostMapping("/forgetpassword")
+    public ApiResponse<UserRequestDTO> forgetPassword(@RequestParam String email){
+
+        return  null;
+    }
 }

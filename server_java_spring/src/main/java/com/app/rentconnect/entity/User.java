@@ -4,12 +4,16 @@ import com.app.rentconnect.Constants;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -48,8 +52,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
      Constants.UserType userType;
-    @Column(nullable = false)
-     LocalDateTime createdAt = LocalDateTime.now();
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+     LocalDateTime createdAt;
 
      Boolean verified = false;
 
