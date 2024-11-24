@@ -1,54 +1,104 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Button } from 'react-native-paper';
+import React, { useState } from "react";
+import { View, Alert } from "react-native";
+import { Text, TextInput, Button, IconButton } from "react-native-paper";
+import authApi from "src/api/authApi"; // Đảm bảo đường dẫn đúng
+import styles from "src/styles/LoginScreen.styles";
+import { useNavigation } from "@react-navigation/native";
 
 const LoginScreen = () => {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const response = await authApi.login({ phoneNumber, password });
+      if (response.status === 200) {
+        Alert.alert("Đăng nhập thành công", `Chào mừng, ${response.data.name}`);
+      } else {
+        Alert.alert(
+          "Đăng nhập thất bại",
+          response.data.message || "Số điện thoại hoặc mật khẩu không đúng"
+        );
+      }
+    } catch (error) {
+      console.error("Đăng nhập thất bại:", error);
+      Alert.alert("Lỗi", "Không thể kết nối đến server. Vui lòng thử lại.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <View className="flex-1 p-6 justify-center bg-white">
-      <Text className="text-2xl font-bold text-center mb-6">Đăng nhập</Text>
-      
-      <Text className="text-lg mb-2">Số điện thoại của bạn</Text>
+    <View style={styles.container}>
+      <Text variant="headlineMedium" style={styles.title}>
+        Đăng nhập
+      </Text>
+
+      <Text style={styles.label}>Số điện thoại của bạn</Text>
       <TextInput
-        className="border rounded p-3 mb-4"
+        mode="outlined"
         placeholder="Nhập số điện thoại"
         keyboardType="phone-pad"
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+        style={styles.input}
+        left={<TextInput.Icon icon="phone" />}
       />
-      
-      <Text className="text-lg mb-2">Mật khẩu</Text>
-      <View className="border rounded flex-row items-center p-3 mb-4">
-        <TextInput
-          className="flex-1"
-          placeholder="Nhập mật khẩu"
-          secureTextEntry={!showPassword}
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Icon name={showPassword ? 'eye-off' : 'eye'} size={20} />
-        </TouchableOpacity>
-      </View>
 
-      <Text className="text-green-500 mb-6 text-right">Quên mật khẩu</Text>
+      <Text style={styles.label}>Mật khẩu</Text>
+      <TextInput
+        mode="outlined"
+        placeholder="Nhập mật khẩu"
+        secureTextEntry={!showPassword}
+        value={password}
+        onChangeText={setPassword}
+        style={styles.input}
+        left={<TextInput.Icon icon="lock" />}
+        right={
+          <TextInput.Icon
+            icon={showPassword ? "eye-off" : "eye"}
+            onPress={() => setShowPassword(!showPassword)}
+          />
+        }
+      />
 
-      <Button mode="contained" className="bg-green-500 mb-4" onPress={() => {}}>
+      <Button
+        onPress={() => Alert.alert("Quên mật khẩu", "Hãy liên hệ hỗ trợ.")}
+        textColor="#4CAF50"
+      >
+        Quên mật khẩu?
+      </Button>
+
+      <Button
+        mode="contained"
+        onPress={handleLogin}
+        buttonColor="#4CAF50"
+        style={styles.loginButton}
+        labelStyle={styles.loginButtonText}
+        loading={loading}
+        disabled={loading}
+      >
         Đăng nhập
       </Button>
 
-      <View className="flex-row justify-around mb-6">
-        <TouchableOpacity>
-          <Icon name="google" size={40} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon name="facebook" size={40} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon name="apple" size={40} color="black" />
-        </TouchableOpacity>
+      <View style={styles.socialContainer}>
+        <IconButton icon="google" size={30} onPress={() => Alert.alert("Google login")} />
+        <IconButton icon="facebook" size={30} onPress={() => Alert.alert("Facebook login")} />
+        <IconButton icon="apple" size={30} onPress={() => Alert.alert("Apple login")} />
       </View>
 
-      <Text className="text-center">
-        Bạn chưa là thành viên? <Text className="text-green-500">Hãy đăng ký ngay</Text>
+      <Text style={styles.footerText}>
+        Bạn chưa là thành viên?{" "}
+        <Text
+          style={styles.registerText}
+          onPress={() => ('RegisterScreen')}
+        >
+          Hãy đăng ký ngay
+        </Text>
       </Text>
     </View>
   );
