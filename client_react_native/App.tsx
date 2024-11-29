@@ -5,12 +5,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Provider as PaperProvider } from 'react-native-paper';
-import LoginScreen from '@/screens/LoginScreen';
 import ExploreScreen from '@/screens/ExploreScreen';
 import MessageScreen from '@/screens/MessageScreen';
 import RideScreen from '@/screens/RideScreen';
 import SupportScreen from '@/screens/SupportScreen';
 import { store } from '@/store/store';
+import AccountStack from '@/routes/AccountStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -55,7 +55,7 @@ export default function App() {
           <Tab.Screen name="Messages" component={MessageScreen} />
           <Tab.Screen name="Rides" component={RideScreen} />
           <Tab.Screen name="Support" component={SupportScreen} />
-          <Tab.Screen name="Login" component={LoginScreen} />
+          <Tab.Screen name="Account" component={AccountStack} options={{ headerShown: false }} />
         </Tab.Navigator>
       </NavigationContainer>
     </PaperProvider>

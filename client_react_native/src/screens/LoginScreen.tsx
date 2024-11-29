@@ -3,14 +3,15 @@ import { View, Alert } from "react-native";
 import { Text, TextInput, Button, IconButton } from "react-native-paper";
 import authApi from "src/api/authApi"; // Đảm bảo đường dẫn đúng
 import styles from "src/styles/LoginScreen.styles";
-import { useNavigation } from "@react-navigation/native";
+import { AccountStackParamList } from "@/routes/AccountStack";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 const LoginScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<AccountStackParamList>>();
 
   const handleLogin = async () => {
     setLoading(true);
@@ -31,6 +32,10 @@ const LoginScreen = () => {
       setLoading(false);
     }
   };
+
+  const navigateRegister = () => {
+    navigation.navigate('Register');
+  }
 
   return (
     <View style={styles.container}>
@@ -95,7 +100,7 @@ const LoginScreen = () => {
         Bạn chưa là thành viên?{" "}
         <Text
           style={styles.registerText}
-          onPress={() => ('RegisterScreen')}
+          onPress={navigateRegister}
         >
           Hãy đăng ký ngay
         </Text>

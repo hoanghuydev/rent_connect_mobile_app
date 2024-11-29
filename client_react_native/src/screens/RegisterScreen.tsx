@@ -2,14 +2,19 @@ import React, { useState } from "react";
 import { View, Alert } from "react-native";
 import { Text, TextInput, Button, IconButton } from "react-native-paper";
 import styles from "src/styles/RegisterScreen.styles";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { AccountStackParamList } from "@/routes/AccountStack";
+import authApi from "@/api/authApi";
 
 const RegisterScreen = () => {
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigation = useNavigation<NavigationProp<AccountStackParamList>>();
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
@@ -23,6 +28,7 @@ const RegisterScreen = () => {
       // Ví dụ: const response = await authApi.register({ fullName, phoneNumber, password });
 
       // Giả lập phản hồi thành công
+      const response = await authApi.register({ fullName, phoneNumber, password, email });
       setTimeout(() => {
         setLoading(false);
         Alert.alert("Đăng ký thành công", "Chào mừng bạn đã trở thành thành viên!");
@@ -34,6 +40,10 @@ const RegisterScreen = () => {
       setLoading(false);
     }
   };
+
+  const navigateLogin = () => {
+    navigation.navigate('Login');
+  }
 
   return (
     <View style={styles.container}>
@@ -58,6 +68,16 @@ const RegisterScreen = () => {
         onChangeText={setPhoneNumber}
         style={styles.input}
         left={<TextInput.Icon icon="phone" />}
+      />
+
+      <Text style={styles.label}>Email</Text>
+      <TextInput
+        mode="outlined"
+        placeholder="Nhập Email"
+        value={fullName}
+        onChangeText={setEmail}
+        style={styles.input}
+        left={<TextInput.Icon icon="email" />}
       />
 
       <Text style={styles.label}>Mật khẩu</Text>
@@ -122,7 +142,7 @@ const RegisterScreen = () => {
         Đã có tài khoản?{" "}
         <Text
           style={styles.loginText}
-          onPress={() => Alert.alert("Đăng nhập", "Chuyển đến màn hình đăng nhập.")}
+          onPress={navigateLogin}
         >
           Hãy đăng nhập ngay
         </Text>
