@@ -1,8 +1,10 @@
 package com.app.rentconnect.service.command;
 
+import com.cloudinary.utils.ObjectUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.cloudinary.Cloudinary;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,13 +14,12 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CloudinaryCommandService {
-    Cloudinary cloudinary;
+    @Autowired
+    private Cloudinary cloudinary;
 
     public Map<String, Object> upload(MultipartFile file) {
         try {
-            // Define transformation options for cropping and optimizing
             Map<String, Object> options = Map.of(
                     "transformation", Map.of(
                             "aspect_ratio", "1.3:1", // Crop to aspect ratio 1.3:1
@@ -32,6 +33,14 @@ public class CloudinaryCommandService {
             return cloudinary.uploader().upload(file.getBytes(), options);
         } catch (IOException io) {
             throw new RuntimeException("Image upload failed", io);
+        }
+    }
+    public Map<String, Object> remove(String publicId) {
+        try {
+            // Sử dụng phương thức destroy để xóa ảnh với public_id
+            return cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("invalidate", true));
+        } catch (Exception e) {
+            throw new RuntimeException("Image removal failed", e);
         }
     }
 }

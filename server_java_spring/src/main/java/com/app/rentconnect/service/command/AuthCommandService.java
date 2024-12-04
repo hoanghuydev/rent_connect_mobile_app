@@ -34,7 +34,6 @@ public class AuthCommandService {
     @Transactional
     public ApiResponse<UserRequestDTO> registerUser(RegisterRequestDTO registerRequest) {
         validateEmailAvailability(registerRequest.getEmail());
-
         User user = userMapper.registerDTOtoEntity(registerRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userCommandService.save(user);
@@ -61,7 +60,6 @@ public class AuthCommandService {
         OtpVerification otpVerification = otpQueryService.findByUserEmail(vertifyRequestDTO.getEmail());
         verifyOtpCode(otpVerification, vertifyRequestDTO.getOtpCode());
         userCommandService.verifyByEmail(vertifyRequestDTO.getEmail(), true);
-
         return new ApiResponse<>(HttpStatus.OK, "OTP verified successfully", "email", vertifyRequestDTO.getEmail());
     }
 

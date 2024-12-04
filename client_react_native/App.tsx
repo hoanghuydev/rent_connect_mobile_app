@@ -5,58 +5,37 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Provider as PaperProvider } from 'react-native-paper';
-import LoginScreen from '@/screens/LoginScreen';
-import ExploreScreen from '@/screens/ExploreScreen';
-import MessageScreen from '@/screens/MessageScreen';
-import RideScreen from '@/screens/RideScreen';
-import SupportScreen from '@/screens/SupportScreen';
+import LoginScreen from '@/screens/login/LoginScreen';
+import ExploreScreen from '@/screens/explore/ExploreScreen';
+import MessageScreen from '@/screens/message/MessageScreen';
+import RideScreen from '@/screens/ride/RideScreen';
+import SupportScreen from '@/screens/support/SupportScreen';
 import { store } from '@/store/store';
+import {createStackNavigator} from "@react-navigation/stack";
+import MainScreen from "@/MainScreen";
+import RegisterScreen from "@/screens/register/RegisterScreen";
+import LocationFilterScreen from "@/screens/locationFilter/LocationFilterScreen";
+import {RootStackParamList} from "@/navigation/type";
+import DateFilterScreen from "@/screens/dateFilter/DateFilterScreen";
 
 const Tab = createBottomTabNavigator();
-
+const Stack = createStackNavigator<RootStackParamList>();
 export default function App() {
   return (
     <Provider store={store}>
    <PaperProvider>
       <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ color, size }) => {
-              // Render icon
-              let iconName;
-              switch (route.name) {
-                case 'Explore':
-                  iconName = 'home-outline';
-                  break;
-                case 'Messages':
-                  iconName = 'chat-outline';
-                  break;
-                case 'Rides':
-                  iconName = 'car';
-                  break;
-                case 'Support':
-                  iconName = 'headset';
-                  break;
-                case 'Login':
-                  iconName = 'account-outline';
-                  break;
-                default:
-                  iconName = 'home-outline';
-              }
-              return <Icon name={iconName || ''} size={size} color={color} />;
-            },
-            // màu khi active
-            tabBarActiveTintColor: 'green',
-            // màu khi không active
-            tabBarInactiveTintColor: 'gray',
-          })}
+        <Stack.Navigator
+            initialRouteName="Main" // Đặt màn hình chính là MainScreen
+            screenOptions={{
+              headerShown: false, // Ẩn header
+            }}
         >
-          <Tab.Screen name="Explore" component={ExploreScreen} />
-          <Tab.Screen name="Messages" component={MessageScreen} />
-          <Tab.Screen name="Rides" component={RideScreen} />
-          <Tab.Screen name="Support" component={SupportScreen} />
-          <Tab.Screen name="Login" component={LoginScreen} />
-        </Tab.Navigator>
+          <Stack.Screen name="Main" component={MainScreen} />
+            <Stack.Screen name="LocationFilter" component={LocationFilterScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="DateFilter" component={DateFilterScreen} />
+        </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
   </Provider>
