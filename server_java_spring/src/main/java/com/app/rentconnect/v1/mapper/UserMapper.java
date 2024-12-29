@@ -8,8 +8,10 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
+@Component
 public interface UserMapper {
     @Mapping(target = "userId", ignore = true)
     User registerDTOtoEntity(RegisterRequestDTO registerRequestDTO);
