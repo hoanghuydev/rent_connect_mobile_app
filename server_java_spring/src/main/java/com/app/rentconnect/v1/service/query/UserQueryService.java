@@ -7,6 +7,7 @@ import com.app.rentconnect.v1.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,8 @@ public class UserQueryService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Not found user"));
     }
+
+    @EntityGraph(attributePaths = {"roles"})
     public UserResponseDTO findById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Not found user"));
         UserResponseDTO userResponseDTO = userMapper.toResponseDTO(user);

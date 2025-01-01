@@ -18,12 +18,12 @@ import java.util.Map;
 public class ApiResponse<T> {
      int status;
      String message;
-     Map<String, T> result;
+     Map<String, T> data;
 
     public ApiResponse(HttpStatus status, String message, String fieldName, T result) {
         this.status = status.value();
         this.message = message;
-        this.result = new HashMap<>();
-        this.result.put(fieldName, result);
+        this.data = new HashMap<>();
+        this.data.put(fieldName, result);
     }
 }
