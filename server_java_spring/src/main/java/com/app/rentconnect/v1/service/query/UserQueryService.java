@@ -22,6 +22,7 @@ public class UserQueryService {
         return userRepository.findByEmailAndVerified(email,verify)
                 .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
     }
+
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Not found user"));
     }

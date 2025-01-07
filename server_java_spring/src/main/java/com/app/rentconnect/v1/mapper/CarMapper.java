@@ -1,5 +1,6 @@
 package com.app.rentconnect.v1.mapper;
 
+import com.app.rentconnect.v1.dto.car.request.CarLocationRequestDTO;
 import com.app.rentconnect.v1.dto.car.request.CarRequestDTO;
 import com.app.rentconnect.v1.dto.car.request.CreateCarRequestDTO;
 import com.app.rentconnect.v1.dto.car.response.CarResponseDTO;
@@ -25,6 +26,6 @@ public interface CarMapper {
     @Mapping(target = "timesRented", constant = "0")
     @Mapping(source = "transmissionId",target = "transmission.transmissionId")
     @Mapping(source = "fuelId",target = "fuel.fuelId")
-    @Mapping(source = "location", target = "location")
     Car toEntity(CreateCarRequestDTO createCarRequestDTO);
+
 }
