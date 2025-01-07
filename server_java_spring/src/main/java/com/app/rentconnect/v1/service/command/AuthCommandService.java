@@ -1,8 +1,10 @@
 package com.app.rentconnect.v1.service.command;
 
 import com.app.rentconnect.v1.Constants;
+import com.app.rentconnect.v1.dto.auth.request.LoginRequestDTO;
 import com.app.rentconnect.v1.dto.auth.request.RegisterRequestDTO;
 import com.app.rentconnect.v1.dto.auth.request.VertifyRequestDTO;
+import com.app.rentconnect.v1.dto.auth.response.LoginResponse;
 import com.app.rentconnect.v1.dto.otp.request.SendOtpRequestDTO;
 import com.app.rentconnect.v1.entity.OtpVerification;
 import com.app.rentconnect.v1.entity.Role;
@@ -10,13 +12,21 @@ import com.app.rentconnect.v1.entity.User;
 import com.app.rentconnect.v1.mapper.UserMapper;
 import com.app.rentconnect.v1.service.query.OtpQueryService;
 import com.app.rentconnect.v1.service.query.RoleQueryService;
+import com.app.rentconnect.v1.service.query.UserDetailsQueryService;
 import com.app.rentconnect.v1.service.query.UserQueryService;
+import com.app.rentconnect.v1.util.JwtUtil;
 import com.app.rentconnect.v1.util.OtpEncryptionUtil;
 import com.app.rentconnect.v1.dto.request.UserRequestDTO;
+import com.nimbusds.jose.JOSEException;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,14 +39,17 @@ import java.util.Set;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthCommandService {
+    AuthenticationManager authenticationManager;
+    JwtUtil jwtUtil;
+    UserMapper userMapper;
     UserQueryService userQueryService;
     UserCommandService userCommandService;
-    UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     OtpCommandService otpCommandService;
     OtpEncryptionUtil otpEncryptionUtil;
     OtpQueryService otpQueryService;
     RoleQueryService roleQueryService;
+    private final UserDetailsQueryService userDetailsQueryService;
 
     @Transactional
     public UserRequestDTO registerUser(RegisterRequestDTO registerRequest) {
@@ -49,7 +62,7 @@ public class AuthCommandService {
 
         // Assign customer role
         Set<Role> roles = new HashSet<>();
-        Role customerRole = roleQueryService.findByRoleName(Constants.Role.CUSTOMER.getValue());
+        Role customerRole = roleQueryService.findByRoleName(Constants.Role.CUSTOMER.name());
         roles.add(customerRole);
         user.setRoles(roles);
 
@@ -69,6 +82,26 @@ public class AuthCommandService {
         verifyOtpCode(otpVerification, vertifyRequestDTO.getOtpCode());
         userCommandService.verifyByEmail(vertifyRequestDTO.getEmail(), true);
         return vertifyRequestDTO.getEmail();
+    }
+
+    public LoginResponse login(LoginRequestDTO loginRequestDTO) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequestDTO.getEmail(),
+                            loginRequestDTO.getPassword()
+                    )
+            );
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            UserRequestDTO user = userMapper.toRequestDTO(userQueryService.findByEmailAndVerify(userDetails.getUsername(),true));
+            String jwt = jwtUtil.generateToken(userDetails);
+            LoginResponse loginResponse = new LoginResponse(user,jwt);
+            return loginResponse;
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Invalid username or password");
+        } catch (JOSEException e) {
+            throw new RuntimeException();
+        }
     }
 
     private void validateEmailAvailability(String email) {

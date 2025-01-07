@@ -5,8 +5,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,34 +19,19 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Where(clause = "verified = true")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long userId;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-     List<Car> cars;
-
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-     List<Rental> rentalsAsCustomer;
-
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-     List<Rental> rentalsAsOwner;
-
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
-     List<Message> messages;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-     List<Address> addresses;
-
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    Set<Role> roles;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-     Long userId;
+    private Set<Role> roles = new HashSet<>();
 
     @Column(nullable = false, length = 100)
      String fullName;
@@ -73,6 +60,21 @@ public class User {
      String platformId;
 
      LocalDateTime deletedAt;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    List<Car> cars;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Rental> rentalsAsCustomer;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Rental> rentalsAsOwner;
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Message> messages;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    List<Address> addresses;
 
     @PrePersist
     protected void onCreate() {

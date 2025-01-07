@@ -4,20 +4,14 @@ import lombok.Getter;
 
 public class Constants {
 
-    @Getter
     public enum Role {
-        CUSTOMER("CUSTOMER"),
-        OWNER("OWNER"),
-        ADMIN("ADMIN"),
-        MODERATOR("MODERATOR"),
-        SUPER_ADMIN("SUPER_ADMIN"),
-        DRIVER("DRIVER");
+        CUSTOMER,
+        OWNER,
+        ADMIN,
+        MODERATOR,
+        SUPER_ADMIN ,
+        DRIVER,
 
-        private final String value;
-
-        Role(String value) {
-            this.value = value;
-        }
     }
 
 

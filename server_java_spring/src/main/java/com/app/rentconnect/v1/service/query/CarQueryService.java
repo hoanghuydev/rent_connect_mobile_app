@@ -18,7 +18,6 @@ import java.util.Optional;
 public class CarQueryService {
     CarRepository carRepository;
     CarMapper carMapper;
-
     public CarResponseDTO findCarById(Long id) {
         Car car = carRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("Not found car"));
         return carMapper.toCarResponseDTO(Optional.ofNullable(car));
