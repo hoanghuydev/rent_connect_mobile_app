@@ -1,12 +1,11 @@
 package com.app.rentconnect.v1.service.command;
 
+import com.app.rentconnect.v1.dto.car.request.CarLocationRequestDTO;
 import com.app.rentconnect.v1.dto.car.request.CreateCarRequestDTO;
 import com.app.rentconnect.v1.dto.car.response.CarResponseDTO;
 import com.app.rentconnect.v1.dto.response.ApiResponse;
-import com.app.rentconnect.v1.entity.Amenity;
-import com.app.rentconnect.v1.entity.Car;
-import com.app.rentconnect.v1.entity.CarFeature;
-import com.app.rentconnect.v1.entity.CarImage;
+import com.app.rentconnect.v1.entity.*;
+import com.app.rentconnect.v1.mapper.CarLocationMapper;
 import com.app.rentconnect.v1.mapper.CarMapper;
 import com.app.rentconnect.v1.repository.CarRepository;
 import com.app.rentconnect.v1.service.query.AmenityQueryService;
@@ -31,9 +30,13 @@ public class CarCommandService {
     CarQueryService carQueryService;
     AmenityQueryService amenityQueryService;
     CloudinaryCommandService cloudinaryCommandService;
+    private final CarLocationMapper carLocationMapper;
 
     public CarResponseDTO createCar(List<MultipartFile> imageFiles, CreateCarRequestDTO createCarRequestDTO) {
         Car car = carMapper.toEntity(createCarRequestDTO);
+        CarLocationRequestDTO carLocationRequestDTO = carLocationMapper.toCarLocationRequest(createCarRequestDTO);
+        CarLocation carLocation = carLocationMapper.toEntity(carLocationRequestDTO);
+        car.setLocation(carLocation);
 
         // Set amenities data
         Set<Amenity> amenities = new HashSet<>();

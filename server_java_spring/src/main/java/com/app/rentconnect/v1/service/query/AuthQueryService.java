@@ -22,28 +22,5 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthQueryService {
-    AuthenticationManager authenticationManager;
-    JwtUtil jwtUtil;
-    UserMapper userMapper;
-    UserQueryService userQueryService;
 
-    public LoginResponse login(LoginRequestDTO loginRequestDTO) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequestDTO.getEmail(),
-                            loginRequestDTO.getPassword()
-                    )
-            );
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            UserRequestDTO user = userMapper.toRequestDTO(userQueryService.findByEmailAndVerify(userDetails.getUsername(),true));
-            String jwt = jwtUtil.generateToken(userDetails);
-            LoginResponse loginResponse = new LoginResponse(user,jwt);
-            return loginResponse;
-        } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Invalid username or password");
-        } catch (JOSEException e) {
-            throw new RuntimeException();
-        }
-    }
 }

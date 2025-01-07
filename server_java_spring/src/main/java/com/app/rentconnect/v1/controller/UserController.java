@@ -7,6 +7,9 @@ import com.app.rentconnect.v1.service.command.AuthCommandService;
 import com.app.rentconnect.v1.service.command.UserCommandService;
 import com.app.rentconnect.v1.service.query.UserQueryService;
 import com.cloudinary.Api;
+import com.app.rentconnect.v1.dto.response.ApiResponse;
+import com.app.rentconnect.v1.dto.user.response.UserResponseDTO;
+import com.app.rentconnect.v1.entity.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -81,5 +84,10 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable("id") Long id) {
         userCommandService.deleteUser(id);
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponseDTO>> getUserById(@PathVariable("id") Long id) {
+        ApiResponse<UserResponseDTO> apiResponse = new ApiResponse<>(HttpStatus.OK,"Get user successfully","user",userQueryService.findById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 }

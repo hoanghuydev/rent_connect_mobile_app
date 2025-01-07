@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class AuthController {
     AuthCommandService authCommandService;
-    AuthQueryService authQueryService;
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserRequestDTO>> registerCustomer(@RequestBody RegisterRequestDTO registerRequest) {
@@ -47,7 +46,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
-                .body(new ApiResponse<>(HttpStatus.ACCEPTED,"Logged in","data",authQueryService.login(loginRequestDTO)));
+                .body(new ApiResponse<>(HttpStatus.ACCEPTED,"Logged in","data",authCommandService.login(loginRequestDTO)));
     }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice // Annotation để đánh dấu lớp này là nơi xử lý ngoại lệ chung cho toàn bộ ứng dụng.
 public class GlobalExceptionHandler {
@@ -67,5 +68,13 @@ public class GlobalExceptionHandler {
                 "error", finalMessage
         );
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<?> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        ApiResponse<String> apiResponse = new ApiResponse<>(HttpStatus.NOT_FOUND,
+                "Data type not valid",
+                "error", ex.getMessage());
+        return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
 }
