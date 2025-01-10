@@ -30,7 +30,8 @@ public class UserDetailsQueryService implements org.springframework.security.cor
     }
     public static Collection<GrantedAuthority> mapRoleToAuthorities(Set<Role> roles) {
         return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
-                    .collect(Collectors.toList());
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
+                .collect(Collectors.toList());
     }
+
 }

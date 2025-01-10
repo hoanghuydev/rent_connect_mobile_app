@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,8 +25,9 @@ public class CarController {
     CarCommandService carCommandService;
     CarQueryService carQueryService;
 
+    @PreAuthorize("hasRole(T(com.app.rentconnect.v1.Constants.Role).OWNER.name())")
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse<CarResponseDTO>> addCar(@RequestParam("images") List<MultipartFile> imageFiles, @RequestBody CreateCarRequestDTO request) {
+    public ResponseEntity<ApiResponse<CarResponseDTO>> addCar(@RequestParam("images") List<MultipartFile> imageFiles,  @ModelAttribute CreateCarRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(HttpStatus.CREATED,"Create car successful","car",carCommandService.createCar(imageFiles, request)));
     }

@@ -21,7 +21,6 @@ import java.util.List;
 public class CreateCarRequestDTO {
     @NotEmpty(message = "Amenities can not empty")
     List<Long> amenityIds;
-    List<Long> featureIds;
 
     @NotEmpty(message = "fuelId is missing")
     Long fuelId;

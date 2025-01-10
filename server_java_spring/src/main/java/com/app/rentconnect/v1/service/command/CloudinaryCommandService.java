@@ -20,14 +20,15 @@ public class CloudinaryCommandService {
 
     public Map<String, Object> upload(MultipartFile file) {
         try {
-            Map<String, Object> options = Map.of(
-                    "transformation", Map.of(
-                            "aspect_ratio", "1.3:1", // Crop to aspect ratio 1.3:1
-                            "crop", "fill",         // Ensures the image is resized to fill the aspect ratio
-                            "quality", "auto",      // Automatically adjusts quality for performance
-                            "fetch_format", "auto"  // Optimizes format (e.g., WebP if supported)
-                    )
+            Map<String, Object> options = ObjectUtils.asMap(
+                    "transformation", ObjectUtils.asMap(
+                            "crop", "fill",
+                            "quality", "auto",
+                            "aspect_ratio", "1.3"
+                    ),
+                    "format", "auto"
             );
+
 
             // Upload the file with the defined transformation
             return cloudinary.uploader().upload(file.getBytes(), options);
