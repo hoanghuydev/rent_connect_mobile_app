@@ -22,5 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Query(value = "UPDATE users SET verified=:isVerified WHERE email=:email",nativeQuery = true)
     void vertifyUserByEmail(String email, boolean isVerified);
-    
+
+
 }
