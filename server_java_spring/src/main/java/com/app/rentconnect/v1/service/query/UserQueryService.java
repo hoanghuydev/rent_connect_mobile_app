@@ -11,6 +11,9 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE, makeFinal = true)
@@ -35,5 +38,12 @@ public class UserQueryService {
     }
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    public List<UserResponseDTO> findAll() {
+        List<User> userList = userRepository.findAll();
+        return userList.stream()
+                .map(user -> userMapper.toResponseDTO(user))
+                .collect(Collectors.toList());
     }
 }
