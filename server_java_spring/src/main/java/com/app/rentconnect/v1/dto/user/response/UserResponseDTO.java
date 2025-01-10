@@ -24,8 +24,4 @@ public class UserResponseDTO {
     String phoneNumber;
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime updatedAt = LocalDateTime.now();
-    Boolean verified = false;
-    Constants.LoginPlatform loginPlatform = Constants.LoginPlatform.EMAIL;
-    String platformId;
-    LocalDateTime deletedAt;
 }

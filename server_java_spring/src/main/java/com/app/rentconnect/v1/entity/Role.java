@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -22,6 +23,26 @@ public class Role {
     @Column(nullable = false, length = 50)
     String roleName;
 
-    @ManyToMany(mappedBy = "roles")
-    Set<User> users;
+    @Column(nullable = false, length = 500)
+    String description;
+
+    @Column(nullable = false)
+    LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(nullable = false)
+    LocalDateTime updatedAt = LocalDateTime.now();
+
+    LocalDateTime deletedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
 }
