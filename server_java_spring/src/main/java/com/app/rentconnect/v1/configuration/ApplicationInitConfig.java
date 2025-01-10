@@ -39,7 +39,7 @@ public class ApplicationInitConfig {
             if (userRepository.findByEmail(adminEmail).isEmpty()) {
                 Set<Role> roles = new HashSet<>();
                 Role superAdminRole = roleQueryService.findByRoleName(Constants.Role.SUPER_ADMIN.name());
-                roles.add(superAdminRole);
+                //roles.add(superAdminRole);
                 String hashedPassword = passwordEncoder.encode(adminPassword);
                 User user = User.builder()
                         .email(adminEmail)
