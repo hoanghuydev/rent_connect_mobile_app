@@ -18,9 +18,6 @@ import java.util.List;
 @Table(name = "rentals")
 public class Rental {
 
-    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL)
-    private List<BookingHistory> bookingHistory;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long rentalId;
@@ -32,10 +29,6 @@ public class Rental {
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     User customer;
-
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    User owner;
 
     @Column(nullable = false)
     LocalDateTime startDate;

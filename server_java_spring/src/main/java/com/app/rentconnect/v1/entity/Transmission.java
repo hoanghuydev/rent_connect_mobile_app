@@ -13,10 +13,6 @@ import java.util.List;
 @Entity
 @Table(name = "transmissions")
 public class Transmission {
-
-    @OneToMany(mappedBy = "transmission", cascade = CascadeType.ALL)
-    private List<Car> cars;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long transmissionId;

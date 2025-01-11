@@ -13,8 +13,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TransmissionRequestDTO {
-    private List<CarRequestDTO> cars;
     Long transmissionId;
     String transmissionType;
-    LocalDateTime deletedAt;
 }

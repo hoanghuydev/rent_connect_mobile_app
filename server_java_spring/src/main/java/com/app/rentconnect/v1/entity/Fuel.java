@@ -14,9 +14,6 @@ import java.util.List;
 @Table(name = "fuels")
 public class Fuel {
 
-    @OneToMany(mappedBy = "fuel", cascade = CascadeType.ALL)
-    private List<Car> cars;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long fuelId;

@@ -1,5 +1,6 @@
 package com.app.rentconnect.v1.service.command;
 
+import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,15 +22,12 @@ public class CloudinaryCommandService {
     public Map<String, Object> upload(MultipartFile file) {
         try {
             Map<String, Object> options = ObjectUtils.asMap(
-                    "transformation", ObjectUtils.asMap(
-                            "crop", "fill",
-                            "quality", "auto",
-                            "aspect_ratio", "1.3"
-                    ),
-                    "format", "auto"
+                    "transformation", new Transformation()
+                            .crop("fill")
+                            .quality("auto")
+                            .aspectRatio("1.3"),
+                    "fetch_format", "auto"
             );
-
-
             // Upload the file with the defined transformation
             return cloudinary.uploader().upload(file.getBytes(), options);
         } catch (IOException io) {

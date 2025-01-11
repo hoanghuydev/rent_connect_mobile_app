@@ -16,12 +16,11 @@ import java.util.stream.Collectors;
 public interface CarMapper {
     Car toEntity(CarRequestDTO carRequestDTO);
     CarRequestDTO toCarRequestDTO(Car car);
-    CarResponseDTO toCarResponseDTO(Optional<Car> car);
+    CarResponseDTO toCarResponseDTO(Car car);
 
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "reviews",ignore = true)
     @Mapping(target = "rentals",ignore = true)
-    @Mapping(target = "features",ignore = true)
     @Mapping(target = "owner",ignore = true)
     @Mapping(target = "timesRented", constant = "0")
     @Mapping(source = "transmissionId",target = "transmission.transmissionId")

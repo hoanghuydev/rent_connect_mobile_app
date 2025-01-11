@@ -1,6 +1,7 @@
 package com.app.rentconnect.v1.entity;
 
 import com.app.rentconnect.v1.Constants;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -61,6 +62,7 @@ public class User {
 
      LocalDateTime deletedAt;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     List<Car> cars;
 

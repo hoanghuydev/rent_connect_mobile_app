@@ -64,7 +64,7 @@ public class CarCommandService {
 
         car = carRepository.save(car);
 
-        CarResponseDTO carResponseDTO = carMapper.toCarResponseDTO(Optional.of(car));
+        CarResponseDTO carResponseDTO = carMapper.toCarResponseDTO(car);
         return carResponseDTO;
     }
 
@@ -81,8 +81,10 @@ public class CarCommandService {
         for (MultipartFile image : imageFiles) {
             Map<String, Object> uploadResult = cloudinaryCommandService.upload(image);
             String imageUrl = (String) uploadResult.get("url");
+            String imageId = (String) uploadResult.get("public_id");
             CarImage carImage = CarImage.builder()
                     .imageUrl(imageUrl)
+                    .imageId(imageId)
                     .build();
             carImages.add(carImage);
         }

@@ -3,8 +3,11 @@ package com.app.rentconnect.v1.controller;
 import com.app.rentconnect.v1.dto.car.request.CarRequestDTO;
 import com.app.rentconnect.v1.dto.car.request.CreateCarRequestDTO;
 import com.app.rentconnect.v1.dto.car.response.CarResponseDTO;
+import com.app.rentconnect.v1.dto.rental.request.RentalRequestDTO;
+import com.app.rentconnect.v1.dto.rental.response.RentalResponseDTO;
 import com.app.rentconnect.v1.dto.response.ApiResponse;
 import com.app.rentconnect.v1.service.command.CarCommandService;
+import com.app.rentconnect.v1.service.command.RentalCommandService;
 import com.app.rentconnect.v1.service.query.CarQueryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ import java.util.List;
 public class CarController {
     CarCommandService carCommandService;
     CarQueryService carQueryService;
+    private final RentalCommandService rentalCommandService;
 
     @PreAuthorize("hasRole(T(com.app.rentconnect.v1.Constants.Role).OWNER.name())")
     @PostMapping("/add")
@@ -33,13 +37,19 @@ public class CarController {
     }
 
     @PutMapping("/{carId}")
-    public ResponseEntity<ApiResponse<CarRequestDTO>> updateCar(@PathVariable Long carId, @RequestBody CarRequestDTO request) {
+    public ResponseEntity<ApiResponse<CarResponseDTO>> updateCar(@PathVariable Long carId, @RequestBody CarRequestDTO request) {
         return null;
     }
 
     @GetMapping("/{carId}")
-    public ResponseEntity<ApiResponse<CarRequestDTO>> getCarById(@PathVariable Long carId) {
-       return null;
+    public ResponseEntity<ApiResponse<CarResponseDTO>> getCarById(@PathVariable Long carId) {
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Get car successfully","car",carQueryService.findCarById(carId)));
+    }
+
+    @PreAuthorize("hasRole(T(com.app.rentconnect.v1.Constants.Role).CUSTOMER.name())")
+    @PostMapping("/rent")
+    public ResponseEntity<ApiResponse<RentalResponseDTO>> getCarById(@RequestBody RentalRequestDTO rentalRequestDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Rent car successfully","car",rentalCommandService.rentCar(rentalRequestDTO)));
     }
 
     @DeleteMapping("/{carId}")
