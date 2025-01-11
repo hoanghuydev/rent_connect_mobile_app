@@ -29,14 +29,9 @@ public class UserDetailsQueryService implements org.springframework.security.cor
         return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword(),mapRoleToAuthorities(user.getRoles()));
     }
     public static Collection<GrantedAuthority> mapRoleToAuthorities(Set<Role> roles) {
-        /*
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()))
-                .stream()
-                .collect(Collectors.toList());
-
-         */
         return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
-                    .collect(Collectors.toList());
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
+                .collect(Collectors.toList());
     }
+
 }

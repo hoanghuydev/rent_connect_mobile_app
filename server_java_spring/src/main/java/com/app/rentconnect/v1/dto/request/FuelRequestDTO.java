@@ -15,8 +15,6 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 public class FuelRequestDTO {
-    private List<CarRequestDTO> cars;
     Long fuelId;
     String fuelType;
-    LocalDateTime deletedAt;
 }

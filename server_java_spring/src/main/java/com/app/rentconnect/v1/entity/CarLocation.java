@@ -15,10 +15,6 @@ import java.util.List;
 @Entity
 @Table(name = "car_locations")
 public class CarLocation {
-
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
-    private List<Car> cars;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long locationId;

@@ -7,13 +7,17 @@ import com.app.rentconnect.v1.dto.response.ApiResponse;
 import com.app.rentconnect.v1.entity.*;
 import com.app.rentconnect.v1.mapper.CarLocationMapper;
 import com.app.rentconnect.v1.mapper.CarMapper;
+import com.app.rentconnect.v1.repository.AmenityRepository;
 import com.app.rentconnect.v1.repository.CarRepository;
+import com.app.rentconnect.v1.repository.UserRepository;
 import com.app.rentconnect.v1.service.query.AmenityQueryService;
 import com.app.rentconnect.v1.service.query.CarQueryService;
+import com.app.rentconnect.v1.util.SecurityUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,29 +34,27 @@ public class CarCommandService {
     CarQueryService carQueryService;
     AmenityQueryService amenityQueryService;
     CloudinaryCommandService cloudinaryCommandService;
-    private final CarLocationMapper carLocationMapper;
+    UserRepository userRepository;
+    AmenityRepository amenityRepository;
+    CarLocationMapper carLocationMapper;
+
 
     public CarResponseDTO createCar(List<MultipartFile> imageFiles, CreateCarRequestDTO createCarRequestDTO) {
         Car car = carMapper.toEntity(createCarRequestDTO);
+
+        //amenities
+        List<Amenity> amenities = amenityRepository.findAllById(createCarRequestDTO.getAmenityIds());
+        car.setAmenities(new HashSet<>(amenities));
+
+        //Location car
         CarLocationRequestDTO carLocationRequestDTO = carLocationMapper.toCarLocationRequest(createCarRequestDTO);
         CarLocation carLocation = carLocationMapper.toEntity(carLocationRequestDTO);
         car.setLocation(carLocation);
 
-        // Set amenities data
-        Set<Amenity> amenities = new HashSet<>();
-        for (Long amenityId : createCarRequestDTO.getAmenityIds()) {
-            Amenity amenity = amenityQueryService.findById(amenityId);
-            amenities.add(amenity);
-        }
-        car.setAmenities(amenities);
+        //Owner
+        User user = SecurityUtil.getUserFromSecurityContext(userRepository);
+        car.setOwner(user);
 
-        // Set feature car
-//        Set<CarFeature> features = new HashSet<>();
-//        for (Long featureId : createCarRequestDTO.getAmenityIds()) {
-//            CarFeature carFeature = carFeatureQuery.findById(featureId);
-//            features.add(carFeature);
-//        }
-//        car.setFeatures(features);
 
         //Upload images car
         Set<CarImage> carImages = new HashSet<>();
@@ -62,7 +64,7 @@ public class CarCommandService {
 
         car = carRepository.save(car);
 
-        CarResponseDTO carResponseDTO = carMapper.toCarResponseDTO(Optional.of(car));
+        CarResponseDTO carResponseDTO = carMapper.toCarResponseDTO(car);
         return carResponseDTO;
     }
 
@@ -79,8 +81,10 @@ public class CarCommandService {
         for (MultipartFile image : imageFiles) {
             Map<String, Object> uploadResult = cloudinaryCommandService.upload(image);
             String imageUrl = (String) uploadResult.get("url");
+            String imageId = (String) uploadResult.get("public_id");
             CarImage carImage = CarImage.builder()
                     .imageUrl(imageUrl)
+                    .imageId(imageId)
                     .build();
             carImages.add(carImage);
         }

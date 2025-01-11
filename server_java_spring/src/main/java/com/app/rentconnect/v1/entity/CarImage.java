@@ -2,6 +2,8 @@ package com.app.rentconnect.v1.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Where;
+
 import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
@@ -10,13 +12,14 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "car_images")
+@Where(clause = "deleted_at IS NULL")
 public class CarImage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long imageId;
+    @Column(nullable = false,length = 40)
+    String imageId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id", nullable = false)
     Car car;
 

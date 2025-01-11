@@ -10,6 +10,8 @@ import lombok.experimental.FieldDefaults;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,8 +19,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CarResponseDTO {
-    private List<CarImageRequestDTO> images;
-    private List<CarAmenityRequestDTO> amenities;
+    Set<CarImageRequestDTO> images;
+    Set<AmenityRequestDTO> amenities;
     Long carId;
     UserRequestDTO owner;
     String carName;
@@ -31,5 +33,4 @@ public class CarResponseDTO {
     String rangePerChargeOrTank;
     CarLocationRequestDTO location;
     LocalDateTime createdAt;
-    LocalDateTime deletedAt;
 }

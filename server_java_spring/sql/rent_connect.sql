@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 28, 2024 at 03:51 PM
+-- Generation Time: Jan 07, 2025 at 02:19 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -46,7 +46,7 @@ CREATE TABLE `additional_fees` (
 
 CREATE TABLE `addresses` (
   `address_id` bigint(20) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
   `address_type` enum('HOME','COMPANY','OTHER') NOT NULL,
   `address_line` varchar(255) NOT NULL,
   `province` varchar(100) NOT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE `addresses` (
 --
 
 CREATE TABLE `amenities` (
-  `amenity_id` int(11) NOT NULL,
+  `amenity_id` bigint(20) NOT NULL,
   `amenity_name` varchar(100) NOT NULL,
   `icon` varchar(255) DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL
@@ -77,31 +77,31 @@ CREATE TABLE `amenities` (
 --
 
 INSERT INTO `amenities` (`amenity_id`, `amenity_name`, `icon`, `deleted_at`) VALUES
-(1, 'Bluetooth', NULL, NULL),
-(2, 'Camera 360', NULL, NULL),
-(3, 'Camera cập lề', NULL, NULL),
-(4, 'Camera hành trình', NULL, NULL),
-(5, 'Camera lùi', NULL, NULL),
-(6, 'Cảm biến lốp', NULL, NULL),
-(7, 'Cảm biến va chạm', NULL, NULL),
-(8, 'Cảnh báo tốc độ', NULL, NULL),
-(9, 'Cửa sổ trời', NULL, NULL),
-(10, 'Định vị GPS', NULL, NULL),
-(11, 'Ghế trẻ em', NULL, NULL),
-(12, 'Khe cắm USB', NULL, NULL),
-(13, 'Lốp dự phòng', NULL, NULL),
+(1, 'Bluetooth', 'bluetooth-b', NULL),
+(2, 'Camera 360', 'video', NULL),
+(3, 'Camera cập lề', 'camera', NULL),
+(4, 'Camera hành trình', 'dashcube', NULL),
+(5, 'Camera lùi', 'camera-retro', NULL),
+(6, 'Cảm biến lốp', 'gear', NULL),
+(7, 'Cảm biến va chạm', 'car-burst', NULL),
+(8, 'Cảnh báo tốc độ', 'gauge', NULL),
+(9, 'Cửa sổ trời', 'cloud', NULL),
+(10, 'Định vị GPS', 'location-dot', NULL),
+(11, 'Ghế trẻ em', 'couch', NULL),
+(12, 'Khe cắm USB', 'usb', NULL),
+(13, 'Lốp dự phòng', 'circle', NULL),
 (14, 'ETC', NULL, NULL),
-(15, 'Túi khí an toàn', NULL, NULL),
-(16, 'Sạc không dây', NULL, NULL),
-(17, 'Điều hòa tự động', NULL, NULL),
-(18, 'Hệ thống giải trí màn hình cảm ứng', NULL, NULL),
-(19, 'Kết nối Apple CarPlay/Android Auto', NULL, NULL),
-(20, 'Gương chiếu hậu chống chói', NULL, NULL),
-(21, 'Ghế chỉnh điện', NULL, NULL),
+(15, 'Túi khí an toàn', 'bag-shopping', NULL),
+(16, 'Sạc không dây', 'battery-full', NULL),
+(17, 'Điều hòa tự động', 'snowflake', NULL),
+(18, 'Hệ thống giải trí màn hình cảm ứng', 'tv', NULL),
+(19, 'Kết nối Apple CarPlay/Android Auto', 'android', NULL),
+(20, 'Gương chiếu hậu chống chói', 'sun', NULL),
+(21, 'Ghế chỉnh điện', 'chair', NULL),
 (22, 'Ghế sưởi/làm mát', NULL, NULL),
-(23, 'Hệ thống lọc không khí', NULL, NULL),
-(24, 'Hệ thống âm thanh cao cấp', NULL, NULL),
-(25, 'Hệ thống điều khiển hành trình (Cruise Control)', NULL, NULL),
+(23, 'Hệ thống lọc không khí', 'wind', NULL),
+(24, 'Hệ thống âm thanh cao cấp', 'volume-high', NULL),
+(25, 'Hệ thống điều khiển hành trình (Cruise Control)', 'gamepad', NULL),
 (26, 'Hệ thống hỗ trợ giữ làn đường', NULL, NULL),
 (27, 'Hệ thống hỗ trợ đỗ xe', NULL, NULL),
 (28, 'Hệ thống cảnh báo điểm mù', NULL, NULL),
@@ -127,7 +127,7 @@ INSERT INTO `amenities` (`amenity_id`, `amenity_name`, `icon`, `deleted_at`) VAL
 
 CREATE TABLE `booking_history` (
   `history_id` bigint(20) NOT NULL,
-  `rental_id` int(11) DEFAULT NULL,
+  `rental_id` bigint(20) DEFAULT NULL,
   `status` enum('REQUESTED','APPROVED','REJECTED','COMPLETED','CANCELED') NOT NULL,
   `updated_at` datetime DEFAULT current_timestamp(),
   `deleted_at` datetime DEFAULT NULL
@@ -140,17 +140,17 @@ CREATE TABLE `booking_history` (
 --
 
 CREATE TABLE `cars` (
-  `car_id` int(11) NOT NULL,
-  `owner_id` int(11) DEFAULT NULL,
+  `car_id` bigint(20) NOT NULL,
+  `owner_id` bigint(20) DEFAULT NULL,
   `car_name` varchar(100) NOT NULL,
   `description` longtext DEFAULT NULL,
   `price_per_day` decimal(38,2) NOT NULL,
-  `times_rented` int(11) DEFAULT 0,
-  `transmission_id` int(11) DEFAULT NULL,
-  `seats` int(11) DEFAULT NULL,
-  `fuel_id` int(11) DEFAULT NULL,
+  `times_rented` bigint(20) DEFAULT 0,
+  `transmission_id` bigint(20) DEFAULT NULL,
+  `seats` bigint(20) DEFAULT NULL,
+  `fuel_id` bigint(20) DEFAULT NULL,
   `range_per_charge_or_tank` varchar(50) DEFAULT NULL,
-  `location_id` int(11) DEFAULT NULL,
+  `location_id` bigint(20) DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -162,8 +162,8 @@ CREATE TABLE `cars` (
 --
 
 CREATE TABLE `car_amenities` (
-  `car_id` int(11) NOT NULL,
-  `amenity_id` int(11) NOT NULL
+  `car_id` bigint(20) NOT NULL,
+  `amenity_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -173,7 +173,7 @@ CREATE TABLE `car_amenities` (
 --
 
 CREATE TABLE `car_features` (
-  `feature_id` int(11) NOT NULL,
+  `feature_id` bigint(20) NOT NULL,
   `feature_name` varchar(100) NOT NULL,
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -185,8 +185,8 @@ CREATE TABLE `car_features` (
 --
 
 CREATE TABLE `car_feature_map` (
-  `car_id` int(11) NOT NULL,
-  `feature_id` int(11) NOT NULL,
+  `car_id` bigint(20) NOT NULL,
+  `feature_id` bigint(20) NOT NULL,
   `feature_value` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -198,7 +198,7 @@ CREATE TABLE `car_feature_map` (
 
 CREATE TABLE `car_images` (
   `image_id` bigint(20) NOT NULL,
-  `car_id` int(11) DEFAULT NULL,
+  `car_id` bigint(20) DEFAULT NULL,
   `image_url` varchar(255) NOT NULL,
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -210,7 +210,7 @@ CREATE TABLE `car_images` (
 --
 
 CREATE TABLE `car_locations` (
-  `location_id` int(11) NOT NULL,
+  `location_id` bigint(20) NOT NULL,
   `address_line` varchar(255) NOT NULL,
   `province` varchar(100) NOT NULL,
   `district` varchar(100) NOT NULL,
@@ -241,7 +241,7 @@ CREATE TABLE `conversations` (
 --
 
 CREATE TABLE `fuels` (
-  `fuel_id` int(11) NOT NULL,
+  `fuel_id` bigint(20) NOT NULL,
   `fuel_type` varchar(50) NOT NULL,
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -280,7 +280,7 @@ CREATE TABLE `messages` (
 
 CREATE TABLE `otp_verification` (
   `otp_id` bigint(20) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
   `otp_code` varchar(50) NOT NULL,
   `expires_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -299,10 +299,10 @@ INSERT INTO `otp_verification` (`otp_id`, `user_id`, `otp_code`, `expires_at`) V
 --
 
 CREATE TABLE `rentals` (
-  `rental_id` int(11) NOT NULL,
-  `car_id` int(11) DEFAULT NULL,
-  `customer_id` int(11) DEFAULT NULL,
-  `owner_id` int(11) DEFAULT NULL,
+  `rental_id` bigint(20) NOT NULL,
+  `car_id` bigint(20) DEFAULT NULL,
+  `customer_id` bigint(20) DEFAULT NULL,
+  `owner_id` bigint(20) DEFAULT NULL,
   `start_date` datetime NOT NULL,
   `end_date` datetime NOT NULL,
   `status` enum('REQUESTED','APPROVED','REJECTED','COMPLETED','CANCELED') DEFAULT 'REQUESTED',
@@ -318,9 +318,9 @@ CREATE TABLE `rentals` (
 
 CREATE TABLE `reviews` (
   `review_id` bigint(20) NOT NULL,
-  `car_id` int(11) DEFAULT NULL,
-  `customer_id` int(11) DEFAULT NULL,
-  `rating` int(11) DEFAULT NULL CHECK (`rating` >= 1 and `rating` <= 5),
+  `car_id` bigint(20) DEFAULT NULL,
+  `customer_id` bigint(20) DEFAULT NULL,
+  `rating` bigint(20) DEFAULT NULL CHECK (`rating` >= 1 and `rating` <= 5),
   `review_text` longtext DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
   `deleted_at` datetime DEFAULT NULL
@@ -333,7 +333,7 @@ CREATE TABLE `reviews` (
 --
 
 CREATE TABLE `roles` (
-  `role_id` int(11) NOT NULL,
+  `role_id` bigint(20) NOT NULL,
   `role_name` varchar(50) NOT NULL,
   `description` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -374,7 +374,7 @@ CREATE TABLE `terms` (
 --
 
 CREATE TABLE `transmissions` (
-  `transmission_id` int(11) NOT NULL,
+  `transmission_id` bigint(20) NOT NULL,
   `transmission_type` varchar(50) NOT NULL,
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -396,7 +396,7 @@ INSERT INTO `transmissions` (`transmission_id`, `transmission_type`, `deleted_at
 --
 
 CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
   `full_name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) DEFAULT NULL,
@@ -424,8 +424,8 @@ INSERT INTO `users` (`user_id`, `full_name`, `email`, `password`, `phone_number`
 --
 
 CREATE TABLE `user_roles` (
-  `user_id` int(11) NOT NULL,
-  `role_id` int(11) NOT NULL
+  `user_id` bigint(20) NOT NULL,
+  `role_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -608,7 +608,7 @@ ALTER TABLE `addresses`
 -- AUTO_INCREMENT for table `amenities`
 --
 ALTER TABLE `amenities`
-  MODIFY `amenity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `amenity_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `booking_history`
@@ -620,13 +620,13 @@ ALTER TABLE `booking_history`
 -- AUTO_INCREMENT for table `cars`
 --
 ALTER TABLE `cars`
-  MODIFY `car_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `car_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `car_features`
 --
 ALTER TABLE `car_features`
-  MODIFY `feature_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `feature_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `car_images`
@@ -638,7 +638,7 @@ ALTER TABLE `car_images`
 -- AUTO_INCREMENT for table `car_locations`
 --
 ALTER TABLE `car_locations`
-  MODIFY `location_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `location_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `conversations`
@@ -650,7 +650,7 @@ ALTER TABLE `conversations`
 -- AUTO_INCREMENT for table `fuels`
 --
 ALTER TABLE `fuels`
-  MODIFY `fuel_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `fuel_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `messages`
@@ -668,7 +668,7 @@ ALTER TABLE `otp_verification`
 -- AUTO_INCREMENT for table `rentals`
 --
 ALTER TABLE `rentals`
-  MODIFY `rental_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `rental_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `reviews`
@@ -680,7 +680,7 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `role_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `terms`
@@ -692,13 +692,13 @@ ALTER TABLE `terms`
 -- AUTO_INCREMENT for table `transmissions`
 --
 ALTER TABLE `transmissions`
-  MODIFY `transmission_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `transmission_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables

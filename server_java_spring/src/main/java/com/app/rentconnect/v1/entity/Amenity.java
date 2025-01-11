@@ -25,8 +25,6 @@ public class Amenity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long amenityId;
 
-    @ManyToMany(mappedBy = "amenities")
-    private Set<Car> cars = new HashSet<>();
 
     @Column(nullable = false, length = 100,unique = true)
     String amenityName;

@@ -1,4 +1,5 @@
 package com.app.rentconnect.v1.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,10 +21,10 @@ import java.util.Set;
 @Where(clause = "deleted_at IS NULL")
 public class Car {
 
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     Set<CarImage> images = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "car_amenities",
             joinColumns = @JoinColumn(name = "car_id"),
@@ -32,18 +33,10 @@ public class Car {
     Set<Amenity> amenities = new HashSet<>();
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
-    List<Rental> rentals;
+    Set<Rental> rentals;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
-    List<Review> reviews;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "car_feature_map",
-            joinColumns = @JoinColumn(name = "car_id"),
-            inverseJoinColumns = @JoinColumn(name = "feature_id")
-    )
-    Set<CarFeature> features = new HashSet<>();
+    Set<Review> reviews;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,6 +44,7 @@ public class Car {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
+    @JsonBackReference
     User owner;
 
     @ManyToOne
@@ -74,12 +68,10 @@ public class Car {
 
     int timesRented = 0;
 
-
-
     @Column(length = 50)
     String rangePerChargeOrTank;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
     CarLocation location;
 

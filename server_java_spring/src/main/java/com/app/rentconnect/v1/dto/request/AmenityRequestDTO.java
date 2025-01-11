@@ -13,9 +13,7 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 public class AmenityRequestDTO {
-    private List<CarAmenityRequestDTO> carAmenities;
     Long amenityId;
     String amenityName;
     String icon;
-    LocalDateTime deletedAt;
 }
