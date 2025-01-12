@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface RentalMapper {
     @Mapping(source = "carId",target = "car.carId")
-    @Mapping(source = "customerId",target = "customer.userId")
+    //@Mapping(source = "customerId",target = "customer.userId")
     Rental toEntity(RentalRequestDTO rentalRequestDTO);
-
+    @Mapping(source = "customer.userId",target = "customer.userId")
     RentalResponseDTO toResponseDTO(Rental rental);
 }
