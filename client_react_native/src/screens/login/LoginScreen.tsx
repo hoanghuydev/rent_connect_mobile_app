@@ -10,7 +10,7 @@ import { authApi } from '../../api/authApi';
 
 
 const LoginScreen = () => {
-    const navigation = useNavigation<RegisterScreenNavigationProp, MainScreenNavigationProp>();
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +25,12 @@ const LoginScreen = () => {
             setLoading(true); // Bắt đầu quá trình đăng nhập
             const response = await authApi.login(email, password); // Gọi API đăng nhập
             console.log('Login success:', response);
-            navigation.navigate('Main'); // Chuyển hướng tới trang Home
+            if (response.success) {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Main' }],
+                });
+            }
         } catch (error: any) {
             console.error('Login failed:', error);
             const errorMessage = error.response?.data?.message || error.message || 'Đăng nhập thất bại.';

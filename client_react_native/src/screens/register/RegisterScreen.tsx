@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import {LoginScreenNavigationProp, MainScreenNavigationProp } from "@/navigation/type";
 import { authApi } from '../../api/authApi';
 
+
 const RegisterScreen = () => {
     const navigation = useNavigation<LoginScreenNavigationProp>();
     const [email, setEmail] = useState('');
@@ -32,15 +33,19 @@ const RegisterScreen = () => {
         }
 
         try {
-          // Gọi API đăng ký
-          const response = await authApi.register(email, fullName, phoneNumber, password);
-          console.log('Đăng ký thành công:', response);
-          alert('Đăng ký thành công!');
-          // Sau khi đăng ký thành công, bạn có thể chuyển hướng người dùng tới màn hình khác
-          navigation.navigate('Login'); // Ví dụ chuyển tới màn hình chính
-        } catch (error) {
-          console.error('Đăng ký thất bại:', error.message);
-          alert('Đăng ký thất bại! Vui lòng thử lại.');
+            // Gọi API đăng ký
+            const isSuccess = await authApi.register(email, fullName, phoneNumber, password);
+
+            if (isSuccess) {
+                alert('Đăng ký thành công!');
+                // Chuyển hướng về màn hình đăng nhập
+                navigation.navigate('Login');
+            } else {
+                alert('Đăng ký thất bại! Vui lòng thử lại.');
+            }
+        } catch (error: any) {
+            console.error('Đăng ký thất bại:', error.message);
+            alert(error.message || 'Đăng ký thất bại! Vui lòng thử lại.');
         }
       };
 

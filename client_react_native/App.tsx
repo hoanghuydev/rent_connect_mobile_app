@@ -34,6 +34,7 @@ export default function App() {
           <Stack.Screen name="Main" component={MainScreen} />
             <Stack.Screen name="LocationFilter" component={LocationFilterScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="DateFilter" component={DateFilterScreen} />
         </Stack.Navigator>
       </NavigationContainer>
