@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { jwtDecode } from 'jwt-decode';
 
-const SERVER_URL = 'https://localhost:8081'; 
+const SERVER_URL = 'http://192.168.1.238:8081';
 export const baseURL = SERVER_URL + '/api/v1/';
 
 // Tạo các instance của Axios
