@@ -1,6 +1,9 @@
 // authApi.ts
 import { axiosNoToken } from './axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import tokenManager from '@/utils/tokenManager';
+import UserManager from '@/utils/UserManager';
+import { User } from '@/models/User';
 
 const AUTH_API = '/auth';
 
@@ -22,7 +25,10 @@ export const authApi = {
 
           // Lưu trữ token và thông tin người dùng vào AsyncStorage
           await AsyncStorage.setItem('token', token);
+          await tokenManager.setToken(token);
           await AsyncStorage.setItem('user', JSON.stringify(user));
+          const userData = new User(user);
+          await UserManager.setUser(userData);
 
           console.log('Login success:', response);
 
@@ -36,36 +42,35 @@ export const authApi = {
       }
   },
 
-  register: async (email, fullName, phoneNumber, password) => {
+  register: async (email: string, fullName: string, phoneNumber: string, password: string) => {
       try {
-         const response = await axiosNoToken.post(`${API_URL}/register`, {
-          fullName,
-          email,
-          password,
-          phoneNumber
-        });
+          const response = await axiosNoToken.post(`${AUTH_API}/register`, {
+              fullName,
+              email,
+              password,
+              phoneNumber
+          });
 
-        const apiResponse = response.data;
-        console.log(apiResponse);
+          const apiResponse = response.data;
+          console.log('Register response:', apiResponse);
 
-        if (apiResponse && apiResponse.status === 201){
-            const user = apiResponse.data.data;
+          if (apiResponse && apiResponse.status === 201) {
+              return true;
+          }
+          return false;
 
-            console.log(user);
-
-            if (user)
-                return true;
-        }
-
-      } catch (error) {
-        throw new Error(error.response ? error.response.data.message : 'Có lỗi xảy ra');
+      } catch (error: any) {
+          console.error('Register error:', error.response?.data || error);
+          throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi đăng ký');
       }
-    },
+  },
 
   logout: async () => {
     try {
-      await AsyncStorage.removeItem('accessToken');
-      await AsyncStorage.removeItem('refreshToken');
+      await tokenManager.removeToken();
+      await UserManager.removeUser();
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('user');
       return { success: true };
     } catch (error) {
       console.error('Logout failed:', error);
