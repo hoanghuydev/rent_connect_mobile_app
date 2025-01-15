@@ -22,6 +22,7 @@ import DateFilterScreen from "@/screens/dateFilter/DateFilterScreen";
 import ProfileScreen from '@/screens/profile/ProfileScreen';
 import ProfileEditing from '@/screens/profile/ProfileEditing';
 import BookingHistoryScreen from '@/screens/bookingHistory/BookingHistoryScreen';
+import CarDetailsScreen from "@/screens/carDetails/CarDetailsScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -38,13 +39,14 @@ export default function App() {
         >
           <Stack.Screen name="Main" component={MainScreen} />
             <Stack.Screen name="LocationFilter" component={LocationFilterScreen} />
+            <Stack.Screen name="CarDetail" component={CarDetailsScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="DateFilter" component={DateFilterScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="ProfileEditing" component={ProfileEditing} />
             <Stack.Screen name="MyVeh" component={MyVehScreen} />
-            <Stack.Screen name="CarDetail" component={CarDetailScreen} />
+            {/*<Stack.Screen name="CarDetail" component={CarDetailScreen} />*/}
             <Stack.Screen name="BookingHistory" component={BookingHistoryScreen} />
         </Stack.Navigator>
       </NavigationContainer>

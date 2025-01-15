@@ -29,9 +29,12 @@ public class CarQueryService {
 
     public CarResponseDTO findCarById(Long id) {
         Car car = carRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("Not found car"));
-        List<CarImage> carImages = carImageRepository.findAllByCarId(car.getCarId());
-        car.setImages(new HashSet<>(carImages));
+        List<CarImage> carImages = carImageRepository.findByCar_CarId(car.getCarId());
         CarResponseDTO carResponseDTO = carMapper.toCarResponseDTO(car);
+        List<String> imageUrls = carImages.stream()
+                .map(CarImage::getImageUrl)
+                        .collect(Collectors.toList());
+        carResponseDTO.setImages(imageUrls);
         return carResponseDTO;
     }
 

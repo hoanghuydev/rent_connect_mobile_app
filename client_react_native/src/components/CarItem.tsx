@@ -2,12 +2,14 @@ import {Image, Text, TouchableOpacity, View} from "react-native";
 import React from "react";
 import Car from "@/models/Car";
 import {primaryColor} from "@/utils/constant";
+import {useNavigation} from "@react-navigation/native";
 const CarItem = ({car, carImages} : {car : Car, carImages : { [key: number]: string[] }}) =>{
+    const navigation = useNavigation();
     return (
         <TouchableOpacity
             className="p-4 bg-white rounded-lg mb-3 shadow-sm border border-gray-100"
             onPress={() => {
-                console.log('Selected car:', car.carId);
+                navigation.navigate('CarDetail', { carId : car.carId })
             }}
         >
             {/* Car Images */}

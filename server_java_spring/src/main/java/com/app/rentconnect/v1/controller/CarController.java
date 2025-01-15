@@ -43,7 +43,8 @@ public class CarController {
 
     @GetMapping("/{carId}")
     public ResponseEntity<ApiResponse<CarResponseDTO>> getCarById(@PathVariable Long carId) {
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Get car successfully","car",carQueryService.findCarById(carId)));
+        CarResponseDTO carResponseDTO = carQueryService.findCarById(carId);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Get car successfully","car",carResponseDTO));
     }
 
     @DeleteMapping("/{carId}")

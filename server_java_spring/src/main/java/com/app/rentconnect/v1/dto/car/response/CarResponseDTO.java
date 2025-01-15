@@ -19,7 +19,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CarResponseDTO {
-    Set<CarImageRequestDTO> images;
+    List<String> images;
     Set<AmenityRequestDTO> amenities;
     Long carId;
     UserRequestDTO owner;

@@ -13,6 +13,11 @@ export default interface Car {
         transmissionId: number;
         transmissionType: string;
     };
+    rangePerChargeOrTank : string;
+    fuel : {
+        fuelId : number;
+        fuelType : string;
+    }
     seats: number;
     amenities: Amenity[];
     owner: {
