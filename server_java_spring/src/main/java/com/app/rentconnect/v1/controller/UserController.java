@@ -37,7 +37,8 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> updateUser(@RequestBody UserRequestDTO userRequestDTO){
+    public ResponseEntity<ApiResponse<UserResponseDTO>> updateUser(@PathVariable("id") Long id,@RequestBody UserRequestDTO userRequestDTO){
+        userRequestDTO.setUserId(id);
         UserResponseDTO userResponseDTO = userCommandService.update(userRequestDTO);
 
         if (userResponseDTO == null) {

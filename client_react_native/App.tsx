@@ -21,6 +21,7 @@ import {RootStackParamList} from "@/navigation/type";
 import DateFilterScreen from "@/screens/dateFilter/DateFilterScreen";
 import ProfileScreen from '@/screens/profile/ProfileScreen';
 import ProfileEditing from '@/screens/profile/ProfileEditing';
+import BookingHistoryScreen from '@/screens/bookingHistory/BookingHistoryScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -44,6 +45,7 @@ export default function App() {
             <Stack.Screen name="ProfileEditing" component={ProfileEditing} />
             <Stack.Screen name="MyVeh" component={MyVehScreen} />
             <Stack.Screen name="CarDetail" component={CarDetailScreen} />
+            <Stack.Screen name="BookingHistory" component={BookingHistoryScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

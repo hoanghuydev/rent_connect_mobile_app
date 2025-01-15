@@ -1,0 +1,102 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { axiosToken, axiosNoToken } from './axios';
+
+const CAR_API = '/car';
+const CARS_STORAGE_KEY = 'cars_data';
+
+const carsApi = {
+    // Lấy danh sách xe
+    getAllCars: async () => {
+        try {
+            const response = await axiosNoToken.get(`${CAR_API}/cars`);
+            console.log('Raw API Response:', response); // Debug log
+
+            if (response.data && response.data.status === 200) {
+                return {
+                    status: response.data.status,
+                    data: response.data.data
+                };
+            }
+            throw new Error('Invalid response format');
+        } catch (error) {
+            console.error('Get all cars error:', error);
+            throw error;
+        }
+    },
+
+    // Tìm kiếm xe
+    searchCars: async (query: string) => {
+        try {
+            const response = await axiosNoToken.get(`${CAR_API}/search`, {
+                params: { query }
+            });
+            return response.data;
+        } catch (error: any) {
+            console.error('Search cars error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi tìm kiếm xe');
+        }
+    },
+
+    // Lọc xe theo địa điểm và thời gian
+    filterCars: async (location: string, startDate: string, endDate: string) => {
+        try {
+            const response = await axiosNoToken.get(`${CAR_API}/filter`, {
+                params: {
+                    location,
+                    startDate,
+                    endDate
+                }
+            });
+            return response.data;
+        } catch (error: any) {
+            console.error('Filter cars error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lọc xe');
+        }
+    },
+
+    // Lấy danh sách xe theo chủ xe (yêu cầu đăng nhập)
+    getCarsByOwner: async () => {
+        try {
+            const response = await axiosToken.get(`${CAR_API}/owner`);
+            return response.data;
+        } catch (error: any) {
+            console.error('Get owner cars error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách xe của bạn');
+        }
+    },
+
+    // Thêm xe mới (yêu cầu đăng nhập)
+    addCar: async (carData: any) => {
+        try {
+            const response = await axiosToken.post(`${CAR_API}`, carData);
+            return response.data;
+        } catch (error: any) {
+            console.error('Add car error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi thêm xe');
+        }
+    },
+
+    // Cập nhật thông tin xe (yêu cầu đăng nhập)
+    updateCar: async (id: string, carData: any) => {
+        try {
+            const response = await axiosToken.put(`${CAR_API}/${id}`, carData);
+            return response.data;
+        } catch (error: any) {
+            console.error('Update car error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật thông tin xe');
+        }
+    },
+
+    // Xóa xe (yêu cầu đăng nhập)
+    deleteCar: async (id: string) => {
+        try {
+            const response = await axiosToken.delete(`${CAR_API}/${id}`);
+            return response.data;
+        } catch (error: any) {
+            console.error('Delete car error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi xóa xe');
+        }
+    }
+};
+
+export default carsApi;

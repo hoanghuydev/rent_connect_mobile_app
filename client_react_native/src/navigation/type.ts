@@ -14,10 +14,12 @@ export type RootStackParamList = {
     ProfileEditing: undefined;
     MyVeh: undefined;
     CarDetail: undefined;
+    BookingHistory: undefined;
 };
 
 export type MainScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 export type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
 export type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+export type BookingHistoryScreenNavigationProp = StackNavigationProp<RootStackParamList, 'BookingHistory'>;
 export type LocationFilterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'LocationFilter'>;
 export type DateFilterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'DateFilter'>;

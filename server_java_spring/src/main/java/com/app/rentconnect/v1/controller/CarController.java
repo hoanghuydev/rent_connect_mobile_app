@@ -29,7 +29,7 @@ public class CarController {
     CarQueryService carQueryService;
     private final RentalCommandService rentalCommandService;
 
-    @PreAuthorize("hasRole(T(com.app.rentconnect.v1.Constants.Role).OWNER.name())")
+//    @PreAuthorize("hasRole('OWNER')")
     @PostMapping("/add")
     public ResponseEntity<ApiResponse<CarResponseDTO>> addCar(@RequestParam("images") List<MultipartFile> imageFiles,  @ModelAttribute CreateCarRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -46,12 +46,6 @@ public class CarController {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Get car successfully","car",carQueryService.findCarById(carId)));
     }
 
-    @PreAuthorize("hasRole(T(com.app.rentconnect.v1.Constants.Role).CUSTOMER.name())")
-    @PostMapping("/rent")
-    public ResponseEntity<ApiResponse<RentalResponseDTO>> getCarById(@RequestBody RentalRequestDTO rentalRequestDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Rent car successfully","car",rentalCommandService.rentCar(rentalRequestDTO)));
-    }
-
     @DeleteMapping("/{carId}")
     public ResponseEntity<ApiResponse<Void>> deleteCar(@PathVariable Long carId) {
         return null;
@@ -65,5 +59,10 @@ public class CarController {
        return null;
     }
 
+    @GetMapping("/cars")
+    public ResponseEntity<ApiResponse<List<CarResponseDTO>>> getAll(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse<>(HttpStatus.OK, "get all car successfully", "car", carQueryService.findAllCars()));
+    }
 
 }

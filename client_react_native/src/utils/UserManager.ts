@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {User} from "@/models/User";
 
 class UserManager {
     private static instance: UserManager;
