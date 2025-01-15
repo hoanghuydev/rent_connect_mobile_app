@@ -23,8 +23,13 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -58,11 +63,6 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
 
                 )
-                .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/oauth2/google/success", true)
-                        .failureUrl("/oauth2/google/error")
-                        .permitAll()
-                )
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt ->
                                 jwt.decoder(jwtDecoder())
@@ -74,6 +74,8 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();

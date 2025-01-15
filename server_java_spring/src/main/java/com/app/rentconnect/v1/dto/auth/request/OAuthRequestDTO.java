@@ -13,11 +13,13 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OAuthRequestDTO {
-    @NotBlank(message = "Full name cannot be empty")
-    String fullName;
 
     @NotBlank(message = "Email must not be empty")
     @Email(message = "Invalid email format")
     String email;
+
+    @NotBlank(message = "Full name cannot be empty")
+    String fullName;
+
 
 }
