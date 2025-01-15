@@ -13,6 +13,7 @@ export type RootStackParamList = {
     Profile: undefined;
     ProfileEditing: undefined;
     MyVeh: undefined;
+    CarDetail: undefined;
 };
 
 export type MainScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;

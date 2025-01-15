@@ -4,7 +4,6 @@ import { TextInput, Button, Card, Avatar, Text, useTheme } from 'react-native-pa
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authApi } from '@/api/authApi';
 
-const STATUSBAR_HEIGHT = Platform.OS === 'android' ? StatusBar.currentHeight : 0;
 
 const primaryColor = '#5fcf86';
 const softGrayColor = '#E0E0E0';
@@ -38,7 +37,7 @@ const ProfileEditing = ({ navigation }: any) => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const result = await authApi.updateUser(userId, fullName, email, phoneNumber);
+      const result = await authApi.updateUser(fullName, phoneNumber);
       if (result.success) {
         const updatedUser = {
           userId,
@@ -88,19 +87,7 @@ const ProfileEditing = ({ navigation }: any) => {
               dense
               left={<TextInput.Icon icon="account" />}
             />
-
-            <TextInput
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              mode="outlined"
-              style={styles.input}
-              dense
-              keyboardType="email-address"
-              autoCapitalize="none"
-              left={<TextInput.Icon icon="email" />}
-            />
-
+            
             <TextInput
               label="Số điện thoại"
               value={phoneNumber}
@@ -142,7 +129,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: STATUSBAR_HEIGHT,
   },
   container: {
     flex: 1,
