@@ -1,20 +1,44 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Eye, EyeOff } from 'lucide-react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from "@react-navigation/native";
-import { RegisterScreenNavigationProp } from "@/navigation/type";
+import { RegisterScreenNavigationProp, MainScreenNavigationProp } from "@/navigation/type";
+import { authApi } from '../../api/authApi';
+
 
 const LoginScreen = () => {
-    const navigation = useNavigation<RegisterScreenNavigationProp>();
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const primaryColor = '#5fcf86';
     const softGrayColor = '#E0E0E0';
+
+    //handle login
+    const handleLogin = async () => {
+        try {
+            setLoading(true); // Bắt đầu quá trình đăng nhập
+            const response = await authApi.login(email, password); // Gọi API đăng nhập
+            console.log('Login success:', response);
+            if (response.success) {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Main' }],
+                });
+            }
+        } catch (error: any) {
+            console.error('Login failed:', error);
+            const errorMessage = error.response?.data?.message || error.message || 'Đăng nhập thất bại.';
+            alert(errorMessage); // Hiển thị thông báo lỗi người dùng
+        } finally {
+            setLoading(false); // Kết thúc quá trình đăng nhập
+        }
+    };
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -36,13 +60,12 @@ const LoginScreen = () => {
                         Đăng nhập
                     </Text>
 
-                    {/* Phone Number Input */}
+                    {/* Email Input */}
                     <View className="mb-4">
                         <TextInput
-                            label="Số điện thoại"
-                            value={phoneNumber}
-                            onChangeText={setPhoneNumber}
-                            keyboardType="phone-pad"
+                            label="Email"
+                            value={email}
+                            onChangeText={setEmail}
                             mode="outlined"
                             outlineColor={softGrayColor}
                             activeOutlineColor={primaryColor}
@@ -91,12 +114,14 @@ const LoginScreen = () => {
                     <TouchableOpacity
                         className="py-4 rounded-full items-center mb-6"
                         style={{ backgroundColor: primaryColor }}
-                        onPress={() => {
-                            // Xử lý đăng nhập
-                            console.log('Đăng nhập');
-                        }}
+                        onPress={handleLogin}
+                        disabled={loading}
                     >
-                        <Text className="text-white font-bold text-lg">Đăng nhập</Text>
+                        {loading ? (
+                            <ActivityIndicator size="small" color="white" />
+                        ) : (
+                            <Text className="text-white font-bold text-lg">Đăng nhập</Text>
+                        )}
                     </TouchableOpacity>
 
                     {/* Social Login */}

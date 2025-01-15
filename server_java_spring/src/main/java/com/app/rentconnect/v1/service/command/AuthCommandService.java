@@ -72,7 +72,7 @@ public class AuthCommandService {
         //Save user
         User savedUser = userCommandService.save(user);
         //Send otp mail
-        otpCommandService.sendOtp(new SendOtpRequestDTO(savedUser.getEmail()));
+        //otpCommandService.sendOtp(new SendOtpRequestDTO(savedUser.getEmail()));
         UserRequestDTO userResponse = userMapper.toRequestDTO(savedUser);
         return userResponse;
     }

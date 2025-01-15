@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoginScreen from '@/screens/login/LoginScreen';
@@ -6,10 +6,30 @@ import ExploreScreen from '@/screens/explore/ExploreScreen';
 import MessageScreen from '@/screens/message/MessageScreen';
 import RideScreen from '@/screens/ride/RideScreen';
 import SupportScreen from '@/screens/support/SupportScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ProfileScreen from './screens/profile/ProfileScreen';
+import { authApi } from './api/authApi';
 
 const Tab = createBottomTabNavigator();
 
 export default function MainScreen() {
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            const token = await AsyncStorage.getItem('token');
+            setIsLoggedIn(!!token); // Nếu có token thì người dùng đã đăng nhập
+        };
+
+        checkLoginStatus();
+    }, []);
+
+    const handleLogout = async () => {
+        await authApi.logout();
+        setIsLoggedIn(false); // Đặt lại trạng thái login khi người dùng đăng xuất
+    };
+
     return (
                     <Tab.Navigator
                         screenOptions={({ route }) => ({
@@ -29,8 +49,11 @@ export default function MainScreen() {
                                     case 'Support':
                                         iconName = 'headset';
                                         break;
-                                    case 'Login':
+                                    case 'Profile':
                                         iconName = 'account-outline';
+                                        break;
+                                    case 'Login':
+                                        iconName = 'account-outline'; // Đảm bảo dùng biểu tượng cho Login đúng
                                         break;
                                     default:
                                         iconName = 'home-outline';
@@ -48,7 +71,11 @@ export default function MainScreen() {
                         <Tab.Screen name="Messages" component={MessageScreen} />
                         <Tab.Screen name="Rides" component={RideScreen} />
                         <Tab.Screen name="Support" component={SupportScreen} />
-                        <Tab.Screen name="Login"  component={LoginScreen} />
+                        {isLoggedIn ? (
+                <Tab.Screen name="Profile" component={ProfileScreen} initialParams={{ onLogout: handleLogout }} />
+            ) : (
+                <Tab.Screen name="Login" component={LoginScreen} />
+            )}
                     </Tab.Navigator>
 
     );

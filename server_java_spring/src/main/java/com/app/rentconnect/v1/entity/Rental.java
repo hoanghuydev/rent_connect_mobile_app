@@ -30,6 +30,11 @@ public class Rental {
     @JoinColumn(name = "customer_id", nullable = false)
     User customer;
 
+    //missing owner with user class
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    User owner;
+
     @Column(nullable = false)
     LocalDateTime startDate;
 

@@ -3,10 +3,16 @@ import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platfor
 import { TextInput, Checkbox } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Eye, EyeOff } from 'lucide-react-native';
+import { useNavigation } from "@react-navigation/native";
+import {LoginScreenNavigationProp, MainScreenNavigationProp } from "@/navigation/type";
+import { authApi } from '../../api/authApi';
+
 
 const RegisterScreen = () => {
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const navigation = useNavigation<LoginScreenNavigationProp>();
+    const [email, setEmail] = useState('');
     const [fullName, setFullName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [acceptPolicy, setAcceptPolicy] = useState(false);
@@ -17,6 +23,31 @@ const RegisterScreen = () => {
 
     const primaryColor = '#5fcf86';
     const softGrayColor = '#E0E0E0';
+
+    //register handled
+    const handleRegister = async () => {
+        // Kiểm tra mật khẩu và xác nhận mật khẩu có khớp không
+        if (password !== confirmPassword) {
+          alert('Mật khẩu và mật khẩu xác nhận không khớp!');
+          return;
+        }
+
+        try {
+            // Gọi API đăng ký
+            const isSuccess = await authApi.register(email, fullName, phoneNumber, password);
+
+            if (isSuccess) {
+                alert('Đăng ký thành công!');
+                // Chuyển hướng về màn hình đăng nhập
+                navigation.navigate('Login');
+            } else {
+                alert('Đăng ký thất bại! Vui lòng thử lại.');
+            }
+        } catch (error: any) {
+            console.error('Đăng ký thất bại:', error.message);
+            alert(error.message || 'Đăng ký thất bại! Vui lòng thử lại.');
+        }
+      };
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -40,13 +71,13 @@ const RegisterScreen = () => {
                             Đăng ký tài khoản
                         </Text>
 
-                        {/* Phone Number Input */}
+
+                        {/* Full Name Input */}
                         <View className="mb-4">
                             <TextInput
-                                label="Số điện thoại"
-                                value={phoneNumber}
-                                onChangeText={setPhoneNumber}
-                                keyboardType="phone-pad"
+                                label="Họ và tên"
+                                value={fullName}
+                                onChangeText={setFullName}
                                 mode="outlined"
                                 outlineColor={softGrayColor}
                                 activeOutlineColor={primaryColor}
@@ -58,12 +89,29 @@ const RegisterScreen = () => {
                             />
                         </View>
 
-                        {/* Full Name Input */}
+                        {/* Email Input */}
                         <View className="mb-4">
                             <TextInput
-                                label="Họ và tên"
-                                value={fullName}
-                                onChangeText={setFullName}
+                                label="Email"
+                                value={email}
+                                onChangeText={setEmail}
+                                mode="outlined"
+                                outlineColor={softGrayColor}
+                                activeOutlineColor={primaryColor}
+                                theme={{
+                                    colors: {
+                                        placeholder: softGrayColor,
+                                    }
+                                }}
+                            />
+                        </View>
+                        {/* Phone Number Input */}
+                        <View className="mb-4">
+                            <TextInput
+                                label="Số điện thoại"
+                                value={phoneNumber}
+                                onChangeText={setPhoneNumber}
+                                keyboardType="phone-pad"
                                 mode="outlined"
                                 outlineColor={softGrayColor}
                                 activeOutlineColor={primaryColor}
@@ -156,6 +204,7 @@ const RegisterScreen = () => {
                             disabled={!acceptPolicy}
                             onPress={() => {
                                 // Xử lý đăng ký
+                                handleRegister();
                                 console.log('Đăng ký');
                             }}
                         >
