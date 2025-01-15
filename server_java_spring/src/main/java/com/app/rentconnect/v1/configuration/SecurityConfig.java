@@ -56,6 +56,12 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.POST,this.PUBLIC_POST_ENDPOINT).permitAll()
 //                        .requestMatchers(HttpMethod.GET,this.PUBLIC_GET_ENDPOINT).permitAll()
                         .anyRequest().permitAll()
+
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("/oauth2/google/success", true)
+                        .failureUrl("/oauth2/google/error")
+                        .permitAll()
                 )
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt ->
