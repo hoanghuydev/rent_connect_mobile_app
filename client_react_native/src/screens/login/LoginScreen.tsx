@@ -5,8 +5,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Eye, EyeOff } from 'lucide-react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from "@react-navigation/native";
-import { RegisterScreenNavigationProp, MainScreenNavigationProp } from "@/navigation/type";
+import {RegisterScreenNavigationProp, MainScreenNavigationProp, RootStackParamList} from "@/navigation/type";
 import { authApi } from '../../api/authApi';
+import {StackNavigationProp} from "@react-navigation/stack";
+import LoginGoogleButton from "@components/LoginGoogleButton";
 
 
 const LoginScreen = () => {
@@ -126,12 +128,7 @@ const LoginScreen = () => {
 
                     {/* Social Login */}
                     <View className="flex-row gap-3 justify-center space-x-6 mb-6">
-                        <TouchableOpacity
-                            className="p-3 rounded-full border"
-                            style={{ borderColor: softGrayColor }}
-                        >
-                            <Icon name="google" size={24} color="black" />
-                        </TouchableOpacity>
+                        <LoginGoogleButton/>
                         <TouchableOpacity
                             className="p-3 rounded-full border"
                             style={{ borderColor: softGrayColor }}

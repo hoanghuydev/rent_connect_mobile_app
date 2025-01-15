@@ -21,7 +21,8 @@ import java.util.Set;
 @Where(clause = "deleted_at IS NULL")
 public class Car {
 
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
+    @Where(clause = "deleted_at IS NULL")
     Set<CarImage> images = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)

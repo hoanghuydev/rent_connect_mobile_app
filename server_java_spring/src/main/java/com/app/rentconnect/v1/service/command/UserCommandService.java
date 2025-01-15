@@ -35,19 +35,9 @@ public class UserCommandService {
         Optional<User> currentUser = userRepository.findById(userRequestDTO.getUserId());
         if (currentUser.isPresent()) {
             User user = currentUser.get();
-
-            if (!StringUtils.isEmpty(updateUser.getFullName())) {
-                user.setFullName(updateUser.getFullName());
-            }
-
-            if (!StringUtils.isEmpty(updateUser.getEmail())) {
-                user.setEmail(updateUser.getEmail());
-            }
-
-            if (!StringUtils.isEmpty(updateUser.getPhoneNumber())) {
-                user.setPhoneNumber(updateUser.getPhoneNumber());
-            }
-            entityManager.merge(user);
+            user.setFullName(userRequestDTO.getFullName());
+            user.setPhoneNumber(userRequestDTO.getPhoneNumber());
+            userRepository.save(user);
             return userMapper.toResponseDTO(user);
         }
         else return null;

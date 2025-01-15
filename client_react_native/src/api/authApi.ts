@@ -8,6 +8,35 @@ import { User } from '@/models/User';
 const AUTH_API = '/auth';
 
 export const authApi = {
+    oAuth2Google : async (token : string) => {
+        try {
+            const response = await axiosNoToken.post(`/oauth2/callback/google`, {
+                token
+            });
+
+            const apiResponse = response.data;
+
+            if (apiResponse && apiResponse.status === 200) {
+                const { user, token } = apiResponse.data.data;
+
+                // Lưu trữ token và thông tin người dùng vào AsyncStorage
+                await AsyncStorage.setItem('token', token);
+                await tokenManager.setToken(token);
+                await AsyncStorage.setItem('user', JSON.stringify(user));
+                const userData = new User(user);
+                await UserManager.setUser(userData);
+
+                console.log('Login success:', response);
+
+                return { success: true, token };
+            } else {
+                throw new Error(apiResponse.message || 'Đăng nhập thất bại.');
+            }
+        } catch (error: any) {
+            console.error('Login failed:', error.response?.data || error.message);
+            throw new Error(error.response?.data?.message || 'Đăng nhập thất bại.');
+        }
+    },
   login: async (email: string, password: string) => {
       console.log("call api login");
       try {
