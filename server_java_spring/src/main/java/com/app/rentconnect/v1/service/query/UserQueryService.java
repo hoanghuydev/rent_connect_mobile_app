@@ -30,7 +30,6 @@ public class UserQueryService {
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Not found user"));
     }
 
-    @EntityGraph(attributePaths = {"roles"})
     public UserResponseDTO findById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Not found user"));
         UserResponseDTO userResponseDTO = userMapper.toResponseDTO(user);

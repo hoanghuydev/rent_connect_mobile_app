@@ -50,12 +50,12 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(this.ROLE_ADMIN_ENDPOINT).hasRole(Constants.Role.ADMIN.name())
-                        .requestMatchers(this.ROLE_OWNER_ENDPOINT).hasRole(Constants.Role.OWNER.name())
-                        .requestMatchers(this.ROLE_CUSTOMER_ENDPOINT).hasRole(Constants.Role.CUSTOMER.name())
-                        .requestMatchers(HttpMethod.POST,this.PUBLIC_POST_ENDPOINT).permitAll()
-                        .requestMatchers(HttpMethod.GET,this.PUBLIC_GET_ENDPOINT).permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers(this.ROLE_ADMIN_ENDPOINT).hasRole(Constants.Role.ADMIN.name())
+//                        .requestMatchers(this.ROLE_OWNER_ENDPOINT).hasRole(Constants.Role.OWNER.name())
+//                        .requestMatchers(this.ROLE_CUSTOMER_ENDPOINT).hasRole(Constants.Role.CUSTOMER.name())
+//                        .requestMatchers(HttpMethod.POST,this.PUBLIC_POST_ENDPOINT).permitAll()
+//                        .requestMatchers(HttpMethod.GET,this.PUBLIC_GET_ENDPOINT).permitAll()
+                        .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt ->

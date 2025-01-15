@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 14, 2025 at 04:52 PM
+-- Generation Time: Jan 15, 2025 at 04:31 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -160,7 +160,8 @@ CREATE TABLE `cars` (
 --
 
 INSERT INTO `cars` (`car_id`, `owner_id`, `car_name`, `description`, `price_per_day`, `times_rented`, `transmission_id`, `seats`, `fuel_id`, `range_per_charge_or_tank`, `location_id`, `created_at`, `deleted_at`) VALUES
-    (2, 17, 'HONDA CIVIC G 2022', 'Honda Civic G xe số tự động đăng ký sản xuất 2022, xe gia đình đi mới đẹp, nội thất nguyên bản, sạch đẹp, xe bảo dưỡng thường xuyên, phù hợp cho gia đình du lịch, xe cảm biếng lùi, đèn pha tự động , camara hành trình.', 1100000.00, 0, 2, 5, 1, '100km', 1, NULL, NULL);
+                                                                                                                                                                                                                        (2, 17, 'HONDA CIVIC G 2022', 'Honda Civic G xe số tự động đăng ký sản xuất 2022, xe gia đình đi mới đẹp, nội thất nguyên bản, sạch đẹp, xe bảo dưỡng thường xuyên, phù hợp cho gia đình du lịch, xe cảm biếng lùi, đèn pha tự động , camara hành trình.', 1100000.00, 0, 2, 5, 1, '100km', 1, NULL, NULL),
+                                                                                                                                                                                                                        (5, 17, 'MITSUBISHI OUTLANDER 2023', 'Mitsu OutLander 2.0 số tự động . Đăng ký 08/2023.\nXe Gia Đình mới đẹp . Sạch . Bão dưỡng định kỳ chín hãng', 1100000.00, 0, 2, 7, 1, '8L/100km', 4, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -183,7 +184,13 @@ INSERT INTO `car_amenities` (`car_id`, `amenity_id`) VALUES
                                                          (2, 3),
                                                          (2, 4),
                                                          (2, 8),
-                                                         (2, 15);
+                                                         (2, 15),
+                                                         (5, 4),
+                                                         (5, 7),
+                                                         (5, 9),
+                                                         (5, 10),
+                                                         (5, 12),
+                                                         (5, 13);
 
 -- --------------------------------------------------------
 
@@ -227,11 +234,16 @@ CREATE TABLE `car_images` (
 --
 
 INSERT INTO `car_images` (`image_id`, `car_id`, `image_url`, `deleted_at`) VALUES
+                                                                               ('diynlf4cvenhzf5evpi3', 5, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910486/diynlf4cvenhzf5evpi3.jpg', NULL),
+                                                                               ('eonimjkx3qwwfb2qtx82', 5, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910482/eonimjkx3qwwfb2qtx82.jpg', NULL),
                                                                                ('hbma3siuxqvvmtgtldkd', 2, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585526/hbma3siuxqvvmtgtldkd.jpg', NULL),
                                                                                ('icwarin1pdcsu220pvbe', 2, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585530/icwarin1pdcsu220pvbe.jpg', NULL),
+                                                                               ('iqcjwxjg08rql4cva1ub', 5, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910493/iqcjwxjg08rql4cva1ub.jpg', NULL),
                                                                                ('ncebefazgxojhvug18uq', 2, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585533/ncebefazgxojhvug18uq.jpg', NULL),
                                                                                ('qg9i2ipwwb3rpuyglku8', 2, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585523/qg9i2ipwwb3rpuyglku8.jpg', NULL),
-                                                                               ('vpiijii10tjh59zo3ich', 2, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585535/vpiijii10tjh59zo3ich.jpg', NULL);
+                                                                               ('rlruk2x4l8rqybhc5npb', 5, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910496/rlruk2x4l8rqybhc5npb.jpg', NULL),
+                                                                               ('vpiijii10tjh59zo3ich', 2, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585535/vpiijii10tjh59zo3ich.jpg', NULL),
+                                                                               ('zd0uuv5x6cjghkjouy4i', 5, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910489/zd0uuv5x6cjghkjouy4i.jpg', NULL);
 
 -- --------------------------------------------------------
 
@@ -255,7 +267,8 @@ CREATE TABLE `car_locations` (
 --
 
 INSERT INTO `car_locations` (`location_id`, `address_line`, `province`, `district`, `ward`, `latitude`, `longitude`, `deleted_at`) VALUES
-    (1, '69 Đường 18', 'Hồ Chí Minh', 'Thủ Đức', 'Phường Linh Trung', 10.86, 106.79, NULL);
+                                                                                                                                       (1, '69 Đường 18', 'Hồ Chí Minh', 'Thủ Đức', 'Phường Linh Trung', 10.86, 106.79, NULL),
+                                                                                                                                       (4, '69 Đường 18', 'Hồ Chí Minh', 'Thủ Đức', 'Phường Linh Trung', 10.86, 106.79, NULL);
 
 -- --------------------------------------------------------
 
@@ -509,7 +522,6 @@ ALTER TABLE `booking_history`
 --
 ALTER TABLE `cars`
     ADD PRIMARY KEY (`car_id`),
-  ADD UNIQUE KEY `owner_id_2` (`owner_id`),
   ADD KEY `transmission_id` (`transmission_id`),
   ADD KEY `fuel_id` (`fuel_id`),
   ADD KEY `location_id` (`location_id`),
@@ -661,7 +673,7 @@ ALTER TABLE `booking_history`
 -- AUTO_INCREMENT for table `cars`
 --
 ALTER TABLE `cars`
-    MODIFY `car_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+    MODIFY `car_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `car_features`
@@ -673,7 +685,7 @@ ALTER TABLE `car_features`
 -- AUTO_INCREMENT for table `car_locations`
 --
 ALTER TABLE `car_locations`
-    MODIFY `location_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+    MODIFY `location_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `conversations`
