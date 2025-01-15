@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Search } from 'lucide-react-native';
 import LoginScreen from '@/screens/login/LoginScreen';
 import ExploreScreen from '@/screens/explore/ExploreScreen';
 import MessageScreen from '@/screens/message/MessageScreen';

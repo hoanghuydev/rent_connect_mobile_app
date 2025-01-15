@@ -59,5 +59,10 @@ public class CarController {
        return null;
     }
 
+    @GetMapping("/cars")
+    public ResponseEntity<ApiResponse<List<CarResponseDTO>>> getAll(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse<>(HttpStatus.OK, "get all car successfully", "car", carQueryService.findAllCars()));
+    }
 
 }
