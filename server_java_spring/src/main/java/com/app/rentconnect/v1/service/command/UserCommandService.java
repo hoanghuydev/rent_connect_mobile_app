@@ -2,6 +2,7 @@ package com.app.rentconnect.v1.service.command;
 
 import com.app.rentconnect.v1.dto.request.UserRequestDTO;
 import com.app.rentconnect.v1.dto.user.response.UserResponseDTO;
+import com.app.rentconnect.v1.dto.auth.request.UserUpdateRequestDTO;
 import com.app.rentconnect.v1.entity.User;
 import com.app.rentconnect.v1.mapper.UserMapper;
 import com.app.rentconnect.v1.repository.UserRepository;
@@ -55,5 +56,33 @@ public class UserCommandService {
 
     public void delete(Long userid) {
         userRepository.deleteById(userid);
+    }
+
+    public User updateUser(UserUpdateRequestDTO userUpdateRequestDTO) {
+        // Tìm người dùng từ ID
+        Optional<User> userOptional = userRepository.findById(userUpdateRequestDTO.getUserId());
+        if (!userOptional.isPresent()) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        // Lấy người dùng hiện tại
+        User user = userOptional.get();
+
+        // Cập nhật thông tin người dùng
+        if (userUpdateRequestDTO.getFullName() != null) {
+            user.setFullName(userUpdateRequestDTO.getFullName());
+        }
+        if (userUpdateRequestDTO.getPhoneNumber() != null) {
+            user.setPhoneNumber(userUpdateRequestDTO.getPhoneNumber());
+        }
+        if (userUpdateRequestDTO.getEmail() != null) {
+            user.setEmail(userUpdateRequestDTO.getEmail());
+        }
+
+        // Lưu thay đổi
+        entityManager.merge(user);
+        entityManager.flush();
+
+        return user;
     }
 }
