@@ -52,7 +52,7 @@ public class CarController {
     }
 
 
-    @GetMapping("/owner/${ownerId}")
+    @GetMapping("/owner/{ownerId}")
     public ResponseEntity<ApiResponse<List<CarResponseDTO>>> getAllByOwnerId(@PathVariable Long ownerId){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse<>(HttpStatus.OK, "Get cars successfully", "cars", carQueryService.findCarsByOwnerId(ownerId)));

@@ -24,6 +24,16 @@ const carsApi = {
         }
     },
 
+    getCarDetails : async (id : number) => {
+        try {
+            const response = await axiosNoToken.get(`${CAR_API}/${id}`);
+            return response.data;
+        } catch (error: any) {
+            console.error('Search cars error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi tìm kiếm xe');
+        }
+    },
+
     // Tìm kiếm xe
     searchCars: async (query: string) => {
         try {
