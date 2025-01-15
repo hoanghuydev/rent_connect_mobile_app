@@ -29,7 +29,7 @@ public class CarController {
     CarQueryService carQueryService;
     private final RentalCommandService rentalCommandService;
 
-    @PreAuthorize("hasRole(T(com.app.rentconnect.v1.Constants.Role).OWNER.name())")
+    @PreAuthorize("hasRole('OWNER')")
     @PostMapping("/add")
     public ResponseEntity<ApiResponse<CarResponseDTO>> addCar(@RequestParam("images") List<MultipartFile> imageFiles,  @ModelAttribute CreateCarRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED)
