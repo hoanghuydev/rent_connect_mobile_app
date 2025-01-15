@@ -6,6 +6,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Provider as PaperProvider } from 'react-native-paper';
 import LoginScreen from '@/screens/login/LoginScreen';
+import MyVehScreen from '@/screens/profile/MyVehScreen';
+import CarDetailScreen from '@/screens/cars/CarDetail';
 import ExploreScreen from '@/screens/explore/ExploreScreen';
 import MessageScreen from '@/screens/message/MessageScreen';
 import RideScreen from '@/screens/ride/RideScreen';
@@ -18,6 +20,7 @@ import LocationFilterScreen from "@/screens/locationFilter/LocationFilterScreen"
 import {RootStackParamList} from "@/navigation/type";
 import DateFilterScreen from "@/screens/dateFilter/DateFilterScreen";
 import ProfileScreen from '@/screens/profile/ProfileScreen';
+import ProfileEditing from '@/screens/profile/ProfileEditing';
 import BookingHistoryScreen from '@/screens/bookingHistory/BookingHistoryScreen';
 
 const Tab = createBottomTabNavigator();
@@ -39,6 +42,9 @@ export default function App() {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="DateFilter" component={DateFilterScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="ProfileEditing" component={ProfileEditing} />
+            <Stack.Screen name="MyVeh" component={MyVehScreen} />
+            <Stack.Screen name="CarDetail" component={CarDetailScreen} />
             <Stack.Screen name="BookingHistory" component={BookingHistoryScreen} />
         </Stack.Navigator>
       </NavigationContainer>

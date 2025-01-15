@@ -106,4 +106,9 @@ export const authApi = {
       throw new Error('Đăng xuất thất bại.');
     }
   },
-};
+  updateUser: async () => { //apiUpdateUser
+    try {
+    } catch (error) {
+  }
+},
+}

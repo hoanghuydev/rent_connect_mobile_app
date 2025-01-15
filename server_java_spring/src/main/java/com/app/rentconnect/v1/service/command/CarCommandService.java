@@ -8,6 +8,7 @@ import com.app.rentconnect.v1.entity.*;
 import com.app.rentconnect.v1.mapper.CarLocationMapper;
 import com.app.rentconnect.v1.mapper.CarMapper;
 import com.app.rentconnect.v1.repository.AmenityRepository;
+import com.app.rentconnect.v1.repository.CarImageRepository;
 import com.app.rentconnect.v1.repository.CarRepository;
 import com.app.rentconnect.v1.repository.UserRepository;
 import com.app.rentconnect.v1.service.query.AmenityQueryService;
@@ -37,6 +38,7 @@ public class CarCommandService {
     UserRepository userRepository;
     AmenityRepository amenityRepository;
     CarLocationMapper carLocationMapper;
+    CarImageRepository carImageRepository;
 
 
     public CarResponseDTO createCar(List<MultipartFile> imageFiles, CreateCarRequestDTO createCarRequestDTO) {
@@ -55,14 +57,19 @@ public class CarCommandService {
         User user = SecurityUtil.getUserFromSecurityContext(userRepository);
         car.setOwner(user);
 
+        car = carRepository.save(car);
 
         //Upload images car
         Set<CarImage> carImages = new HashSet<>();
+        Set<CarImage> realCarImages = new HashSet<>();
         carImages = uploadCarImages(imageFiles);
         car.setImages(carImages);
-
-
-        car = carRepository.save(car);
+        for (CarImage carImage : carImages) {
+            carImage.setCar(new Car().builder().carId(car.getCarId()).build());
+            carImage = carImageRepository.save(carImage);
+            realCarImages.add(carImage);
+        }
+        car.setImages(realCarImages);
 
         CarResponseDTO carResponseDTO = carMapper.toCarResponseDTO(car);
         return carResponseDTO;

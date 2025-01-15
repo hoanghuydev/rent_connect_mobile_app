@@ -7,44 +7,17 @@ import { Search, MapPin, Calendar, X } from 'lucide-react-native';
 import carsApi from '@/api/carsApi';
 import carImageApi from '@/api/carImageApi';
 import { Keyboard } from 'react-native';
+import Car from "@/models/Car";
+import CarItem from "@components/CarItem";
+import {primaryColor, softGrayColor} from "@/utils/constant";
 
-interface Car {
-    carId: number;
-    carName: string;
-    description: string;
-    pricePerDay: number;
-    images: string[];
-    location: {
-        addressLine: string;
-        province: string;
-        district: string;
-        ward: string;
-        latitude: number;
-        longitude: number;
-    };
-    transmission: {
-        transmissionId: number;
-        transmissionType: string;
-    };
-    seats: number;
-    amenities: {
-        amenityId: number;
-        amenityName: string;
-        icon: string;
-    }[];
-    owner: {
-        userId: number;
-        fullName: string;
-        email: string;
-        phoneNumber: string;
-    };
-}
 
 const ExploreScreen = () => {
     const navigation = useNavigation<LocationFilterScreenNavigationProp>();
     const route = useRoute();
     const primaryColor = '#5fcf86';
     const softGrayColor = '#E0E0E0';
+
 
     const [searchQuery, setSearchQuery] = useState('');
     const [cars, setCars] = useState<Car[]>([]);
@@ -141,7 +114,6 @@ const ExploreScreen = () => {
             setIsLoading(false);
         }
     };
-
     const handleSearch = () => {
         // Đóng bàn phím
         Keyboard.dismiss();
@@ -223,6 +195,7 @@ const ExploreScreen = () => {
             </View>
         </TouchableOpacity>
     )
+
 
         return (
             <View className="flex-1 bg-gray-50">
@@ -307,7 +280,9 @@ const ExploreScreen = () => {
                 ) : (
                     <FlatList
                         data={filteredCars}
-                        renderItem={renderCarItem}
+                        renderItem={({ item }) => (
+                            <CarItem car={item} carImages={carImages}  />
+                        )}
                         keyExtractor={(item) => item.carId.toString()}
                         contentContainerClassName="p-4"
                         showsVerticalScrollIndicator={false}
