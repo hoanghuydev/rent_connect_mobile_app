@@ -6,44 +6,14 @@ import { TextInput } from 'react-native-paper';
 import { Search, MapPin, Calendar } from 'lucide-react-native';
 import carsApi from '@/api/carsApi';
 import carImageApi from '@/api/carImageApi';
+import Car from "@/models/Car";
+import CarItem from "@components/CarItem";
+import {primaryColor, softGrayColor} from "@/utils/constant";
 
-interface Car {
-    carId: number;
-    carName: string;
-    description: string;
-    pricePerDay: number;
-    images: string[];
-    location: {
-        addressLine: string;
-        province: string;
-        district: string;
-        ward: string;
-        latitude: number;
-        longitude: number;
-    };
-    transmission: {
-        transmissionId: number;
-        transmissionType: string;
-    };
-    seats: number;
-    amenities: {
-        amenityId: number;
-        amenityName: string;
-        icon: string;
-    }[];
-    owner: {
-        userId: number;
-        fullName: string;
-        email: string;
-        phoneNumber: string;
-    };
-}
+
 
 const ExploreScreen = () => {
     const navigation = useNavigation<LocationFilterScreenNavigationProp>();
-    const primaryColor = '#5fcf86';
-    const softGrayColor = '#E0E0E0';
-
     const [searchQuery, setSearchQuery] = useState('');
     const [cars, setCars] = useState<Car[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -99,59 +69,6 @@ const ExploreScreen = () => {
         }
     };
 
-    const renderCarItem = ({ item }: { item: Car }) => (
-        <TouchableOpacity
-            className="p-4 bg-white rounded-lg mb-3 shadow-sm border border-gray-100"
-            onPress={() => {
-                console.log('Selected car:', item.carId);
-            }}
-        >
-            {/* Car Images */}
-            {carImages[item.carId] && carImages[item.carId].length > 0 && (
-                <View className="h-48 mb-4">
-                    <Image
-                        source={{ uri: carImages[item.carId][0] }}
-                        className="w-full h-full rounded-lg"
-                        resizeMode="cover"
-                    />
-                </View>
-            )}
-
-            {/* Car Info */}
-            <View className="space-y-2">
-                <Text className="text-lg font-bold">{item.carName}</Text>
-
-                <View className="flex-row items-center space-x-2">
-                    <Text className="text-gray-600">
-                        {item.location.district}, {item.location.province}
-                    </Text>
-                </View>
-
-                <View className="flex-row items-center space-x-4">
-                    <Text className="text-gray-600">{item.transmission.transmissionType}</Text>
-                    <Text className="text-gray-600"> {item.seats} chỗ</Text>
-                </View>
-
-                {/* Amenities */}
-                <View className="flex-row flex-wrap gap-2">
-                    {item.amenities.slice(0, 3).map((amenity) => (
-                        <View
-                            key={amenity.amenityId}
-                            className="bg-gray-100 px-2 py-1 rounded-full"
-                        >
-                            <Text className="text-xs text-gray-600">
-                                {amenity.amenityName}
-                            </Text>
-                        </View>
-                    ))}
-                </View>
-
-                <Text className="text-primary font-bold text-lg" style={{ color: primaryColor }}>
-                    {item.pricePerDay.toLocaleString('vi-VN')}đ/ngày
-                </Text>
-            </View>
-        </TouchableOpacity>
-    )
 
         return (
             <View className="flex-1 bg-gray-50">
@@ -222,7 +139,9 @@ const ExploreScreen = () => {
                 ) : (
                     <FlatList
                         data={cars}
-                        renderItem={renderCarItem}
+                        renderItem={({ item }) => (
+                            <CarItem car={item} carImages={carImages}  />
+                        )}
                         keyExtractor={(item) => item.carId.toString()}
                         contentContainerClassName="p-4"
                         showsVerticalScrollIndicator={false}
