@@ -11,6 +11,9 @@ export type RootStackParamList = {
     LocationFilter : undefined;
     DateFilter : undefined;
     Profile: undefined;
+    ProfileEditing: undefined;
+    MyVeh: undefined;
+    CarDetail: undefined;
     BookingHistory: undefined;
 };
 

@@ -4,6 +4,7 @@ import com.app.rentconnect.v1.Constants;
 import com.app.rentconnect.v1.dto.auth.request.LoginRequestDTO;
 import com.app.rentconnect.v1.dto.auth.request.RegisterRequestDTO;
 import com.app.rentconnect.v1.dto.auth.request.VertifyRequestDTO;
+import com.app.rentconnect.v1.dto.auth.request.UserUpdateRequestDTO;
 import com.app.rentconnect.v1.dto.auth.response.LoginResponse;
 import com.app.rentconnect.v1.dto.otp.request.SendOtpRequestDTO;
 import com.app.rentconnect.v1.entity.OtpVerification;
@@ -120,4 +121,16 @@ public class AuthCommandService {
             throw new RuntimeException("Error verifying OTP", e);
         }
     }
+    @Transactional
+    public UserRequestDTO updateUser(UserUpdateRequestDTO updateRequestDTO) {
+        try {
+            User updatedUser = userCommandService.updateUser(updateRequestDTO);
+            System.out.println("Updated user: " + updatedUser);
+            return userMapper.toRequestDTO(updatedUser);
+        } catch (Exception e) {
+            System.out.println("Error updating user: " + e.getMessage());
+            throw new RuntimeException("Error updating user", e);
+        }
+    }
+
 }
