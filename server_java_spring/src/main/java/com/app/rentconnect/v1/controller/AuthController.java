@@ -3,6 +3,7 @@ package com.app.rentconnect.v1.controller;
 import com.app.rentconnect.v1.dto.auth.request.LoginRequestDTO;
 import com.app.rentconnect.v1.dto.auth.request.RegisterRequestDTO;
 import com.app.rentconnect.v1.dto.auth.request.VertifyRequestDTO;
+import com.app.rentconnect.v1.dto.auth.request.UserUpdateRequestDTO;
 import com.app.rentconnect.v1.dto.request.UserRequestDTO;
 import com.app.rentconnect.v1.dto.response.ApiResponse;
 import com.app.rentconnect.v1.dto.auth.response.LoginResponse;
@@ -48,5 +49,9 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(new ApiResponse<>(HttpStatus.ACCEPTED,"Logged in","data",authCommandService.login(loginRequestDTO)));
     }
-
+    @PostMapping("/update")
+    public ResponseEntity<ApiResponse<UserRequestDTO>> updateUser(@RequestBody UserUpdateRequestDTO userUpdateRequestDTO) {
+        UserRequestDTO updatedUser = authCommandService.updateUser(userUpdateRequestDTO); // Gọi từ AuthCommandService
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK, "User updated successfully", "user", updatedUser));
+    }
 }
