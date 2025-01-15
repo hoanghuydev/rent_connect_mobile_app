@@ -12,6 +12,7 @@ export type RootStackParamList = {
     DateFilter : undefined;
     Profile: undefined;
     ProfileEditing: undefined;
+    MyVeh: undefined;
 };
 
 export type MainScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;

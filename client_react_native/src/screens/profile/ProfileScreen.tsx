@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { Button, Card } from 'react-native-paper';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { List, Card, Divider, Avatar } from 'react-native-paper';
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authApi } from '@/api/authApi';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const ProfileScreen = ({route}) => {
-    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+const ProfileScreen = ({ route }) => {
+    const navigation = useNavigation();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const role = AsyncStorage.getItem('roles');
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                // Lấy thông tin người dùng từ AsyncStorage
                 const storedUser = await AsyncStorage.getItem('user');
                 if (storedUser) {
-                    setUser(JSON.parse(storedUser)); // Chuyển đổi chuỗi JSON về đối tượng
+                    setUser(JSON.parse(storedUser));
                 }
             } catch (error) {
                 console.error('Failed to fetch user data:', error);
@@ -31,118 +32,149 @@ const ProfileScreen = ({route}) => {
     const handleLogout = async () => {
         try {
             await authApi.logout();
-            route.params.onLogout(); // Gọi hàm onLogout từ MainScreen để cập nhật trạng thái đăng nhập
+            route.params?.onLogout();
         } catch (error) {
             alert(error.message);
         }
     };
 
-    if (loading) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#5fcf86" />
-            </View>
-        );
-    }
+    const [mainMenuItems, setMainMenuItems] = useState([]);
+
+useEffect(() => {
+    const checkUserRole = async () => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            if (token) {
+                // Parse base64 của JWT token để lấy payload
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const userRoles = payload.roles;
+
+                const baseMenuItems = [
+                    { icon: 'account', title: 'Tài khoản của tôi' , screen: 'ProfileEditing'},
+                    { icon: 'map-marker', title: 'Địa chỉ của tôi' },
+                    { icon: 'card-account-details', title: 'Giấy phép lái xe' },
+                    { icon: 'credit-card', title: 'Thẻ của tôi' },
+                    { icon: 'lock', title: 'Đổi mật khẩu', screen: 'PasswordChanging'},
+                ];
+
+                if (userRoles.includes('ROLE_OWNER')) {
+                    baseMenuItems.splice(1, 0, { icon: 'car', title: 'Xe của tôi', screen: 'MyVeh'});
+                }
+                if (userRoles.includes('ROLE_CUSTOMER')) {
+                    baseMenuItems.splice(1, 0, { icon: 'history', title: 'Lịch sử', screen: 'HistoryScreen'});
+                }
+
+                setMainMenuItems(baseMenuItems);
+            }
+        } catch (error) {
+            console.error('Error checking user role:', error);
+        }
+    };
+
+    checkUserRole();
+}, []);
+
+
+    const renderMenuCard = (items) => (
+        <Card style={styles.menuCard}>
+            {items.map((item, index) => (
+                <React.Fragment key={index}>
+                    <List.Item
+                        title={item.title}
+                        left={props => <List.Icon {...props} icon={item.icon} />}
+                        right={props => <List.Icon {...props} icon="chevron-right" />}
+                        onPress={() => navigation.navigate(item.screen)}
+                        style={styles.menuItem}
+                    />
+                    {index < items.length - 1 && <Divider />}
+                </React.Fragment>
+            ))}
+        </Card>
+    );
 
     return (
-        <View style={styles.container}>
-            <Card style={styles.card}>
-                <Card.Content>
-                    <Text style={styles.header}>Thông tin tài khoản</Text>
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.infoLabel}>ID:</Text>
-                        <Text style={styles.infoValue}>{user?.userId}</Text>
-                    </View>
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.infoLabel}>Họ và Tên:</Text>
-                        <Text style={styles.infoValue}>{user?.fullName}</Text>
-                    </View>
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.infoLabel}>Email:</Text>
-                        <Text style={styles.infoValue}>{user?.email}</Text>
-                    </View>
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.infoLabel}>Số điện thoại:</Text>
-                        <Text style={styles.infoValue}>{user?.phoneNumber}</Text>
-                    </View>
-                </Card.Content>
-            </Card>
+        <ScrollView style={styles.container}>
+            {/* Header with Avatar */}
+            <View style={styles.header}>
+                <View style={styles.avatarContainer}>
+                    <Avatar.Image
+                        size={80}
+                        source={require('../assets/default-avatar.png')}
+                        style={styles.avatar}
+                    />
+                </View>
+                <Text style={styles.userName}>{user?.fullName || 'Profile Name'}</Text>
+            </View>
 
-            <Button
-                mode="contained"
-                style={styles.logoutButton}
+            {/* Menu Items */}
+            {renderMenuCard(mainMenuItems)}
+            
+            {/* Logout Button */}
+            <List.Item
+                title="Đăng xuất"
+                left={props => <List.Icon {...props} icon="logout" color="red" />}
                 onPress={handleLogout}
-                color="#5fcf86"
-            >
-                Đăng xuất
-            </Button>
-            <Button
-                mode="outlined"
-                style={styles.editButton}
-                onPress={() => navigation.navigate('ProfileEditing')}
-                color="#5fcf86"
-            >
-            Chỉnh sửa thông tin
-            </Button>
-        </View>
+                titleStyle={styles.logoutText}
+                style={styles.logoutButton}
+            />
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
+    },
+    header: {
         alignItems: 'center',
         padding: 20,
         backgroundColor: '#fff',
+        marginBottom: 16,
     },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+    avatarContainer: {
+        position: 'relative',
+        marginBottom: 10,
+    },
+    avatar: {
         backgroundColor: '#fff',
     },
-    card: {
-        width: '100%',
-        marginBottom: 20,
-        borderRadius: 10,
-        elevation: 5,
+    vipBadge: {
+        position: 'absolute',
+        bottom: 0,
+        right: -4,
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 4,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
-    header: {
-        fontSize: 24,
+    userName: {
+        fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 10,
-        textAlign: 'center',
-        color: '#5fcf86',
-    },
-    infoContainer: {
-        flexDirection: 'row',
-        marginBottom: 8,
-        justifyContent: 'space-between',
-    },
-    infoLabel: {
-        fontSize: 16,
-        fontWeight: '500',
-        color: '#555',
-    },
-    infoValue: {
-        fontSize: 16,
         color: '#333',
     },
+    menuCard: {
+        marginHorizontal: 16,
+        marginBottom: 16,
+        borderRadius: 12,
+        elevation: 4,
+        backgroundColor: '#fff',
+    },
+    menuItem: {
+        paddingVertical: 8,
+    },
     logoutButton: {
-        marginTop: 20,
-        width: '100%',
-        borderRadius: 50,
+        marginHorizontal: 16,
+        marginTop: 8,
+        marginBottom: 20,
     },
-    editButton: {
-        marginTop: 10,
-        width: '100%',
-        borderRadius: 50,
-        borderWidth: 1,
-        borderColor: '#5fcf86',
+    logoutText: {
+        color: 'red',
     },
-    
 });
 
 export default ProfileScreen;

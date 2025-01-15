@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import tokenManager from '@/utils/tokenManager';
 import UserManager from '@/utils/UserManager';
 import { User } from '@/models/User';
+import { jwtDecode } from 'jwt-decode';
 
 const AUTH_API = '/auth';
 
@@ -32,6 +33,7 @@ export const authApi = {
           await UserManager.setUser(userData);
 
           console.log('Login success:', response);
+          console.log(jwtDecode(token));
 
           return { success: true, token };
         } else {
@@ -97,8 +99,8 @@ export const authApi = {
       const response = await axiosToken.post(`${AUTH_API}/update`, {
         userId,
         fullName,
-        email,
-        phoneNumber
+        phoneNumber,
+        email
       });
   
       const apiResponse = response.data;
