@@ -14,8 +14,14 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = {CarLocationMapper.class})
 public interface CarMapper {
+
+    @Mapping(target = "images", ignore = true)
     Car toEntity(CarRequestDTO carRequestDTO);
+
+    @Mapping(target = "images", ignore = true)
     CarRequestDTO toCarRequestDTO(Car car);
+
+    @Mapping(target = "images", ignore = true)
     CarResponseDTO toCarResponseDTO(Car car);
 
     @Mapping(target = "images", ignore = true)

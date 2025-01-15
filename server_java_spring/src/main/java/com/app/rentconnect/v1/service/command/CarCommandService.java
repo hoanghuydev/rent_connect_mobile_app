@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,17 +62,18 @@ public class CarCommandService {
 
         //Upload images car
         Set<CarImage> carImages = new HashSet<>();
-        Set<CarImage> realCarImages = new HashSet<>();
         carImages = uploadCarImages(imageFiles);
         car.setImages(carImages);
         for (CarImage carImage : carImages) {
             carImage.setCar(new Car().builder().carId(car.getCarId()).build());
-            carImage = carImageRepository.save(carImage);
-            realCarImages.add(carImage);
+            carImageRepository.save(carImage);
         }
-        car.setImages(realCarImages);
+        List<String> imageUrls = carImages.stream()
+                .map(CarImage::getImageUrl)
+                .collect(Collectors.toList());
 
         CarResponseDTO carResponseDTO = carMapper.toCarResponseDTO(car);
+        carResponseDTO.setImages(imageUrls);
         return carResponseDTO;
     }
 

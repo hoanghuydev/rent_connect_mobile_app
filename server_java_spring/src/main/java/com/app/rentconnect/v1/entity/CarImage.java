@@ -20,7 +20,6 @@ public class CarImage {
     @Column(nullable = false, length = 40)
     String imageId;
 
-    @Fetch(FetchMode.JOIN)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id", nullable = false)
     @ToString.Exclude

@@ -64,6 +64,7 @@ public class User {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ToString.Exclude
     List<Car> cars;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

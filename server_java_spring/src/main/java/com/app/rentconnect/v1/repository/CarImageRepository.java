@@ -10,6 +10,5 @@ import java.util.List;
 
 @Repository
 public interface CarImageRepository extends JpaRepository<CarImage, Long> {
-    @Query("SELECT ci FROM CarImage ci WHERE ci.car.carId = :carId")
-    List<CarImage> findAllByCarId(@Param("carId") Long carId);
+    List<CarImage> findByCar_CarId(@Param("carId") Long carId);
 }

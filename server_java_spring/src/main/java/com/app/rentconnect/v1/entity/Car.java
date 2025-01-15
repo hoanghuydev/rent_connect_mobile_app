@@ -23,6 +23,7 @@ public class Car {
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
     @Where(clause = "deleted_at IS NULL")
+    @ToString.Exclude
     Set<CarImage> images = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)

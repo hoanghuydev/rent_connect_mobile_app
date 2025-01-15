@@ -17,7 +17,7 @@ public class CarImageQueryService {
     CarImageRepository carImageRepository;
 
     public List<String> findAllByCarId(Long id) {
-        List<CarImage> carImages = carImageRepository.findAllByCarId(id);
+        List<CarImage> carImages = carImageRepository.findByCar_CarId(id);
         List<String> list = carImages.stream()
                 .map(CarImage::getImageUrl) // Lấy trường imageUrl từ từng đối tượng CarImage
                 .toList();
