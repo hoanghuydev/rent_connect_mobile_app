@@ -1,162 +1,186 @@
-import {useEffect, useState} from "react";
-import Car from "@/models/Car";
-import carsApi from "@/api/carsApi";
-import carImageApi from "@/api/carImageApi";
-import {Bluetooth, Camera, Gauge, Heart, Navigation, Share2, Shield, Timer, Video, X} from "lucide-react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, Button, ActivityIndicator, SafeAreaView } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import MapView, { Marker } from "react-native-maps";
+import { Bluetooth, Camera, Gauge, Heart, Navigation, Share2, Shield, Timer, X } from "lucide-react-native";
 import AmenityIcon from "@components/AmenityIcon";
-import {useRoute} from "@react-navigation/native";
-import {Text, View} from "react-native";
-import MapView, {Marker} from "react-native-maps";
+import carsApi from "@/api/carsApi";
+import Car from "@/models/Car";
 
-const CarDetailsScreen = () =>{
+const CarDetailsScreen = () => {
     const route = useRoute();
     const { carId } = route.params;
-    const [carDetails,setCarDetails] = useState<Car>();
+    const [carDetails, setCarDetails] = useState<Car | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    async function getCarDetails() {
-        const { data} = await carsApi.getCarDetails(carId);
-        setCarDetails(data.car);
-    }
+    const [isLoading, setIsLoading] = useState(true);
+
+    const getCarDetails = async () => {
+        try {
+            const { data } = await carsApi.getCarDetails(carId);
+            setCarDetails(data.car);
+        } catch (error) {
+            console.error("Error fetching car details:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
         getCarDetails();
     }, []);
-    if (!carDetails) {
-        return <div className="p-4">Loading...</div>;
+
+    if (isLoading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#00BFFF" />
+                <Text>Loading...</Text>
+            </View>
+        );
     }
 
-
+    if (!carDetails) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text>Unable to load car details. Please try again later.</Text>
+            </View>
+        );
+    }
 
     const specs = [
-        {
-            icon: <Timer className="w-6 h-6" />,
-            value: carDetails.transmission.transmissionType
-        },
-        {
-            icon: <Timer className="w-6 h-6" />,
-            value: `${carDetails.seats} chỗ`
-        },
-        {
-            icon: <Timer className="w-6 h-6" />,
-            value: carDetails.fuel.fuelType
-        },
-        {
-            icon: <Navigation className="w-6 h-6" />,
-            value: carDetails.rangePerChargeOrTank
-        }
+        { icon: <Timer size={24} color="#00BFFF" />, value: carDetails.transmission.transmissionType },
+        { icon: <Gauge size={24} color="#00BFFF" />, value: `${carDetails.seats} chỗ` },
+        { icon: <Shield size={24} color="#00BFFF" />, value: carDetails.fuel.fuelType },
+        { icon: <Navigation size={24} color="#00BFFF" />, value: `${carDetails.rangePerChargeOrTank} km` },
     ];
 
-    const handleNextImage = () => {
-        setCurrentImageIndex((prev) =>
-            prev === carDetails.images.length - 1 ? 0 : prev + 1
-        );
-    };
-
-    const handlePrevImage = () => {
-        setCurrentImageIndex((prev) =>
-            prev === 0 ? carDetails.images.length - 1 : prev - 1
-        );
-    };
-
     const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('vi-VN', {
-            style: 'currency',
-            currency: 'VND'
-        }).format(price);
+        return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
+        <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView style={styles.container}>
             {/* Header */}
-            <div className="flex items-center justify-between p-4 bg-white">
-                <X className="w-6 h-6" />
-                <h1 className="text-lg font-semibold">{carDetails.carName}</h1>
-                <div className="flex gap-4">
-                    <Share2 className="w-6 h-6" />
-                    <Heart className="w-6 h-6" />
-                </div>
-            </div>
+            <View style={styles.header}>
+                <TouchableOpacity>
+                    <X size={24} color="#333" />
+                </TouchableOpacity>
+                <Text style={styles.carName}>{carDetails.carName}</Text>
+                <View style={styles.headerIcons}>
+                    <TouchableOpacity>
+                        <Share2 size={24} color="#333" />
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Heart size={24} color="#333" />
+                    </TouchableOpacity>
+                </View>
+            </View>
 
             {/* Car Image */}
-            <div className="relative w-full h-64 bg-gray-200">
-                <img
-                    src={carDetails.images[currentImageIndex]}
-                    alt="Car"
-                    className="w-full h-full object-cover"
+            <View style={styles.imageContainer}>
+                <Image
+                    source={{ uri: carDetails.images[currentImageIndex] }}
+                    style={styles.image}
                 />
-                <button
-                    onClick={handlePrevImage}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+                <TouchableOpacity
+                    onPress={() =>
+                        setCurrentImageIndex((prev) =>
+                            prev === 0 ? carDetails.images.length - 1 : prev - 1
+                        )
+                    }
+                    style={styles.prevButton}
                 >
-                    ←
-                </button>
-                <button
-                    onClick={handleNextImage}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+                    <Text style={styles.arrow}>←</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() =>
+                        setCurrentImageIndex((prev) =>
+                            prev === carDetails.images.length - 1 ? 0 : prev + 1
+                        )
+                    }
+                    style={styles.nextButton}
                 >
-                    →
-                </button>
-                <div className="absolute bottom-4 right-4 text-white bg-black/50 px-2 py-1 rounded">
-                    {currentImageIndex + 1}/{carDetails.images.length}
-                </div>
-            </div>
+                    <Text style={styles.arrow}>→</Text>
+                </TouchableOpacity>
+            </View>
 
-            {/* Car Info */}
-            <div className="p-4 bg-white">
-                <div className="grid grid-cols-4 gap-4 mb-6">
-                    {specs.map((spec, index) => (
-                        <div key={index} className="text-center flex flex-col justify-center items-center">
-                            <div className="text-green-500 mb-2 w-fit">
-                                {spec.icon}
-                            </div>
-                            <p className="text-sm font-bold w-fit">{spec.value}</p>
-                        </div>
-                    ))}
-                </div>
+            {/* Specs */}
+            <View style={styles.specsContainer}>
+                {specs.map((spec, index) => (
+                    <View key={index} style={styles.specItem}>
+                        {spec.icon}
+                        <Text style={styles.specText}>{spec.value}</Text>
+                    </View>
+                ))}
+            </View>
 
-                <h2 className="font-semibold mb-2">Mô tả</h2>
-                <p className="text-gray-600 mb-4">{carDetails.description}</p>
+            {/* Description */}
+            <Text style={styles.sectionTitle}>Mô tả</Text>
+            <Text style={styles.description}>{carDetails.description}</Text>
 
-                <h2 className="font-semibold mb-2">Các tiện nghi trên xe</h2>
-                <div className="grid grid-cols-2 gap-4">
-                    {carDetails.amenities.map((amenity) => (
-                        <div key={amenity.amenityId} className="flex items-center gap-2 text-gray-600">
-                            <AmenityIcon iconName={amenity.icon}/>
-                            <span>{amenity.amenityName}</span>
-                        </div>
-                    ))}
-                </div>
+            {/* Amenities */}
+            <Text style={styles.sectionTitle}>Các tiện nghi trên xe</Text>
+            <View style={styles.amenitiesContainer}>
+                {carDetails.amenities.map((amenity) => (
+                    <View key={amenity.amenityId} style={styles.amenityItem}>
+                        <AmenityIcon iconName={amenity.icon} />
+                        <Text>{amenity.amenityName}</Text>
+                    </View>
+                ))}
+            </View>
 
-                <h2 className="font-semibold mt-4 mb-2">Vị trí xe</h2>
-                <Text className="text-gray-600">
-                    {`${carDetails.location.addressLine}, ${carDetails.location.ward}, ${carDetails.location.district}, ${carDetails.location.province}`}
-                </Text>
-                <View>
-                    <MapView
-                        initialRegion={{
-                            latitude: carDetails.location.latitude,
-                            longitude: carDetails.location.longitude,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
-                        }}>
-                        <Marker coordinate={{ latitude: carDetails.location.latitude, longitude: carDetails.location.longitude }} />
-                    </MapView>
-                </View>
-            </div>
+            {/* Location */}
+            <Text style={styles.sectionTitle}>Vị trí xe</Text>
+            <Text>{`${carDetails.location.addressLine}, ${carDetails.location.ward}, ${carDetails.location.district}, ${carDetails.location.province}`}</Text>
+            <MapView
+                style={styles.map}
+                initialRegion={{
+                    latitude: carDetails.location.latitude,
+                    longitude: carDetails.location.longitude,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                }}
+            >
+                <Marker
+                    coordinate={{
+                        latitude: carDetails.location.latitude,
+                        longitude: carDetails.location.longitude,
+                    }}
+                />
+            </MapView>
 
             {/* Bottom Bar */}
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
-                <div className="flex justify-between items-center mb-2">
-                    <div>
-                        <span className="text-green-500">{formatPrice(carDetails.pricePerDay)}/ngày</span>
-                    </div>
-                </div>
-                <button className="w-full bg-green-500 text-white py-3 rounded-lg">
-                    Chọn thuê
-                </button>
-            </div>
-        </div>
+            <View style={styles.bottomBar}>
+                <Text style={styles.price}>{formatPrice(carDetails.pricePerDay)}/ngày</Text>
+                <Button title="Chọn thuê" color="#00BFFF" onPress={() => {}} />
+            </View>
+        </ScrollView>
+        </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    container: { flex: 1, backgroundColor: "#f9f9f9" },
+    header: { flexDirection: "row", justifyContent: "space-between", padding: 16, backgroundColor: "#fff" },
+    carName: { fontSize: 18, fontWeight: "bold" },
+    headerIcons: { flexDirection: "row", gap: 16 },
+    imageContainer: { position: "relative", height: 200 },
+    image: { width: "100%", height: "100%", resizeMode: "cover" },
+    prevButton: { position: "absolute", left: 10, top: "50%", backgroundColor: "#00000088", padding: 8 },
+    nextButton: { position: "absolute", right: 10, top: "50%", backgroundColor: "#00000088", padding: 8 },
+    arrow: { color: "#fff", fontSize: 20 },
+    specsContainer: { flexDirection: "row", justifyContent: "space-around", padding: 16, backgroundColor: "#fff" },
+    specItem: { alignItems: "center" },
+    specText: { marginTop: 4, fontSize: 14, color: "#333" },
+    sectionTitle: { fontSize: 16, fontWeight: "bold", padding: 16 },
+    description: { padding: 16, color: "#555" },
+    amenitiesContainer: { flexDirection: "row", flexWrap: "wrap", padding: 16 },
+    amenityItem: { flexDirection: "row", alignItems: "center", marginRight: 16 },
+    map: { height: 200, marginVertical: 16 },
+    bottomBar: { padding: 16, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+    price: { fontSize: 18, fontWeight: "bold", color: "#00BFFF" },
+    loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+    errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+});
 
 export default CarDetailsScreen;

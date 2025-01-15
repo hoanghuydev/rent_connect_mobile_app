@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { axiosToken, axiosNoToken } from './axios';
+import UserManager from '@/utils/UserManager';
+import { User } from '@/models/User';
 
 const CAR_API = '/car';
 const CARS_STORAGE_KEY = 'cars_data';
@@ -67,7 +69,24 @@ const carsApi = {
     // Lấy danh sách xe theo chủ xe (yêu cầu đăng nhập)
     getCarsByOwner: async () => {
         try {
-            const response = await axiosToken.get(`${CAR_API}/owner`);
+            let userId = UserManager.getUser()?.userId;
+
+            // 2. If not found, try getting user data from AsyncStorage
+            if (!userId) {
+                const storedUser = await AsyncStorage.getItem('user');
+                if (storedUser) {
+                    const parsedUser = JSON.parse(storedUser);
+                    userId = parsedUser.userId;
+                }
+            }
+
+            // 3. If still not found, handle the case (e.g., user not logged in)
+            if (!userId) {
+                console.error('User ID not found.');
+                throw new Error('User not logged in or user ID not available.');
+            }
+            const response = await axiosNoToken.get(`${CAR_API}/owner/${userId}`);
+            console.log('eee', response.data);
             return response.data;
         } catch (error: any) {
             console.error('Get owner cars error:', error.response?.data || error);

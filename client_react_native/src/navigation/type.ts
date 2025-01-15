@@ -14,6 +14,7 @@ export type RootStackParamList = {
     ProfileEditing: undefined;
     MyVeh: undefined;
     CarDetail: undefined;
+    CarDetailScreen: undefined;
     BookingHistory: undefined;
 };
 
