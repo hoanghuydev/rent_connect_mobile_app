@@ -18,6 +18,7 @@ import LocationFilterScreen from "@/screens/locationFilter/LocationFilterScreen"
 import {RootStackParamList} from "@/navigation/type";
 import DateFilterScreen from "@/screens/dateFilter/DateFilterScreen";
 import ProfileScreen from '@/screens/profile/ProfileScreen';
+import ProfileEditing from '@/screens/profile/ProfileEditing';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -38,6 +39,7 @@ export default function App() {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="DateFilter" component={DateFilterScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="ProfileEditing" component={ProfileEditing} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Button, Card } from 'react-native-paper';
-import { authApi } from '@/api/authApi';
+import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { authApi } from '@/api/authApi';
 
-const ProfileScreen = ({ route }) => {
+const ProfileScreen = ({route}) => {
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true); // Thêm loading khi tải thông tin người dùng
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const storedUser = await AsyncStorage.getItem('user');
-            if (storedUser) {
-                setUser(JSON.parse(storedUser));
+            try {
+                // Lấy thông tin người dùng từ AsyncStorage
+                const storedUser = await AsyncStorage.getItem('user');
+                if (storedUser) {
+                    setUser(JSON.parse(storedUser)); // Chuyển đổi chuỗi JSON về đối tượng
+                }
+            } catch (error) {
+                console.error('Failed to fetch user data:', error);
+            } finally {
                 setLoading(false);
             }
         };
@@ -43,12 +51,20 @@ const ProfileScreen = ({ route }) => {
                 <Card.Content>
                     <Text style={styles.header}>Thông tin tài khoản</Text>
                     <View style={styles.infoContainer}>
+                        <Text style={styles.infoLabel}>ID:</Text>
+                        <Text style={styles.infoValue}>{user?.userId}</Text>
+                    </View>
+                    <View style={styles.infoContainer}>
+                        <Text style={styles.infoLabel}>Họ và Tên:</Text>
+                        <Text style={styles.infoValue}>{user?.fullName}</Text>
+                    </View>
+                    <View style={styles.infoContainer}>
                         <Text style={styles.infoLabel}>Email:</Text>
                         <Text style={styles.infoValue}>{user?.email}</Text>
                     </View>
                     <View style={styles.infoContainer}>
-                        <Text style={styles.infoLabel}>Tên:</Text>
-                        <Text style={styles.infoValue}>{user?.name}</Text>
+                        <Text style={styles.infoLabel}>Số điện thoại:</Text>
+                        <Text style={styles.infoValue}>{user?.phoneNumber}</Text>
                     </View>
                 </Card.Content>
             </Card>
@@ -60,6 +76,14 @@ const ProfileScreen = ({ route }) => {
                 color="#5fcf86"
             >
                 Đăng xuất
+            </Button>
+            <Button
+                mode="outlined"
+                style={styles.editButton}
+                onPress={() => navigation.navigate('ProfileEditing')}
+                color="#5fcf86"
+            >
+            Chỉnh sửa thông tin
             </Button>
         </View>
     );
@@ -111,6 +135,14 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: 50,
     },
+    editButton: {
+        marginTop: 10,
+        width: '100%',
+        borderRadius: 50,
+        borderWidth: 1,
+        borderColor: '#5fcf86',
+    },
+    
 });
 
 export default ProfileScreen;

@@ -1,5 +1,6 @@
 // authApi.ts
 import { axiosNoToken } from './axios';
+import { axiosToken } from './axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import tokenManager from '@/utils/tokenManager';
 import UserManager from '@/utils/UserManager';
@@ -77,4 +78,41 @@ export const authApi = {
       throw new Error('Đăng xuất thất bại.');
     }
   },
+  updateUser: async (userId: string, fullName: string, email: string, phoneNumber: string) => {
+    try {
+      // Kiểm tra token từ AsyncStorage
+      const token = await AsyncStorage.getItem('token');
+      console.log('Token from AsyncStorage:', token);  // In ra token để kiểm tra
+  
+      if (!token) {
+        console.error('No token found');
+        throw new Error('Token không hợp lệ.');
+      }
+  
+      // Cập nhật token vào header của axios
+      axiosToken.defaults.headers['Authorization'] = `Bearer ${token}`;
+      console.log('Token set in Authorization header');
+  
+      // Tiến hành gửi yêu cầu cập nhật
+      const response = await axiosToken.post(`${AUTH_API}/update`, {
+        userId,
+        fullName,
+        email,
+        phoneNumber
+      });
+  
+      const apiResponse = response.data;
+      console.log('response:', apiResponse);
+  
+      if (apiResponse && apiResponse.status === 200) {
+        // Cập nhật thành công
+        return true;
+      }
+      return false;
+    } catch (error: any) {
+      console.error('Update user error:', error.response?.data || error);
+      throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật thông tin người dùng');
+    }
+  }
+  
 };
