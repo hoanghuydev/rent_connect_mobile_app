@@ -51,12 +51,11 @@ public class CarController {
         return null;
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<CarRequestDTO>>> getAllCars(
-            @RequestParam(required = false) Long ownerId,
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) String province) {
-       return null;
+
+    @GetMapping("/owner/${ownerId}")
+    public ResponseEntity<ApiResponse<List<CarResponseDTO>>> getAllByOwnerId(@PathVariable Long ownerId){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse<>(HttpStatus.OK, "Get cars successfully", "cars", carQueryService.findCarsByOwnerId(ownerId)));
     }
 
     @GetMapping("/cars")
