@@ -40,16 +40,21 @@ const LocationFilterScreen = () => {
         }
     }, [searchQuery]);
 
+    const handleSelectProvince = (province: string) => {
+        // Trả về province đã chọn khi navigate back
+        navigation.navigate('Main', {
+            screen: 'Explore',
+            params: { selectedLocation: province }
+        });
+    };
+
     // Render individual province item
     const renderProvinceItem = ({ item }: { item: string }) => (
         <TouchableOpacity
-            className="py-4 px-3 border-b border-gray-200"
-            onPress={() => {
-                console.log('Đã chọn tỉnh/thành:', item);
-                // You can add navigation or callback here
-            }}
+            className="p-4 border-b border-gray-200"
+            onPress={() => handleSelectProvince(item)}
         >
-            <Text className="text-base">{item}</Text>
+            <Text>{item}</Text>
         </TouchableOpacity>
     );
 

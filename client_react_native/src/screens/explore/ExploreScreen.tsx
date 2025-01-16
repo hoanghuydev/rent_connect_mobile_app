@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, FlatList, Image } from 'react-native';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation , useFocusEffect, useRoute } from "@react-navigation/native";
 import { LocationFilterScreenNavigationProp } from "@/navigation/type";
 import { TextInput } from 'react-native-paper';
-import { Search, MapPin, Calendar } from 'lucide-react-native';
+import { Search, MapPin, Calendar, X } from 'lucide-react-native';
 import carsApi from '@/api/carsApi';
 import carImageApi from '@/api/carImageApi';
+import { Keyboard } from 'react-native';
 import Car from "@/models/Car";
 import CarItem from "@components/CarItem";
 import {primaryColor, softGrayColor} from "@/utils/constant";
 
 
-
 const ExploreScreen = () => {
     const navigation = useNavigation<LocationFilterScreenNavigationProp>();
+    const route = useRoute();
+    const primaryColor = '#5fcf86';
+    const softGrayColor = '#E0E0E0';
+
+
     const [searchQuery, setSearchQuery] = useState('');
     const [cars, setCars] = useState<Car[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [carImages, setCarImages] = useState<{ [key: number]: string[] }>({});
+
+    //search object
+    const [filteredCars, setFilteredCars] = useState<Car[]>([]);
+    const [selectedLocation, setSelectedLocation] = useState<string>('');
+
 
     const loadCarImages = async (carId: number) => {
         try {
@@ -31,6 +41,14 @@ const ExploreScreen = () => {
             console.error('Error loading car images:', error);
         }
     };
+
+     useFocusEffect(
+        React.useCallback(() => {
+            // Reset search query và filtered cars
+            setSearchQuery('');
+            setFilteredCars(cars);
+        }, [cars])
+    );
 
     useEffect(() => {
         loadCars();
@@ -47,6 +65,33 @@ const ExploreScreen = () => {
         }
     }, [cars]);
 
+    useEffect(() => {
+        if (searchQuery.trim() === '') {
+            setFilteredCars(cars);
+        } else {
+            const filtered = cars.filter(car =>
+                car.carName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                car.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                car.location.province.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                car.location.district.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setFilteredCars(filtered);
+        }
+    }, [searchQuery, cars]);
+
+   // Xử lý params khi quay lại từ LocationFilterScreen
+    useEffect(() => {
+            if (route.params?.selectedLocation) {
+                const location = route.params.selectedLocation;
+                setSelectedLocation(location);
+                // Lọc xe theo địa điểm chính xác
+                const filtered = cars.filter(car =>
+                    car.location.province.toLowerCase()=== location.toLowerCase() // Sử dụng so sánh chính xác thay vì includes
+                );
+                setFilteredCars(filtered);
+            }
+        }, [route.params?.selectedLocation, cars]);
+
     const loadCars = async () => {
         try {
             setIsLoading(true);
@@ -58,6 +103,7 @@ const ExploreScreen = () => {
 
             if (response && response.data && response.data.car) {
                 setCars(response.data.car);
+                setFilteredCars(response.data.car);
             } else {
                 setError('Invalid data format');
             }
@@ -68,6 +114,87 @@ const ExploreScreen = () => {
             setIsLoading(false);
         }
     };
+    const handleSearch = () => {
+        // Đóng bàn phím
+        Keyboard.dismiss();
+        console.log("a");
+        let filtered = [...cars];
+
+        // Nếu có địa điểm được chọn, lọc theo địa điểm trước
+        if (selectedLocation) {
+            filtered = filtered.filter(car =>
+                car.location.province === selectedLocation
+            );
+        }
+
+        if (searchQuery.trim() !== '') {
+            filtered = filtered.filter(car =>
+                car.carName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                car.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                car.location.district.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+    };
+    const handleClearLocation = () => {
+        setSelectedLocation('');
+        setSearchQuery('');
+        setFilteredCars(cars);
+    };
+
+
+    const renderCarItem = ({ item }: { item: Car }) => (
+        <TouchableOpacity
+            className="p-4 bg-white rounded-lg mb-3 shadow-sm border border-gray-100"
+            onPress={() => {
+                console.log('Selected car:', item.carId);
+            }}
+        >
+            {/* Car Images */}
+            {carImages[item.carId] && carImages[item.carId].length > 0 && (
+                <View className="h-48 mb-4">
+                    <Image
+                        source={{ uri: carImages[item.carId][0] }}
+                        className="w-full h-full rounded-lg"
+                        resizeMode="cover"
+                    />
+                </View>
+            )}
+
+            {/* Car Info */}
+            <View className="space-y-2">
+                <Text className="text-lg font-bold">{item.carName}</Text>
+
+                <View className="flex-row items-center space-x-2">
+                    <Text className="text-gray-600">
+                        {item.location.district}, {item.location.province}
+                    </Text>
+                </View>
+
+                <View className="flex-row items-center space-x-4">
+                    <Text className="text-gray-600">{item.transmission.transmissionType}</Text>
+                    <Text className="text-gray-600"> {item.seats} chỗ</Text>
+                </View>
+
+                {/* Amenities */}
+                <View className="flex-row flex-wrap gap-2">
+                    {item.amenities.slice(0, 3).map((amenity) => (
+                        <View
+                            key={amenity.amenityId}
+                            className="bg-gray-100 px-2 py-1 rounded-full"
+                        >
+                            <Text className="text-xs text-gray-600">
+                                {amenity.amenityName}
+                            </Text>
+                        </View>
+                    ))}
+                </View>
+
+                <Text className="text-primary font-bold text-lg" style={{ color: primaryColor }}>
+                    {item.pricePerDay.toLocaleString('vi-VN')}đ/ngày
+                </Text>
+            </View>
+        </TouchableOpacity>
+    )
 
 
         return (
@@ -84,11 +211,13 @@ const ExploreScreen = () => {
                                 left={<TextInput.Icon icon={() => <Search size={20} color={primaryColor} />} />}
                                 value={searchQuery}
                                 onChangeText={setSearchQuery}
+                                onSubmitEditing={handleSearch}
                             />
                         </View>
                         <TouchableOpacity
                             className="p-3 rounded-full"
                             style={{ backgroundColor: primaryColor }}
+                            onPress={handleSearch}
                         >
                             <Search size={24} color="white" />
                         </TouchableOpacity>
@@ -101,10 +230,22 @@ const ExploreScreen = () => {
                             onPress={() => navigation.navigate('LocationFilter')}
                         >
                             <MapPin size={20} color={primaryColor} />
-                            <View className="ml-2">
+                            <View className="ml-2 flex-1">
                                 <Text className="text-xs text-gray-500">Địa điểm</Text>
-                                <Text className="text-sm font-medium">Chọn địa điểm</Text>
+                                <Text className="text-sm font-medium">
+                                    {selectedLocation || 'Chọn địa điểm'}
+                                </Text>
                             </View>
+                            {selectedLocation && (
+                                <TouchableOpacity
+                                    onPress={(e) => {
+                                        e.stopPropagation();
+                                        handleClearLocation();
+                                    }}
+                                >
+                                    <X size={20} color={softGrayColor} />
+                                </TouchableOpacity>
+                            )}
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -138,7 +279,7 @@ const ExploreScreen = () => {
                     </View>
                 ) : (
                     <FlatList
-                        data={cars}
+                        data={filteredCars}
                         renderItem={({ item }) => (
                             <CarItem car={item} carImages={carImages}  />
                         )}
@@ -149,7 +290,9 @@ const ExploreScreen = () => {
                         onRefresh={loadCars}
                         ListEmptyComponent={() => (
                             <View className="flex-1 justify-center items-center p-4">
-                                <Text className="text-gray-500">Không tìm thấy xe nào</Text>
+                                <Text className="text-gray-500">
+                                    {searchQuery.trim() ? 'Không tìm thấy xe phù hợp' : 'Không tìm thấy xe nào'}
+                                </Text>
                             </View>
                         )}
                     />
