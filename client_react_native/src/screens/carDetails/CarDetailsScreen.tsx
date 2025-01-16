@@ -6,6 +6,8 @@ import { Bluetooth, Camera, Gauge, Heart, Navigation, Share2, Shield, Timer, X }
 import AmenityIcon from "@components/AmenityIcon";
 import carsApi from "@/api/carsApi";
 import Car from "@/models/Car";
+import {useNavigation} from "@react-navigation/native";
+import {primaryColor, softGrayColor} from "@/utils/constant";
 import { Star , Trash2 } from 'lucide-react-native';
 import reviewsApi from '@/api/reviewsApi';
 import { Alert } from 'react-native';
@@ -24,6 +26,7 @@ interface Review {
 }
 
 const CarDetailsScreen = () => {
+    const navigation = useNavigation();
     const route = useRoute();
     const { carId } = route.params;
     const [carDetails, setCarDetails] = useState<Car | null>(null);
@@ -179,7 +182,7 @@ const CarDetailsScreen = () => {
     if (isLoading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#00BFFF" />
+                <ActivityIndicator size="large" color={primaryColor} />
                 <Text>Loading...</Text>
             </View>
         );
@@ -194,10 +197,10 @@ const CarDetailsScreen = () => {
     }
 
     const specs = [
-        { icon: <Timer size={24} color="#00BFFF" />, value: carDetails.transmission.transmissionType },
-        { icon: <Gauge size={24} color="#00BFFF" />, value: `${carDetails.seats} chỗ` },
-        { icon: <Shield size={24} color="#00BFFF" />, value: carDetails.fuel.fuelType },
-        { icon: <Navigation size={24} color="#00BFFF" />, value: `${carDetails.rangePerChargeOrTank} km` },
+        { icon: <Timer size={24} color={primaryColor} />, value: carDetails.transmission.transmissionType },
+        { icon: <Gauge size={24} color={primaryColor} />, value: `${carDetails.seats} chỗ` },
+        { icon: <Shield size={24} color={primaryColor} />, value: carDetails.fuel.fuelType },
+        { icon: <Navigation size={24} color={primaryColor} />, value: `${carDetails.rangePerChargeOrTank} km` },
     ];
 
     const formatPrice = (price: number) => {
@@ -247,10 +250,15 @@ const CarDetailsScreen = () => {
 
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, paddingTop: 50 }}>
             <ScrollView style={styles.container}>
                 {/* Header */}
                 <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <X size={24} color="#000" />
+                    </TouchableOpacity>
+                    <Text style={styles.carName}>{carDetails.carName}</Text>
+                    <View style={styles.headerIcons}>
                     <TouchableOpacity>
                         <X size={24} color="#333" />
                     </TouchableOpacity>
@@ -421,7 +429,7 @@ const CarDetailsScreen = () => {
             {/* Bottom Bar */}
             <View style={styles.bottomBar}>
                 <Text style={styles.price}>{formatPrice(carDetails.pricePerDay)}/ngày</Text>
-                <Button title="Chọn thuê" color="#00BFFF" onPress={() => {}} />
+                <Button title="Chọn thuê" color={primaryColor} onPress={() => {navigation.navigate('RentScreen', { carId })}} />
             </View>
         </ScrollView>
 
@@ -448,7 +456,7 @@ const styles = StyleSheet.create({
     amenityItem: { flexDirection: "row", alignItems: "center", marginRight: 16 },
     map: { height: 200, marginVertical: 16 },
     bottomBar: { padding: 16, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-    price: { fontSize: 18, fontWeight: "bold", color: "#00BFFF" },
+    price: { fontSize: 18, fontWeight: "bold", color: "#000" },
     loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
     errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
     reviewsContainer: {

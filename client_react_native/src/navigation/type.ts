@@ -16,6 +16,8 @@ export type RootStackParamList = {
     CarDetail: undefined;
     CarDetailScreen: undefined;
     BookingHistory: undefined;
+    RentScreen: undefined;
+    RentSuccess: undefined;
 };
 
 export type MainScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;

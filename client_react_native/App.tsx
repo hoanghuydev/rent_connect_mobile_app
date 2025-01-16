@@ -22,6 +22,9 @@ import ProfileScreen from '@/screens/profile/ProfileScreen';
 import ProfileEditing from '@/screens/profile/ProfileEditing';
 import BookingHistoryScreen from '@/screens/bookingHistory/BookingHistoryScreen';
 import CarDetailsScreen from "@/screens/carDetails/CarDetailsScreen";
+import RentScreen from '@/screens/rent/RentScreen';
+import RentSucccess from '@/screens/rent/RentSuccess';
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -49,6 +52,14 @@ export default function App() {
               headerShown: true,
             }}/>
             <Stack.Screen name="BookingHistory" component={BookingHistoryScreen} />
+            <Stack.Screen name="RentScreen" component={RentScreen} options={{
+              title: "Đặt xe",
+              headerShown: true,
+            }}/>
+            <Stack.Screen name="RentSuccess" component={RentSucccess} options={{
+              title: "Đặt xe",
+              headerShown: true,
+            }}/>
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

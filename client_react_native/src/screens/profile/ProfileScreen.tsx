@@ -5,6 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authApi } from '@/api/authApi';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {primaryColor, softGrayColor} from "@/utils/constant";
+
 
 const ProfileScreen = ({ route }) => {
     const navigation = useNavigation();
@@ -81,7 +83,7 @@ useEffect(() => {
                 <React.Fragment key={index}>
                     <List.Item
                         title={item.title}
-                        left={props => <List.Icon {...props} icon={item.icon} />}
+                        left={props => <List.Icon {...props} icon={item.icon} color={primaryColor}/>}
                         right={props => <List.Icon {...props} icon="chevron-right" />}
                         onPress={() => navigation.navigate(item.screen)}
                         style={styles.menuItem}
