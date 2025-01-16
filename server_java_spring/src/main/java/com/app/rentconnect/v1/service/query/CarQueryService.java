@@ -1,9 +1,13 @@
 package com.app.rentconnect.v1.service.query;
 
 import com.app.rentconnect.v1.dto.car.response.CarResponseDTO;
+import com.app.rentconnect.v1.dto.request.AmenityRequestDTO;
+import com.app.rentconnect.v1.entity.Amenity;
 import com.app.rentconnect.v1.entity.Car;
 import com.app.rentconnect.v1.entity.CarImage;
+import com.app.rentconnect.v1.mapper.AmenityMapper;
 import com.app.rentconnect.v1.mapper.CarMapper;
+import com.app.rentconnect.v1.repository.AmenityRepository;
 import com.app.rentconnect.v1.repository.CarImageRepository;
 import com.app.rentconnect.v1.repository.CarRepository;
 import jakarta.transaction.Transactional;
@@ -25,7 +29,9 @@ import java.util.stream.Collectors;
 public class CarQueryService {
     CarRepository carRepository;
     CarMapper carMapper;
-    private final CarImageRepository carImageRepository;
+    CarImageRepository carImageRepository;
+    AmenityRepository amenityRepository;
+    AmenityMapper amenityMapper;
 
     public CarResponseDTO findCarById(Long id) {
         Car car = carRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("Not found car"));
@@ -48,6 +54,12 @@ public class CarQueryService {
         List<Car> cars = carRepository.findAll();
         return cars.stream()
                 .map(carMapper::toCarResponseDTO)
+                .collect(Collectors.toList());
+    }
+    public List<AmenityRequestDTO> findAllAmenities() {
+        List<Amenity> amenities = amenityRepository.findAll();
+        return amenities.stream()
+                .map(amenityMapper::toRequestDTO)
                 .collect(Collectors.toList());
     }
 }

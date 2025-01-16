@@ -25,6 +25,8 @@ import CarDetailsScreen from "@/screens/carDetails/CarDetailsScreen";
 import RentScreen from '@/screens/rent/RentScreen';
 import RentSucccess from '@/screens/rent/RentSuccess';
 import CreateCar from '@/screens/createCar/CreateCar';
+import {GestureHandlerRootView} from "react-native-gesture-handler";
+import RentDetail from "@/screens/rent/RentDetail";
 
 
 const Tab = createBottomTabNavigator();
@@ -33,37 +35,40 @@ export default function App() {
   return (
     <Provider store={store}>
    <PaperProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-            initialRouteName="Main" // Đặt màn hình chính là MainScreen
-            screenOptions={{
-              headerShown: false, // Ẩn header
-            }}
-        >
-          <Stack.Screen name="Main" component={MainScreen} />
-            <Stack.Screen name="LocationFilter" component={LocationFilterScreen} />
-            <Stack.Screen name="CarDetail" component={CarDetailsScreen} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="DateFilter" component={DateFilterScreen} />
-            <Stack.Screen name="Profile" component={ProfileScreen} />
-            <Stack.Screen name="ProfileEditing" component={ProfileEditing} />
-            <Stack.Screen name="MyVeh" component={MyVehScreen} options={{
-              title: "Xe của tôi",
-              headerShown: true,
-            }}/>
-            <Stack.Screen name="BookingHistory" component={BookingHistoryScreen} />
-            <Stack.Screen name="RentScreen" component={RentScreen} options={{
-              title: "Đặt xe",
-              headerShown: true,
-            }}/>
-            <Stack.Screen name="RentSuccess" component={RentSucccess} options={{
-              title: "Đặt xe",
-              headerShown: true,
-            }}/>
-            <Stack.Screen name="CreateCar" component={CreateCar} />
-        </Stack.Navigator>
-      </NavigationContainer>
+     <GestureHandlerRootView style={{ flex: 1 }}>
+       <NavigationContainer>
+         <Stack.Navigator
+             initialRouteName="Main" // Đặt màn hình chính là MainScreen
+             screenOptions={{
+               headerShown: false, // Ẩn header
+             }}
+         >
+           <Stack.Screen name="Main" component={MainScreen} />
+           <Stack.Screen name="LocationFilter" component={LocationFilterScreen} />
+           <Stack.Screen name="CarDetail" component={CarDetailsScreen} />
+           <Stack.Screen name="Register" component={RegisterScreen} />
+           <Stack.Screen name="Login" component={LoginScreen} />
+           <Stack.Screen name="DateFilter" component={DateFilterScreen} />
+           <Stack.Screen name="Profile" component={ProfileScreen} />
+           <Stack.Screen name="ProfileEditing" component={ProfileEditing} />
+           <Stack.Screen name="MyVeh" component={MyVehScreen} options={{
+             title: "Xe của tôi",
+             headerShown: true,
+           }}/>
+           <Stack.Screen name="BookingHistory" component={BookingHistoryScreen} />
+           <Stack.Screen name="RentScreen" component={RentScreen} options={{
+             title: "Đặt xe",
+             headerShown: true,
+           }}/>
+           <Stack.Screen name="RentSuccess" component={RentSucccess} options={{
+             title: "Đặt xe",
+             headerShown: true,
+           }}/>
+           <Stack.Screen name="CreateCar" component={CreateCar} />
+           <Stack.Screen name="RentDetail" component={RentDetail} />
+         </Stack.Navigator>
+       </NavigationContainer>
+     </GestureHandlerRootView>
     </PaperProvider>
   </Provider>
 

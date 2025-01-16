@@ -14,7 +14,6 @@ export type RootStackParamList = {
     ProfileEditing: undefined;
     MyVeh: undefined;
     CarDetail: undefined;
-    CarDetailScreen: undefined;
     BookingHistory: undefined;
     RentScreen: undefined;
     RentSuccess: undefined;
@@ -27,3 +26,4 @@ export type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 
 export type BookingHistoryScreenNavigationProp = StackNavigationProp<RootStackParamList, 'BookingHistory'>;
 export type LocationFilterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'LocationFilter'>;
 export type DateFilterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'DateFilter'>;
+export type CarDetailScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CarDetail'>;

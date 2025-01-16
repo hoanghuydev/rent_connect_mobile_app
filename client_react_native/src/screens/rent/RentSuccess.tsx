@@ -6,23 +6,26 @@ import {
     SafeAreaView,
     ScrollView,
     TouchableOpacity,
-    Platform
+    Platform,
+    Linking
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Check, Calendar, ArrowRight, Home } from 'lucide-react-native';
 import {primaryColor, softGrayColor} from "@/utils/constant";
+import paymentApi from "@/api/paymentApi";
 
 interface RentalSuccessParams {
     carName: string;
     startDate: Date;
     endDate: Date;
     totalPrice: number;
+    rentalId : number;
 }
 
 const RentalSuccessScreen = () => {
     const route = useRoute();
     const navigation = useNavigation();
-    const { carName, startDate, endDate, totalPrice } = route.params as RentalSuccessParams;
+    const { carName, startDate, endDate, totalPrice,rentalId } = route.params as RentalSuccessParams;
 
     const formatDate = (date: Date) => {
         return new Date(date).toLocaleDateString('vi-VN', {
@@ -39,7 +42,16 @@ const RentalSuccessScreen = () => {
             currency: "VND"
         }).format(price);
     };
-
+    
+    const handlePaymentMomo = async () =>{
+        if (rentalId) {
+            const urlMomo = await paymentApi.createMomoPayment(rentalId);
+            Linking.openURL(urlMomo).catch((err) => {
+                console.error('Error opening MoMo URL:', err);
+            });
+            navigation.navigate('Main')
+        }
+    }
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -99,6 +111,13 @@ const RentalSuccessScreen = () => {
 
             {/* Bottom Buttons */}
             <View style={styles.bottomButtons}>
+                <TouchableOpacity
+                    style={[styles.button, styles.primaryButton]}
+                    onPress={handlePaymentMomo}
+                >
+                    <Home size={20} color="#fff" />
+                    <Text style={styles.primaryButtonText}>Thanh toán</Text>
+                </TouchableOpacity>
                 <TouchableOpacity 
                     style={[styles.button, styles.primaryButton]}
                     onPress={() => navigation.navigate('Main')}

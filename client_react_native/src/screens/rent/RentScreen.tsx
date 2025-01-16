@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { 
-    View, 
-    Text, 
-    Image, 
-    TouchableOpacity, 
-    StyleSheet, 
+import {
+    View,
+    Text,
+    Image,
+    TouchableOpacity,
+    StyleSheet,
     ScrollView,
-    Button, 
+    Button,
     ActivityIndicator,
-    SafeAreaView
+    SafeAreaView, Alert
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { Calendar } from "lucide-react-native";
@@ -84,14 +84,15 @@ const RentScreen = () => {
             const isoEndDate = new Date(endDate).toISOString();
 
             // Gọi API rentCar với các tham số đúng định dạng
-            await rentApi.rentCar(carId, isoStartDate, isoEndDate);
+            const rental = await rentApi.rentCar(carId, isoStartDate, isoEndDate);
     
             // Điều hướng đến màn hình RentSuccess sau khi thuê xe thành công
             navigation.navigate('RentSuccess', {
                 carName: carDetails?.carName,
                 startDate: isoStartDate,
                 endDate: isoEndDate,
-                totalPrice
+                totalPrice,
+                rentalId : rental.rentalId
             });
         } catch (error) {
               console.error("Error creating rental:", error);

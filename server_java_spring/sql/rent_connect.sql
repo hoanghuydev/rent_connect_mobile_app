@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 16, 2025 at 06:52 AM
+-- Generation Time: Jan 16, 2025 at 02:12 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -360,7 +360,7 @@ CREATE TABLE `rentals` (
 --
 
 INSERT INTO `rentals` (`car_id`, `created_at`, `customer_id`, `deleted_at`, `end_date`, `rental_id`, `start_date`, `status`, `paid`, `total_price`, `updated_at`) VALUES
-    (2, '2025-01-16 11:11:27.000000', 17, NULL, '2025-01-25 10:00:00.000000', 1, '2025-01-22 10:00:00.000000', 'REQUESTED', 0, 3300000, '2025-01-16 11:11:27.000000');
+    (2, '2025-01-16 11:11:27.000000', 17, NULL, '2025-01-25 10:00:00.000000', 1, '2025-01-22 10:00:00.000000', 'REQUESTED', 1, 3300000, '2025-01-16 16:06:55.000000');
 
 -- --------------------------------------------------------
 

@@ -325,8 +325,22 @@ const CarDetailsScreen = () => {
                 {/* Location */}
                 <Text style={styles.sectionTitle}>Vị trí xe</Text>
                 <Text>{`${carDetails.location.addressLine}, ${carDetails.location.ward}, ${carDetails.location.district}, ${carDetails.location.province}`}</Text>
-
-
+                {/*<MapView*/}
+                {/*    style={styles.map}*/}
+                {/*    initialRegion={{*/}
+                {/*        latitude: carDetails.location.latitude,*/}
+                {/*        longitude: carDetails.location.longitude,*/}
+                {/*        latitudeDelta: 0.01,*/}
+                {/*        longitudeDelta: 0.01,*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <Marker*/}
+                {/*        coordinate={{*/}
+                {/*            latitude: carDetails.location.latitude,*/}
+                {/*            longitude: carDetails.location.longitude,*/}
+                {/*        }}*/}
+                {/*    />*/}
+                {/*</MapView>*/}
 
 
             {/* review */}

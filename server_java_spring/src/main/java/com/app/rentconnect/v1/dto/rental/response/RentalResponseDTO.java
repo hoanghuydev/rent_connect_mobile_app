@@ -11,6 +11,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
@@ -25,5 +26,7 @@ public class RentalResponseDTO {
     LocalDateTime startDate;
     LocalDateTime endDate;
     Constants.RentalStatus status;
+    boolean paid;
+    BigDecimal totalPrice;
     LocalDateTime createdAt = LocalDateTime.now();
 }

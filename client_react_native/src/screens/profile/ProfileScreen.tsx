@@ -6,11 +6,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authApi } from '@/api/authApi';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {primaryColor, softGrayColor} from "@/utils/constant";
+import UserDetail from "@/models/UserDetail";
 
 
 const ProfileScreen = ({ route }) => {
     const navigation = useNavigation();
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<UserDetail>(null);
     const [loading, setLoading] = useState(true);
     const role = AsyncStorage.getItem('roles');
 
