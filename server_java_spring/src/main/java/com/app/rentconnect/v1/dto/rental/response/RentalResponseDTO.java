@@ -1,6 +1,8 @@
 package com.app.rentconnect.v1.dto.rental.response;
 
 import com.app.rentconnect.v1.Constants;
+import com.app.rentconnect.v1.dto.car.response.CarResponseDTO;
+import com.app.rentconnect.v1.dto.user.response.UserResponseDTO;
 import com.app.rentconnect.v1.entity.Car;
 import com.app.rentconnect.v1.entity.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -18,8 +20,8 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RentalResponseDTO {
     Long rentalId;
-    Car car;
-    User customer;
+    CarResponseDTO car;
+    UserResponseDTO customer;
     LocalDateTime startDate;
     LocalDateTime endDate;
     Constants.RentalStatus status;
