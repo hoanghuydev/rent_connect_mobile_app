@@ -1,48 +1,56 @@
-import {useEffect, useState} from "react";
-import Car from "@/models/Car";
-import carsApi from "@/api/carsApi";
-import carImageApi from "@/api/carImageApi";
-import {Bluetooth, Camera, Gauge, Heart, Navigation, Share2, Shield, Timer, Video, X} from "lucide-react-native";
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import { Bluetooth, Camera, Gauge, Heart, Navigation, Share2, Shield, Timer, Video, X } from 'lucide-react-native';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import Car from '@/models/Car';
+import carsApi from '@/api/carsApi';
 import AmenityIcon from "@components/AmenityIcon";
-import {useRoute} from "@react-navigation/native";
-import {Text, View} from "react-native";
-import MapView, {Marker} from "react-native-maps";
 
-const CarDetailsScreen = () =>{
+const CarDetailsScreen = () => {
     const route = useRoute();
     const { carId } = route.params;
-    const [carDetails,setCarDetails] = useState<Car>();
+    const [carDetails, setCarDetails] = useState<Car>();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const navigation = useNavigation();
+
     async function getCarDetails() {
-        const { data} = await carsApi.getCarDetails(carId);
+        const { data } = await carsApi.getCarDetails(carId);
         setCarDetails(data.car);
     }
 
     useEffect(() => {
         getCarDetails();
     }, []);
+
     if (!carDetails) {
-        return <div className="p-4">Loading...</div>;
+        return (
+            <View className="p-4">
+                <Text>Loading...</Text>
+            </View>
+        );
     }
-
-
 
     const specs = [
         {
-            icon: <Timer className="w-6 h-6" />,
-            value: carDetails.transmission.transmissionType
+            icon: <Timer size={24} color="#22C55E" />,
+            value: carDetails.transmission.transmissionType,
+            label: 'Truyền động'
         },
         {
-            icon: <Timer className="w-6 h-6" />,
-            value: `${carDetails.seats} chỗ`
+            icon: <Timer size={24} color="#22C55E" />,
+            value: `${carDetails.seats} chỗ`,
+            label: 'Số ghế'
         },
         {
-            icon: <Timer className="w-6 h-6" />,
-            value: carDetails.fuel.fuelType
+            icon: <Timer size={24} color="#22C55E" />,
+            value: carDetails.fuel.fuelType,
+            label: 'Nhiên liệu'
         },
         {
-            icon: <Navigation className="w-6 h-6" />,
-            value: carDetails.rangePerChargeOrTank
+            icon: <Navigation size={24} color="#22C55E" />,
+            value: carDetails.rangePerChargeOrTank,
+            label: 'Tiêu hao'
         }
     ];
 
@@ -64,98 +72,119 @@ const CarDetailsScreen = () =>{
             currency: 'VND'
         }).format(price);
     };
+    const goBack = ()=>{
+        navigation.goBack();
+    }
+
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 bg-white">
-                <X className="w-6 h-6" />
-                <h1 className="text-lg font-semibold">{carDetails.carName}</h1>
-                <div className="flex gap-4">
-                    <Share2 className="w-6 h-6" />
-                    <Heart className="w-6 h-6" />
-                </div>
-            </div>
+        <View className="flex-1 bg-gray-50 relative pt-8">
+            <ScrollView>
+                {/* Header */}
+                <View className="flex-row items-center absolute z-40 top-0 left-0 right-0 justify-between p-4 bg-white">
+                    <TouchableOpacity onPress={goBack}>
+                        <X size={24} />
+                    </TouchableOpacity>
+                    <Text className="text-lg font-semibold">{carDetails.carName}</Text>
+                    <View className="flex-row gap-4">
+                        <TouchableOpacity>
+                            <Share2 size={24} />
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Heart size={24} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                {/* Car Image */}
+                <View className="relative w-full mt-16 h-64">
+                    <Image
+                        source={{ uri: carDetails.images[currentImageIndex] }}
+                        className="w-full h-full"
+                        resizeMode="cover"
+                    />
+                    <TouchableOpacity
+                        onPress={handlePrevImage}
+                        className="absolute left-2 top-1/2 bg-black/50 p-2 rounded-full"
+                    >
+                        <Text className="text-white">←</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleNextImage}
+                        className="absolute right-2 top-1/2 bg-black/50 p-2 rounded-full"
+                    >
+                        <Text className="text-white">→</Text>
+                    </TouchableOpacity>
+                    <View className="absolute bottom-4 right-4 bg-black/50 px-2 py-1 rounded">
+                        <Text className="text-white">
+                            {currentImageIndex + 1}/{carDetails.images.length}
+                        </Text>
+                    </View>
+                </View>
 
-            {/* Car Image */}
-            <div className="relative w-full h-64 bg-gray-200">
-                <img
-                    src={carDetails.images[currentImageIndex]}
-                    alt="Car"
-                    className="w-full h-full object-cover"
-                />
-                <button
-                    onClick={handlePrevImage}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
-                >
-                    ←
-                </button>
-                <button
-                    onClick={handleNextImage}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
-                >
-                    →
-                </button>
-                <div className="absolute bottom-4 right-4 text-white bg-black/50 px-2 py-1 rounded">
-                    {currentImageIndex + 1}/{carDetails.images.length}
-                </div>
-            </div>
+                <Text className={"ms-3 my-5 text-xl font-bold"}>{carDetails.carName}</Text>
 
-            {/* Car Info */}
-            <div className="p-4 bg-white">
-                <div className="grid grid-cols-4 gap-4 mb-6">
-                    {specs.map((spec, index) => (
-                        <div key={index} className="text-center flex flex-col justify-center items-center">
-                            <div className="text-green-500 mb-2 w-fit">
-                                {spec.icon}
-                            </div>
-                            <p className="text-sm font-bold w-fit">{spec.value}</p>
-                        </div>
-                    ))}
-                </div>
 
-                <h2 className="font-semibold mb-2">Mô tả</h2>
-                <p className="text-gray-600 mb-4">{carDetails.description}</p>
+                {/* Car Info */}
+                <View className="p-4 bg-white mt-2">
+                    {/* Specs */}
+                    <Text className={"text-lg font-semibold mt-2"}>Đặc điểm</Text>
+                    <View className="flex-row justify-between mb-6">
+                        {specs.map((spec, index) => (
+                            <View key={index} className="items-center">
+                                <View className="mb-2">{spec.icon}</View>
+                                <Text className="text-xs text-gray-500">{spec.label}</Text>
+                                <Text className="text-sm font-bold mt-1">{spec.value}</Text>
+                            </View>
+                        ))}
+                    </View>
 
-                <h2 className="font-semibold mb-2">Các tiện nghi trên xe</h2>
-                <div className="grid grid-cols-2 gap-4">
-                    {carDetails.amenities.map((amenity) => (
-                        <div key={amenity.amenityId} className="flex items-center gap-2 text-gray-600">
-                            <AmenityIcon iconName={amenity.icon}/>
-                            <span>{amenity.amenityName}</span>
-                        </div>
-                    ))}
-                </div>
+                    {/* Description */}
+                    <Text className="font-semibold mb-2">Mô tả</Text>
+                    <Text className="text-gray-600 mb-4">{carDetails.description}</Text>
 
-                <h2 className="font-semibold mt-4 mb-2">Vị trí xe</h2>
-                <Text className="text-gray-600">
-                    {`${carDetails.location.addressLine}, ${carDetails.location.ward}, ${carDetails.location.district}, ${carDetails.location.province}`}
-                </Text>
-                <View>
+                    {/* Amenities */}
+                    <Text className="font-semibold mb-2">Các tiện nghi trên xe</Text>
+                    <View className="flex-row flex-wrap text-gray-500">
+                        {carDetails.amenities.map((amenity) => (
+                            <View
+                                key={amenity.amenityId}
+                                className="w-1/2 flex-row items-center gap-2 mb-4"
+                            >
+                                <AmenityIcon iconName={amenity.icon}/>
+                                <Text className="text-gray-600">{amenity.amenityName}</Text>
+                            </View>
+                        ))}
+                    </View>
+
+                    {/* Location */}
+                    <Text className="font-semibold mt-4 mb-2">Vị trí xe</Text>
+                    <Text className="text-gray-600 mb-4">
+                        {`${carDetails.location.addressLine}, ${carDetails.location.ward}, ${carDetails.location.district}, ${carDetails.location.province}`}
+                    </Text>
                     <MapView
+                        className="flex flex-1 h-screen w-full"
                         initialRegion={{
-                            latitude: carDetails.location.latitude,
-                            longitude: carDetails.location.longitude,
+                            latitude: 37.78825,
+                            longitude: -122.4324,
                             latitudeDelta: 0.0922,
                             longitudeDelta: 0.0421,
-                        }}>
-                        <Marker coordinate={{ latitude: carDetails.location.latitude, longitude: carDetails.location.longitude }} />
-                    </MapView>
+                        }}
+                    />
                 </View>
-            </div>
+            </ScrollView>
 
             {/* Bottom Bar */}
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
-                <div className="flex justify-between items-center mb-2">
-                    <div>
-                        <span className="text-green-500">{formatPrice(carDetails.pricePerDay)}/ngày</span>
-                    </div>
-                </div>
-                <button className="w-full bg-green-500 text-white py-3 rounded-lg">
-                    Chọn thuê
-                </button>
-            </div>
-        </div>
+            <View className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200">
+                <View className="flex-row justify-between items-center mb-2">
+                    <Text className="text-green-500 font-semibold text-lg">
+                        {formatPrice(carDetails.pricePerDay)}/ngày
+                    </Text>
+                </View>
+                <TouchableOpacity className="w-full bg-green-500 p-3 rounded-lg items-center">
+                    <Text className="text-white font-semibold">Chọn thuê</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
     );
 };
 
