@@ -24,6 +24,7 @@ import BookingHistoryScreen from '@/screens/bookingHistory/BookingHistoryScreen'
 import CarDetailsScreen from "@/screens/carDetails/CarDetailsScreen";
 import RentScreen from '@/screens/rent/RentScreen';
 import RentSucccess from '@/screens/rent/RentSuccess';
+import CreateCar from '@/screens/createCar/CreateCar';
 
 
 const Tab = createBottomTabNavigator();
@@ -60,6 +61,7 @@ export default function App() {
               title: "Đặt xe",
               headerShown: true,
             }}/>
+            <Stack.Screen name="CreateCar" component={CreateCar} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
