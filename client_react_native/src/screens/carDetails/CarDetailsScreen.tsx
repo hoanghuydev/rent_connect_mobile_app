@@ -59,102 +59,102 @@ const CarDetailsScreen = () => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView style={styles.container}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity>
-                    <X size={24} color="#333" />
-                </TouchableOpacity>
-                <Text style={styles.carName}>{carDetails.carName}</Text>
-                <View style={styles.headerIcons}>
+            <ScrollView style={styles.container}>
+                {/* Header */}
+                <View style={styles.header}>
                     <TouchableOpacity>
-                        <Share2 size={24} color="#333" />
+                        <X size={24} color="#333" />
                     </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Heart size={24} color="#333" />
+                    <Text style={styles.carName}>{carDetails.carName}</Text>
+                    <View style={styles.headerIcons}>
+                        <TouchableOpacity>
+                            <Share2 size={24} color="#333" />
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Heart size={24} color="#333" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                {/* Car Image */}
+                <View style={styles.imageContainer}>
+                    <Image
+                        source={{ uri: carDetails.images[currentImageIndex] }}
+                        style={styles.image}
+                    />
+                    <TouchableOpacity
+                        onPress={() =>
+                            setCurrentImageIndex((prev) =>
+                                prev === 0 ? carDetails.images.length - 1 : prev - 1
+                            )
+                        }
+                        style={styles.prevButton}
+                    >
+                        <Text style={styles.arrow}>←</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() =>
+                            setCurrentImageIndex((prev) =>
+                                prev === carDetails.images.length - 1 ? 0 : prev + 1
+                            )
+                        }
+                        style={styles.nextButton}
+                    >
+                        <Text style={styles.arrow}>→</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
 
-            {/* Car Image */}
-            <View style={styles.imageContainer}>
-                <Image
-                    source={{ uri: carDetails.images[currentImageIndex] }}
-                    style={styles.image}
-                />
-                <TouchableOpacity
-                    onPress={() =>
-                        setCurrentImageIndex((prev) =>
-                            prev === 0 ? carDetails.images.length - 1 : prev - 1
-                        )
-                    }
-                    style={styles.prevButton}
-                >
-                    <Text style={styles.arrow}>←</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() =>
-                        setCurrentImageIndex((prev) =>
-                            prev === carDetails.images.length - 1 ? 0 : prev + 1
-                        )
-                    }
-                    style={styles.nextButton}
-                >
-                    <Text style={styles.arrow}>→</Text>
-                </TouchableOpacity>
-            </View>
+                {/* Specs */}
+                <View style={styles.specsContainer}>
+                    {specs.map((spec, index) => (
+                        <View key={index} style={styles.specItem}>
+                            {spec.icon}
+                            <Text style={styles.specText}>{spec.value}</Text>
+                        </View>
+                    ))}
+                </View>
 
-            {/* Specs */}
-            <View style={styles.specsContainer}>
-                {specs.map((spec, index) => (
-                    <View key={index} style={styles.specItem}>
-                        {spec.icon}
-                        <Text style={styles.specText}>{spec.value}</Text>
-                    </View>
-                ))}
-            </View>
+                {/* Description */}
+                <Text style={styles.sectionTitle}>Mô tả</Text>
+                <Text style={styles.description}>{carDetails.description}</Text>
 
-            {/* Description */}
-            <Text style={styles.sectionTitle}>Mô tả</Text>
-            <Text style={styles.description}>{carDetails.description}</Text>
+                {/* Amenities */}
+                <Text style={styles.sectionTitle}>Các tiện nghi trên xe</Text>
+                <View style={styles.amenitiesContainer}>
+                    {carDetails.amenities.map((amenity) => (
+                        <View key={amenity.amenityId} style={styles.amenityItem}>
+                            <AmenityIcon iconName={amenity.icon} />
+                            <Text>{amenity.amenityName}</Text>
+                        </View>
+                    ))}
+                </View>
 
-            {/* Amenities */}
-            <Text style={styles.sectionTitle}>Các tiện nghi trên xe</Text>
-            <View style={styles.amenitiesContainer}>
-                {carDetails.amenities.map((amenity) => (
-                    <View key={amenity.amenityId} style={styles.amenityItem}>
-                        <AmenityIcon iconName={amenity.icon} />
-                        <Text>{amenity.amenityName}</Text>
-                    </View>
-                ))}
-            </View>
-
-            {/* Location */}
-            <Text style={styles.sectionTitle}>Vị trí xe</Text>
-            <Text>{`${carDetails.location.addressLine}, ${carDetails.location.ward}, ${carDetails.location.district}, ${carDetails.location.province}`}</Text>
-            <MapView
-                style={styles.map}
-                initialRegion={{
-                    latitude: carDetails.location.latitude,
-                    longitude: carDetails.location.longitude,
-                    latitudeDelta: 0.01,
-                    longitudeDelta: 0.01,
-                }}
-            >
-                <Marker
-                    coordinate={{
+                {/* Location */}
+                <Text style={styles.sectionTitle}>Vị trí xe</Text>
+                <Text>{`${carDetails.location.addressLine}, ${carDetails.location.ward}, ${carDetails.location.district}, ${carDetails.location.province}`}</Text>
+                <MapView
+                    style={styles.map}
+                    initialRegion={{
                         latitude: carDetails.location.latitude,
                         longitude: carDetails.location.longitude,
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01,
                     }}
-                />
-            </MapView>
+                >
+                    <Marker
+                        coordinate={{
+                            latitude: carDetails.location.latitude,
+                            longitude: carDetails.location.longitude,
+                        }}
+                    />
+                </MapView>
 
-            {/* Bottom Bar */}
-            <View style={styles.bottomBar}>
-                <Text style={styles.price}>{formatPrice(carDetails.pricePerDay)}/ngày</Text>
-                <Button title="Chọn thuê" color="#00BFFF" onPress={() => {}} />
-            </View>
-        </ScrollView>
+                {/* Bottom Bar */}
+                <View style={styles.bottomBar}>
+                    <Text style={styles.price}>{formatPrice(carDetails.pricePerDay)}/ngày</Text>
+                    <Button title="Chọn thuê" color="#00BFFF" onPress={() => {}} />
+                </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };

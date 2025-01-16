@@ -25,8 +25,8 @@ public class RentController {
 
 //    @PreAuthorize("hasRole(T(com.app.rentconnect.v1.Constants.Role).CUSTOMER.name())")
     @PostMapping()
-    public ResponseEntity<ApiResponse<RentalResponseDTO>> getCarById(@RequestBody RentalRequestDTO rentalRequestDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Rent car successfully","car",rentalCommandService.rentCar(rentalRequestDTO)));
+    public ResponseEntity<ApiResponse<RentalResponseDTO>> rentCar(@RequestBody RentalRequestDTO rentalRequestDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Rent car successfully","rental",rentalCommandService.rentCar(rentalRequestDTO)));
     }
 
 }
