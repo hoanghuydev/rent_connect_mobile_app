@@ -1,5 +1,6 @@
 package com.app.rentconnect.v1.controller;
 
+import com.app.rentconnect.v1.Constants;
 import com.app.rentconnect.v1.dto.rental.request.RentalRequestDTO;
 import com.app.rentconnect.v1.dto.rental.response.RentalResponseDTO;
 import com.app.rentconnect.v1.dto.response.ApiResponse;
@@ -38,6 +39,24 @@ public class RentController {
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<ApiResponse<List<RentalResponseDTO>>> getRentalsByCustomer(@PathVariable Long customerId) {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Rent car successfully","rental",rentalQueryService.findAllByCustomerId(customerId)));
+    }
+
+    @PostMapping("/{rentalId}/approve")
+    public ResponseEntity<ApiResponse<RentalResponseDTO>> approveRental(@PathVariable Long rentalId) {
+        RentalResponseDTO rentalResponseDTO = rentalCommandService.updateStatusRental(rentalId, Constants.RentalStatus.APPROVED);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Approved","rental",rentalResponseDTO));
+    }
+
+    @PostMapping("/{rentalId}/cancel")
+    public ResponseEntity<ApiResponse<RentalResponseDTO>> cancelRental(@PathVariable Long rentalId) {
+        RentalResponseDTO rentalResponseDTO = rentalCommandService.updateStatusRental(rentalId, Constants.RentalStatus.CANCELED);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Canceled","rental",rentalResponseDTO));
+    }
+
+    @PostMapping("/{rentalId}/reject")
+    public ResponseEntity<ApiResponse<RentalResponseDTO>> rejectRetanl(@PathVariable Long rentalId) {
+        RentalResponseDTO rentalResponseDTO = rentalCommandService.updateStatusRental(rentalId, Constants.RentalStatus.REJECTED);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Rejected success","rental",rentalResponseDTO));
     }
 
 }

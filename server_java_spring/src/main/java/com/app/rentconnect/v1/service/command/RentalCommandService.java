@@ -60,4 +60,10 @@ public class RentalCommandService {
         rental = rentalRepository.save(rental);
         return rental;
     }
+    public RentalResponseDTO updateStatusRental(Long id,Constants.RentalStatus status) {
+        Rental rental = rentalQueryService.findRentalById(id);
+        rental.setStatus(status);
+        rental = rentalRepository.save(rental);
+        return rentalMapper.toResponseDTO(rental);
+    }
 }
