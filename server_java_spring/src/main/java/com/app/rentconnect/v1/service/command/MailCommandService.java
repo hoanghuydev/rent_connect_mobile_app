@@ -14,7 +14,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
-
 public class MailCommandService {
     private final ExecutorService executorService = Executors.newFixedThreadPool(3);
 

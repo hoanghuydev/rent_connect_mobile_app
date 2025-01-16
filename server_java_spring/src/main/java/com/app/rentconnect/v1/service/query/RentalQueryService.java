@@ -1,5 +1,6 @@
 package com.app.rentconnect.v1.service.query;
 
+import com.app.rentconnect.v1.entity.Rental;
 import com.app.rentconnect.v1.repository.RentalRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,5 +14,8 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RentalQueryService {
     RentalRepository rentalRepository;
+    public Rental findRentalById(Long id) {
+        return rentalRepository.findById(id).orElseThrow(()-> new RuntimeException("Rental not found"));
+    }
 
 }

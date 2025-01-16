@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,13 +31,15 @@ public class Rental {
     @JoinColumn(name = "customer_id", nullable = false)
     User customer;
 
-    //missing owner with user class
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    User owner;
-
     @Column(nullable = false)
     LocalDateTime startDate;
+
+    @Column(columnDefinition = "boolean default true")
+    boolean paid;
+
+    @Column(columnDefinition = "int default 0")
+    BigDecimal totalPrice;
+
 
     @Column(nullable = false)
     LocalDateTime endDate;
@@ -49,5 +52,19 @@ public class Rental {
     @CreatedDate
     LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    LocalDateTime updatedAt = LocalDateTime.now();
+
     LocalDateTime deletedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
