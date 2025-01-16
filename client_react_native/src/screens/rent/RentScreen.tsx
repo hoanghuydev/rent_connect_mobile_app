@@ -19,10 +19,9 @@ import rentApi from '@/api/rentApi';
 import {primaryColor, softGrayColor} from "@/utils/constant";
 
 interface RentalData {
-    carId: string;
+    carId: number;
     startDate: Date;
     endDate: Date;
-    totalPrice: number;
 }
 
 const RentScreen = () => {
@@ -83,9 +82,9 @@ const RentScreen = () => {
             // Chuyển đổi startDate và endDate thành ISO string
             const isoStartDate = new Date(startDate).toISOString();
             const isoEndDate = new Date(endDate).toISOString();
-    
+
             // Gọi API rentCar với các tham số đúng định dạng
-            // await rentApi.rentCar(carId, isoStartDate, isoEndDate);
+            await rentApi.rentCar(carId, isoStartDate, isoEndDate);
     
             // Điều hướng đến màn hình RentSuccess sau khi thuê xe thành công
             navigation.navigate('RentSuccess', {
@@ -95,11 +94,15 @@ const RentScreen = () => {
                 totalPrice
             });
         } catch (error) {
-            console.error("Error creating rental:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+              console.error("Error creating rental:", error);
+              Alert.alert(
+                  'Lỗi',
+                  'Có lỗi xảy ra khi đặt xe. Vui lòng thử lại sau.'
+              );
+          } finally {
+              setIsLoading(false);
+          }
+      };
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat("vi-VN", { 

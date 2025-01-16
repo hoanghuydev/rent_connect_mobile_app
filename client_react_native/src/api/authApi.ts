@@ -52,16 +52,18 @@ export const authApi = {
         if (apiResponse && apiResponse.status === 202) { // Kiểm tra trạng thái phản hồi
           const { user, token } = apiResponse.data.data; // Trích xuất dữ liệu token
 
+            const token2 = token.replace('Bearer ', '');
+
           // Lưu trữ token và thông tin người dùng vào AsyncStorage
-          await AsyncStorage.setItem('token', token);
-          await tokenManager.setToken(token);
+          await AsyncStorage.setItem('token', token2);
+          await tokenManager.setToken(token2);
           await AsyncStorage.setItem('user', JSON.stringify(user));
           const userData = new User(user);
           await UserManager.setUser(userData);
 
           console.log('Login success:', response);
 
-          return { success: true, token };
+          return { success: true, token2 };
         } else {
           throw new Error(apiResponse.message || 'Đăng nhập thất bại.');
         }
