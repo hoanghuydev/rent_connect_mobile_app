@@ -1,55 +1,39 @@
-//cần sửa
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { axiosToken } from './axios';
-import UserManager from '@/utils/UserManager'; // Nếu bạn đã có UserManager
-import { User } from '@/models/User'; // Nếu bạn đã có model User
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RENT_API = '/rent';
 
 const rentApi = {
-    // Thuê xe với carId, startDate và endDate
     rentCar: async (carId: number, startDate: string, endDate: string) => {
         try {
-            // Kiểm tra thông tin người dùng
-            let userId = UserManager.getUser()?.userId;
+            // Lấy token không bao gồm phần "Bearer"
+            const fullToken = await AsyncStorage.getItem('token');
+            const token = fullToken?.replace('Bearer ', '');
 
-            // Nếu không có userId trong bộ nhớ, kiểm tra AsyncStorage
-            if (!userId) {
-                const storedUser = await AsyncStorage.getItem('user');
-                if (storedUser) {
-                    const parsedUser = JSON.parse(storedUser);
-                    userId = parsedUser.userId;
-                }
+            if (!token) {
+                throw new Error('Vui lòng đăng nhập để đặt xe');
             }
 
-            // Nếu không tìm thấy userId, báo lỗi
-            if (!userId) {
-                console.error('User ID not found.');
-                throw new Error('User not logged in or user ID not available.');
-            }
+            console.log('Sending request with token:', token);
 
-            // Lấy token từ AsyncStorage và kiểm tra
-            const token = await AsyncStorage.getItem('token');
-            console.log('Access Token:', token);  // Kiểm tra token
-
-            if (!token || token.split('.').length !== 3) {
-                console.error('Invalid token format');
-                throw new Error('Invalid token format');
-            }
-
-            // Thêm token vào header Authorization
-            const rentalData = { carId, userId, startDate, endDate };
-            const response = await axiosToken.post(`${RENT_API}`, rentalData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+            const response = await axiosToken.post(`${RENT_API}`, {
+                carId,
+                startDate,
+                endDate
             });
 
-            // Trả về kết quả từ API
+            console.log('Rent response:', response.data);
             return response.data;
+
         } catch (error: any) {
-            console.error('Rent car error:', error.response?.data || error);
-            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi thuê xe');
+            console.error('Rent car error details:', error.response || error);
+            if (error.response?.status === 401) {
+                throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại');
+            }
+            if (error.response?.status === 500) {
+                throw new Error('Ngày bạn chọn đã được thuê. Vui lòng chọn ngày khác!');
+            }
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi đặt xe');
         }
     },
 };
