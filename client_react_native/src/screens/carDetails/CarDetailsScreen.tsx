@@ -272,6 +272,7 @@ const CarDetailsScreen = () => {
                         </TouchableOpacity>
                     </View>
                 </View>
+                </View>
 
                 {/* Car Image */}
                 <View style={styles.imageContainer}>
