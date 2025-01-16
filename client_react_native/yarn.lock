@@ -1509,6 +1509,19 @@
     find-up "^5.0.0"
     js-yaml "^4.1.0"
 
+"@googlemaps/js-api-loader@1.16.8":
+  version "1.16.8"
+  resolved "https://registry.npmjs.org/@googlemaps/js-api-loader/-/js-api-loader-1.16.8.tgz"
+  integrity sha512-CROqqwfKotdO6EBjZO/gQGVTbeDps5V7Mt9+8+5Q+jTg5CRMi3Ii/L9PmV3USROrt2uWxtGzJHORmByxyo9pSQ==
+
+"@googlemaps/markerclusterer@2.5.3":
+  version "2.5.3"
+  resolved "https://registry.npmjs.org/@googlemaps/markerclusterer/-/markerclusterer-2.5.3.tgz"
+  integrity sha512-x7lX0R5yYOoiNectr10wLgCBasNcXFHiADIBdmn7jQllF2B5ENQw5XtZK+hIw4xnV0Df0xhN4LN98XqA5jaiOw==
+  dependencies:
+    fast-deep-equal "^3.1.3"
+    supercluster "^8.0.1"
+
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
   resolved "https://registry.npmjs.org/@isaacs/cliui/-/cliui-8.0.2.tgz"
@@ -1690,6 +1703,28 @@
   version "0.11.0"
   resolved "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
+
+"@react-google-maps/api@^2.12.0":
+  version "2.20.5"
+  resolved "https://registry.npmjs.org/@react-google-maps/api/-/api-2.20.5.tgz"
+  integrity sha512-Dx3faV4d7JXFSD7SB8ePIt5LOB72mNGHKFp/hIQVaPEsLJlEi4ID+XL6HM3Xw10AzGbr4KS/eQSi3OAaN7YttQ==
+  dependencies:
+    "@googlemaps/js-api-loader" "1.16.8"
+    "@googlemaps/markerclusterer" "2.5.3"
+    "@react-google-maps/infobox" "2.20.0"
+    "@react-google-maps/marker-clusterer" "2.20.0"
+    "@types/google.maps" "3.58.1"
+    invariant "2.2.4"
+
+"@react-google-maps/infobox@2.20.0":
+  version "2.20.0"
+  resolved "https://registry.npmjs.org/@react-google-maps/infobox/-/infobox-2.20.0.tgz"
+  integrity sha512-03PJHjohhaVLkX6+NHhlr8CIlvUxWaXhryqDjyaZ8iIqqix/nV8GFdz9O3m5OsjtxtNho09F/15j14yV0nuyLQ==
+
+"@react-google-maps/marker-clusterer@2.20.0":
+  version "2.20.0"
+  resolved "https://registry.npmjs.org/@react-google-maps/marker-clusterer/-/marker-clusterer-2.20.0.tgz"
+  integrity sha512-tieX9Va5w1yP88vMgfH1pHTacDQ9TgDTjox3tLlisKDXRQWdjw+QeVVghhf5XqqIxXHgPdcGwBvKY6UP+SIvLw==
 
 "@react-native-async-storage/async-storage@^2.1.0":
   version "2.1.0"
@@ -1948,6 +1983,15 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
+"@teovilla/react-native-web-maps@^0.9.5":
+  version "0.9.5"
+  resolved "https://registry.npmjs.org/@teovilla/react-native-web-maps/-/react-native-web-maps-0.9.5.tgz"
+  integrity sha512-gyVqyzb7PypH3bD4s3GmLK8Xv8KUNNedyXVjzASmTO1QKbMyoadjKaSrBWJezShbs3nz6JEL6OZchx9ccwMbjA==
+  dependencies:
+    "@react-google-maps/api" "^2.12.0"
+    expo-location "~15.1.1"
+    supercluster "^7.1.5"
+
 "@tsconfig/react-native@^3.0.5":
   version "3.0.5"
   resolved "https://registry.npmjs.org/@tsconfig/react-native/-/react-native-3.0.5.tgz"
@@ -1990,6 +2034,11 @@
   version "7946.0.15"
   resolved "https://registry.npmjs.org/@types/geojson/-/geojson-7946.0.15.tgz"
   integrity sha512-9oSxFzDCT2Rj6DfcHF8G++jxBKS7mBqXl5xrRW+Kbvjry6Uduya2iiwqHPhVXpasAVMBYKkEPGgKhd3+/HZ6xA==
+
+"@types/google.maps@3.58.1":
+  version "3.58.1"
+  resolved "https://registry.npmjs.org/@types/google.maps/-/google.maps-3.58.1.tgz"
+  integrity sha512-X9QTSvGJ0nCfMzYOnaVs/k6/4L+7F5uCS+4iUmkLEls6J9S/Phv+m/i3mDeyc49ZBgwab3EFO1HEoBY7k98EGQ==
 
 "@types/graceful-fs@^4.1.3":
   version "4.1.9"
@@ -3528,6 +3577,11 @@ expo-linking@~7.0.4:
     expo-constants "~17.0.4"
     invariant "^2.2.4"
 
+expo-location@~15.1.1:
+  version "15.1.1"
+  resolved "https://registry.npmjs.org/expo-location/-/expo-location-15.1.1.tgz"
+  integrity sha512-hoKRlmi6Ya+NeZ72Zt385SDcSsIDpJI60TCBVO+Hc9xfKA9Hyminyyo5WiwI8J03igmPTCl8Y37MxBNKY9AWkg==
+
 expo-modules-autolinking@2.0.2:
   version "2.0.2"
   resolved "https://registry.npmjs.org/expo-modules-autolinking/-/expo-modules-autolinking-2.0.2.tgz"
@@ -4542,6 +4596,16 @@ jwt-decode@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/jwt-decode/-/jwt-decode-4.0.0.tgz"
   integrity sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==
+
+kdbush@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/kdbush/-/kdbush-3.0.0.tgz"
+  integrity sha512-hRkd6/XW4HTsA9vjVpY9tuXJYLSlelnkTmVFu4M9/7MIYQtFcHpbugAU7UbOfjOiVSVYl2fqgBuJ32JUmRo5Ew==
+
+kdbush@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.npmjs.org/kdbush/-/kdbush-4.0.2.tgz"
+  integrity sha512-WbCVYJ27Sz8zi9Q7Q0xHC+05iwkm3Znipc2XTlrnJbsHMYktW4hPhXUE8Ys1engBrvffoSCqbil1JQAa7clRpA==
 
 kind-of@^6.0.2:
   version "6.0.3"
@@ -5720,7 +5784,7 @@ react-devtools-core@^5.3.1:
     shell-quote "^1.6.1"
     ws "^7"
 
-react-dom@^18.0.0:
+"react-dom@^16.8 || ^17 || ^18 || ^19", react-dom@^18.0.0:
   version "18.3.1"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz"
   integrity sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==
@@ -5798,7 +5862,7 @@ react-native-gesture-handler@*, react-native-gesture-handler@^2.21.2, "react-nat
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-maps@^1.20.1:
+react-native-maps@*, react-native-maps@^1.20.1:
   version "1.20.1"
   resolved "https://registry.npmjs.org/react-native-maps/-/react-native-maps-1.20.1.tgz"
   integrity sha512-NZI3B5Z6kxAb8gzb2Wxzu/+P2SlFIg1waHGIpQmazDSCRkNoHNY4g96g+xS0QPSaG/9xRBbDNnd2f2/OW6t6LQ==
@@ -5818,6 +5882,11 @@ react-native-paper@^5.12.5:
     "@callstack/react-theme-provider" "^3.0.9"
     color "^3.1.2"
     use-latest-callback "^0.1.5"
+
+react-native-permissions@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.npmjs.org/react-native-permissions/-/react-native-permissions-5.2.3.tgz"
+  integrity sha512-HGcMxGkfPUhhnWnQRkeihqiUdF5FrXVYbvwduyzeqsDLDfEJcQqVF6vPvNkVx74XhN5XgrcjPQh1RV8Owf9hhg==
 
 react-native-reanimated@*, react-native-reanimated@>=2.0.0, react-native-reanimated@>=3.6.2, react-native-reanimated@~3.16.1:
   version "3.16.3"
@@ -5923,7 +5992,7 @@ react-native-web@^0.19.13, "react-native-web@>= 0.11":
     postcss-value-parser "^4.2.0"
     styleq "^0.1.3"
 
-react-native@*, "react-native@^0.0.0-0 || >=0.65 <1.0", react-native@^0.76.2, "react-native@>= 0.30.0", "react-native@>= 0.64.3", react-native@>=0.59.0, react-native@>=0.63.0, react-native@>=0.64.1:
+react-native@*, "react-native@^0.0.0-0 || >=0.65 <1.0", react-native@^0.76.2, "react-native@>= 0.30.0", "react-native@>= 0.64.3", react-native@>=0.59.0, react-native@>=0.63.0, react-native@>=0.64.1, react-native@>=0.70.0:
   version "0.76.2"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.76.2.tgz"
   integrity sha512-mkEBKGOmJxhfq8IOsvmk0QuTzlBt9vS+uo0gwbqfUmEDqoC359v80zhUf94WimYBrBkpRQWFbEu5iqMDHrYzlQ==
@@ -5980,7 +6049,7 @@ react-refresh@^0.14.0, react-refresh@^0.14.2:
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.14.2.tgz"
   integrity sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==
 
-react@*, "react@^16.5.1 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.0, react@^18.0.0, react@^18.2.0, react@^18.3.1, "react@>= 15.2.1", "react@>= 17.0.1", "react@>= 18.2.0", react@>=16.3.0, react@>=16.8, react@>=17.0.0, react@>=17.0.1, react@>=18:
+react@*, "react@^16.5.1 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17 || ^18 || ^19", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.0, react@^18.0.0, react@^18.2.0, react@^18.3.1, "react@>= 15.2.1", "react@>= 17.0.1", "react@>= 18.2.0", react@>=16.3.0, react@>=16.8, react@>=17.0.0, react@>=17.0.1, react@>=18, react@>=18.1.0:
   version "18.3.1"
   resolved "https://registry.npmjs.org/react/-/react-18.3.1.tgz"
   integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
@@ -6627,6 +6696,20 @@ sudo-prompt@9.1.1:
   version "9.1.1"
   resolved "https://registry.npmjs.org/sudo-prompt/-/sudo-prompt-9.1.1.tgz"
   integrity sha512-es33J1g2HjMpyAhz8lOR+ICmXXAqTuKbuXuUWLhOLew20oN9oUCgCJx615U/v7aioZg7IX5lIh9x34vwneu4pA==
+
+supercluster@^7.1.5:
+  version "7.1.5"
+  resolved "https://registry.npmjs.org/supercluster/-/supercluster-7.1.5.tgz"
+  integrity sha512-EulshI3pGUM66o6ZdH3ReiFcvHpM3vAigyK+vcxdjpJyEbIIrtbmBdY23mGgnI24uXiGFvrGq9Gkum/8U7vJWg==
+  dependencies:
+    kdbush "^3.0.0"
+
+supercluster@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.npmjs.org/supercluster/-/supercluster-8.0.1.tgz"
+  integrity sha512-IiOea5kJ9iqzD2t7QJq/cREyLHTtSmUT6gQsweojg9WH2sYJqZK9SswTu6jrscO6D1G5v5vYZ9ru/eq85lXeZQ==
+  dependencies:
+    kdbush "^4.0.2"
 
 supports-color@^5.3.0:
   version "5.5.0"

@@ -26,7 +26,7 @@ public class CarResponseDTO {
     String carName;
     String description;
     BigDecimal pricePerDay;
-    int timesRented = 0;
+    int timesRented;
     TransmissionRequestDTO transmission;
     int seats;
     FuelRequestDTO fuel;

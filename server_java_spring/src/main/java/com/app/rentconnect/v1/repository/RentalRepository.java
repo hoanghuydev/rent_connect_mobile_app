@@ -7,7 +7,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 
-public interface RentalRepository extends JpaRepository<Rental, Integer> {
+public interface RentalRepository extends JpaRepository<Rental, Long> {
     @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END FROM Rental r WHERE r.car.carId = :carId AND ((r.startDate <= :endDate AND r.endDate >= :startDate))")
     boolean existsByRentalPeriod(LocalDateTime startDate,LocalDateTime endDate,Long carId);
+
+
 }

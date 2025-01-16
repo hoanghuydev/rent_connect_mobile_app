@@ -107,6 +107,7 @@ export const authApi = {
     }
   },
   updateUser: async () => { //apiUpdateUser
+
     try {
     } catch (error) {
   }
