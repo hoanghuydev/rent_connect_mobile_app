@@ -1,191 +1,186 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import { Bluetooth, Camera, Gauge, Heart, Navigation, Share2, Shield, Timer, Video, X } from 'lucide-react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import Car from '@/models/Car';
-import carsApi from '@/api/carsApi';
+import React, { useEffect, useState } from "react";
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, Button, ActivityIndicator, SafeAreaView } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import MapView, { Marker } from "react-native-maps";
+import { Bluetooth, Camera, Gauge, Heart, Navigation, Share2, Shield, Timer, X } from "lucide-react-native";
 import AmenityIcon from "@components/AmenityIcon";
+import carsApi from "@/api/carsApi";
+import Car from "@/models/Car";
 
 const CarDetailsScreen = () => {
     const route = useRoute();
     const { carId } = route.params;
-    const [carDetails, setCarDetails] = useState<Car>();
+    const [carDetails, setCarDetails] = useState<Car | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const navigation = useNavigation();
+    const [isLoading, setIsLoading] = useState(true);
 
-    async function getCarDetails() {
-        const { data } = await carsApi.getCarDetails(carId);
-        setCarDetails(data.car);
-    }
+    const getCarDetails = async () => {
+        try {
+            const { data } = await carsApi.getCarDetails(carId);
+            setCarDetails(data.car);
+        } catch (error) {
+            console.error("Error fetching car details:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
         getCarDetails();
     }, []);
 
-    if (!carDetails) {
+    if (isLoading) {
         return (
-            <View className="p-4">
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#00BFFF" />
                 <Text>Loading...</Text>
             </View>
         );
     }
 
-    const specs = [
-        {
-            icon: <Timer size={24} color="#22C55E" />,
-            value: carDetails.transmission.transmissionType,
-            label: 'Truyền động'
-        },
-        {
-            icon: <Timer size={24} color="#22C55E" />,
-            value: `${carDetails.seats} chỗ`,
-            label: 'Số ghế'
-        },
-        {
-            icon: <Timer size={24} color="#22C55E" />,
-            value: carDetails.fuel.fuelType,
-            label: 'Nhiên liệu'
-        },
-        {
-            icon: <Navigation size={24} color="#22C55E" />,
-            value: carDetails.rangePerChargeOrTank,
-            label: 'Tiêu hao'
-        }
-    ];
-
-    const handleNextImage = () => {
-        setCurrentImageIndex((prev) =>
-            prev === carDetails.images.length - 1 ? 0 : prev + 1
+    if (!carDetails) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text>Unable to load car details. Please try again later.</Text>
+            </View>
         );
-    };
-
-    const handlePrevImage = () => {
-        setCurrentImageIndex((prev) =>
-            prev === 0 ? carDetails.images.length - 1 : prev - 1
-        );
-    };
-
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('vi-VN', {
-            style: 'currency',
-            currency: 'VND'
-        }).format(price);
-    };
-    const goBack = ()=>{
-        navigation.goBack();
     }
 
+    const specs = [
+        { icon: <Timer size={24} color="#00BFFF" />, value: carDetails.transmission.transmissionType },
+        { icon: <Gauge size={24} color="#00BFFF" />, value: `${carDetails.seats} chỗ` },
+        { icon: <Shield size={24} color="#00BFFF" />, value: carDetails.fuel.fuelType },
+        { icon: <Navigation size={24} color="#00BFFF" />, value: `${carDetails.rangePerChargeOrTank} km` },
+    ];
+
+    const formatPrice = (price: number) => {
+        return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
+    };
 
     return (
-        <View className="flex-1 bg-gray-50 relative pt-8">
-            <ScrollView>
+        <SafeAreaView style={{ flex: 1 }}>
+            <ScrollView style={styles.container}>
                 {/* Header */}
-                <View className="flex-row items-center absolute z-40 top-0 left-0 right-0 justify-between p-4 bg-white">
-                    <TouchableOpacity onPress={goBack}>
-                        <X size={24} />
+                <View style={styles.header}>
+                    <TouchableOpacity>
+                        <X size={24} color="#333" />
                     </TouchableOpacity>
-                    <Text className="text-lg font-semibold">{carDetails.carName}</Text>
-                    <View className="flex-row gap-4">
+                    <Text style={styles.carName}>{carDetails.carName}</Text>
+                    <View style={styles.headerIcons}>
                         <TouchableOpacity>
-                            <Share2 size={24} />
+                            <Share2 size={24} color="#333" />
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Heart size={24} />
+                            <Heart size={24} color="#333" />
                         </TouchableOpacity>
                     </View>
                 </View>
+
                 {/* Car Image */}
-                <View className="relative w-full mt-16 h-64">
+                <View style={styles.imageContainer}>
                     <Image
                         source={{ uri: carDetails.images[currentImageIndex] }}
-                        className="w-full h-full"
-                        resizeMode="cover"
+                        style={styles.image}
                     />
                     <TouchableOpacity
-                        onPress={handlePrevImage}
-                        className="absolute left-2 top-1/2 bg-black/50 p-2 rounded-full"
+                        onPress={() =>
+                            setCurrentImageIndex((prev) =>
+                                prev === 0 ? carDetails.images.length - 1 : prev - 1
+                            )
+                        }
+                        style={styles.prevButton}
                     >
-                        <Text className="text-white">←</Text>
+                        <Text style={styles.arrow}>←</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={handleNextImage}
-                        className="absolute right-2 top-1/2 bg-black/50 p-2 rounded-full"
+                        onPress={() =>
+                            setCurrentImageIndex((prev) =>
+                                prev === carDetails.images.length - 1 ? 0 : prev + 1
+                            )
+                        }
+                        style={styles.nextButton}
                     >
-                        <Text className="text-white">→</Text>
+                        <Text style={styles.arrow}>→</Text>
                     </TouchableOpacity>
-                    <View className="absolute bottom-4 right-4 bg-black/50 px-2 py-1 rounded">
-                        <Text className="text-white">
-                            {currentImageIndex + 1}/{carDetails.images.length}
-                        </Text>
-                    </View>
                 </View>
 
-                <Text className={"ms-3 my-5 text-xl font-bold"}>{carDetails.carName}</Text>
+                {/* Specs */}
+                <View style={styles.specsContainer}>
+                    {specs.map((spec, index) => (
+                        <View key={index} style={styles.specItem}>
+                            {spec.icon}
+                            <Text style={styles.specText}>{spec.value}</Text>
+                        </View>
+                    ))}
+                </View>
 
+                {/* Description */}
+                <Text style={styles.sectionTitle}>Mô tả</Text>
+                <Text style={styles.description}>{carDetails.description}</Text>
 
-                {/* Car Info */}
-                <View className="p-4 bg-white mt-2">
-                    {/* Specs */}
-                    <Text className={"text-lg font-semibold mt-2"}>Đặc điểm</Text>
-                    <View className="flex-row justify-between mb-6">
-                        {specs.map((spec, index) => (
-                            <View key={index} className="items-center">
-                                <View className="mb-2">{spec.icon}</View>
-                                <Text className="text-xs text-gray-500">{spec.label}</Text>
-                                <Text className="text-sm font-bold mt-1">{spec.value}</Text>
-                            </View>
-                        ))}
-                    </View>
+                {/* Amenities */}
+                <Text style={styles.sectionTitle}>Các tiện nghi trên xe</Text>
+                <View style={styles.amenitiesContainer}>
+                    {carDetails.amenities.map((amenity) => (
+                        <View key={amenity.amenityId} style={styles.amenityItem}>
+                            <AmenityIcon iconName={amenity.icon} />
+                            <Text>{amenity.amenityName}</Text>
+                        </View>
+                    ))}
+                </View>
 
-                    {/* Description */}
-                    <Text className="font-semibold mb-2">Mô tả</Text>
-                    <Text className="text-gray-600 mb-4">{carDetails.description}</Text>
-
-                    {/* Amenities */}
-                    <Text className="font-semibold mb-2">Các tiện nghi trên xe</Text>
-                    <View className="flex-row flex-wrap text-gray-500">
-                        {carDetails.amenities.map((amenity) => (
-                            <View
-                                key={amenity.amenityId}
-                                className="w-1/2 flex-row items-center gap-2 mb-4"
-                            >
-                                <AmenityIcon iconName={amenity.icon}/>
-                                <Text className="text-gray-600">{amenity.amenityName}</Text>
-                            </View>
-                        ))}
-                    </View>
-
-                    {/* Location */}
-                    <Text className="font-semibold mt-4 mb-2">Vị trí xe</Text>
-                    <Text className="text-gray-600 mb-4">
-                        {`${carDetails.location.addressLine}, ${carDetails.location.ward}, ${carDetails.location.district}, ${carDetails.location.province}`}
-                    </Text>
-                    <MapView
-                        className="flex flex-1 h-screen w-full"
-                        initialRegion={{
-                            latitude: 37.78825,
-                            longitude: -122.4324,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
+                {/* Location */}
+                <Text style={styles.sectionTitle}>Vị trí xe</Text>
+                <Text>{`${carDetails.location.addressLine}, ${carDetails.location.ward}, ${carDetails.location.district}, ${carDetails.location.province}`}</Text>
+                <MapView
+                    style={styles.map}
+                    initialRegion={{
+                        latitude: carDetails.location.latitude,
+                        longitude: carDetails.location.longitude,
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01,
+                    }}
+                >
+                    <Marker
+                        coordinate={{
+                            latitude: carDetails.location.latitude,
+                            longitude: carDetails.location.longitude,
                         }}
                     />
+                </MapView>
+
+                {/* Bottom Bar */}
+                <View style={styles.bottomBar}>
+                    <Text style={styles.price}>{formatPrice(carDetails.pricePerDay)}/ngày</Text>
+                    <Button title="Chọn thuê" color="#00BFFF" onPress={() => {}} />
                 </View>
             </ScrollView>
-
-            {/* Bottom Bar */}
-            <View className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200">
-                <View className="flex-row justify-between items-center mb-2">
-                    <Text className="text-green-500 font-semibold text-lg">
-                        {formatPrice(carDetails.pricePerDay)}/ngày
-                    </Text>
-                </View>
-                <TouchableOpacity className="w-full bg-green-500 p-3 rounded-lg items-center">
-                    <Text className="text-white font-semibold">Chọn thuê</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+        </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    container: { flex: 1, backgroundColor: "#f9f9f9" },
+    header: { flexDirection: "row", justifyContent: "space-between", padding: 16, backgroundColor: "#fff" },
+    carName: { fontSize: 18, fontWeight: "bold" },
+    headerIcons: { flexDirection: "row", gap: 16 },
+    imageContainer: { position: "relative", height: 200 },
+    image: { width: "100%", height: "100%", resizeMode: "cover" },
+    prevButton: { position: "absolute", left: 10, top: "50%", backgroundColor: "#00000088", padding: 8 },
+    nextButton: { position: "absolute", right: 10, top: "50%", backgroundColor: "#00000088", padding: 8 },
+    arrow: { color: "#fff", fontSize: 20 },
+    specsContainer: { flexDirection: "row", justifyContent: "space-around", padding: 16, backgroundColor: "#fff" },
+    specItem: { alignItems: "center" },
+    specText: { marginTop: 4, fontSize: 14, color: "#333" },
+    sectionTitle: { fontSize: 16, fontWeight: "bold", padding: 16 },
+    description: { padding: 16, color: "#555" },
+    amenitiesContainer: { flexDirection: "row", flexWrap: "wrap", padding: 16 },
+    amenityItem: { flexDirection: "row", alignItems: "center", marginRight: 16 },
+    map: { height: 200, marginVertical: 16 },
+    bottomBar: { padding: 16, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+    price: { fontSize: 18, fontWeight: "bold", color: "#00BFFF" },
+    loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+    errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+});
 
 export default CarDetailsScreen;
