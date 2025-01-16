@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,11 +24,15 @@ public class RentController {
 
     RentalCommandService rentalCommandService;
     RentalQueryService rentalQueryService;
+    SimpMessagingTemplate messagingTemplate;
 
     //    @PreAuthorize("hasRole(T(com.app.rentconnect.v1.Constants.Role).CUSTOMER.name())")
     @PostMapping()
     public ResponseEntity<ApiResponse<RentalResponseDTO>> rentCar(@RequestBody RentalRequestDTO rentalRequestDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Rent car successfully","rental",rentalCommandService.rentCar(rentalRequestDTO)));
+        RentalResponseDTO rentalResponseDTO = rentalCommandService.rentCar(rentalRequestDTO);
+        Long ownerId = rentalResponseDTO.getCar().getOwner().getUserId();
+        messagingTemplate.convertAndSendToUser(String.valueOf(ownerId), "/queue/rentals",rentalResponseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(HttpStatus.OK,"Rent car successfully","rental",rentalResponseDTO));
     }
 
     @GetMapping("/owner/{ownerId}")
