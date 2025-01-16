@@ -4,6 +4,14 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ],
     "slug": "rent-connect",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,14 +24,19 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.hoanghuydev1.rentconnect"
+      "bundleIdentifier": "com.hoanghuydev1.rentconnect",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs access to location when open to show your position on the map.",
+        "NSLocationAlwaysUsageDescription": "This app needs access to location when in the background to show your position on the map."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.hoanghuydev1.rentconnect"
+      "package": "com.hoanghuydev1.rentconnect",
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
     },
     "extra": {
       "eas": {

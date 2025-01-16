@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, Button, ActivityIndicator, SafeAreaView } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, {Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import { Bluetooth, Camera, Gauge, Heart, Navigation, Share2, Shield, Timer, X } from "lucide-react-native";
 import AmenityIcon from "@components/AmenityIcon";
 import carsApi from "@/api/carsApi";
@@ -14,6 +14,7 @@ import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TextInput as RNTextInput } from 'react-native';
 import { TextInput } from 'react-native-paper';
+import {RootStackParamList} from "@/navigation/type";
 
 
 interface Review {
@@ -26,7 +27,7 @@ interface Review {
 }
 
 const CarDetailsScreen = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<RootStackParamList>();
     const route = useRoute();
     const { carId } = route.params;
     const [carDetails, setCarDetails] = useState<Car | null>(null);
@@ -85,6 +86,7 @@ const CarDetailsScreen = () => {
 
         getCurrentUser();
     }, []);
+
 
     //fetch reviews
     useEffect(() => {
@@ -330,22 +332,23 @@ const CarDetailsScreen = () => {
                 {/* Location */}
                 <Text style={styles.sectionTitle}>Vị trí xe</Text>
                 <Text>{`${carDetails.location.addressLine}, ${carDetails.location.ward}, ${carDetails.location.district}, ${carDetails.location.province}`}</Text>
-                <MapView
-                    style={styles.map}
-                    initialRegion={{
-                        latitude: carDetails.location.latitude,
-                        longitude: carDetails.location.longitude,
-                        latitudeDelta: 0.01,
-                        longitudeDelta: 0.01,
-                    }}
-                >
-                    <Marker
-                        coordinate={{
-                            latitude: carDetails.location.latitude,
-                            longitude: carDetails.location.longitude,
-                        }}
-                    />
-                </MapView>
+                {/*<MapView*/}
+                {/*    style={styles.map}*/}
+                {/*    provider={PROVIDER_GOOGLE}*/}
+                {/*    initialRegion={{*/}
+                {/*        latitude: carDetails.location.latitude,*/}
+                {/*        longitude: carDetails.location.longitude,*/}
+                {/*        latitudeDelta: 0.01,*/}
+                {/*        longitudeDelta: 0.01,*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <Marker*/}
+                {/*        coordinate={{*/}
+                {/*            latitude: carDetails.location.latitude,*/}
+                {/*            longitude: carDetails.location.longitude,*/}
+                {/*        }}*/}
+                {/*    />*/}
+                {/*</MapView>*/}
 
 
             {/* review */}
