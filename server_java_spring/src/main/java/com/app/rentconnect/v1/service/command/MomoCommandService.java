@@ -8,130 +8,155 @@ import com.app.rentconnect.v1.entity.Rental;
 import com.app.rentconnect.v1.repository.RentalRepository;
 import com.app.rentconnect.v1.service.query.RentalQueryService;
 import com.app.rentconnect.v1.util.HMACUtil;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.minidev.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MomoCommandService {
-    MomoConfig momoConfig;
-    RentalQueryService rentalQueryService;
-    private final RentalCommandService rentalCommandService;
+    private static final Logger logger = LoggerFactory.getLogger(MomoCommandService.class);
+    private static final String PAYMENT_PREFIX = "MOMO";
+
+    private final MomoConfig momoConfig;
+    private final RentalQueryService rentalQueryService;
     private final RentalRepository rentalRepository;
+    private final RestTemplate restTemplate;
 
-    public MomoPaymentResponse initiatePayment(Long rentalId) throws RuntimeException {
+    @Transactional
+    public MomoPaymentResponse initiatePayment(Long rentalId) {
         try {
-            Rental rental = rentalQueryService.findRentalById(rentalId);
-            String requestId = "MOMO" + System.currentTimeMillis();
-            String orderId = requestId;
-            String redirectUrl = momoConfig.getRedirectUrl() + "/" + rental.getRentalId();
-            BigDecimal totalPrice = rental.getTotalPrice();
-            BigDecimal amountDecimal = totalPrice.multiply(BigDecimal.valueOf(1));
-            int amount = amountDecimal.intValue();
+            Rental rental = getRentalOrThrow(rentalId);
+            String requestId = PAYMENT_PREFIX + System.currentTimeMillis();
+            String orderId = String.valueOf(rentalId);
 
-            MomoPaymentRequest paymentRequest = MomoPaymentRequest.builder()
-                    .requestId(requestId)
-                    .orderId(orderId)
-                    .amount(String.valueOf((int) (amount)))
-                    .orderInfo(String.valueOf(rental.getRentalId()))
-                    .redirectUrl(redirectUrl)
-                    .ipnUrl(momoConfig.getIpnUrl() + "/" + rental.getRentalId())
-                    .requestType("payWithATM")
-                    .extraData("")
-                    .build();
+            // Build raw data string exactly as in working example
+            String redirectUrl = momoConfig.getRedirectUrl();
+            String ipnUrl = momoConfig.getIpnUrl();
+            String amount = String.valueOf(calculateAmount(rental.getTotalPrice()));
 
-            String signature = generateSignature(paymentRequest);
-            Map<String, Object> requestBody = createRequestBody(paymentRequest, signature);
+            // Construct signature data string in exact order
+            String rawSignature = "accessKey=" + momoConfig.getAccessKey() +
+                    "&amount=" + amount +
+                    "&extraData=" + "" +
+                    "&ipnUrl=" + ipnUrl +
+                    "&orderId=" + orderId +
+                    "&orderInfo=" + orderId +
+                    "&partnerCode=" + momoConfig.getPartnerCode() +
+                    "&redirectUrl=" + redirectUrl +
+                    "&requestId=" + requestId +
+                    "&requestType=payWithATM";
 
-            JSONObject jsonResult = HttpUtil.doPost(momoConfig.getCreateEndpoint(), requestBody, null);
+            // Generate signature
+            String signature = HMACUtil.HMacHexStringEncode(HMACUtil.HMACSHA256, momoConfig.getSecretKey(), rawSignature);
+
+            // Create request body
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("partnerCode", momoConfig.getPartnerCode());
+            requestBody.put("accessKey", momoConfig.getAccessKey());
+            requestBody.put("requestId", requestId);
+            requestBody.put("amount", amount);
+            requestBody.put("orderId", orderId);
+            requestBody.put("orderInfo", orderId);
+            requestBody.put("redirectUrl", redirectUrl);
+            requestBody.put("ipnUrl", ipnUrl);
+            requestBody.put("extraData", "");
+            requestBody.put("requestType", "payWithATM");
+            requestBody.put("signature", signature);
+            requestBody.put("lang", "en");
+
+            // Log for debugging
+            logger.debug("Raw signature: {}", rawSignature);
+            logger.debug("Generated signature: {}", signature);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+            ResponseEntity<JSONObject> response = restTemplate.postForEntity(
+                    momoConfig.getCreateEndpoint(),
+                    entity,
+                    JSONObject.class
+            );
+
+            JSONObject jsonResult = Objects.requireNonNull(response.getBody());
             return MomoPaymentResponse.builder()
-                    .payUrl(jsonResult.getString("payUrl"))
+                    .payUrl(jsonResult.getAsString("payUrl"))
                     .build();
 
         } catch (Exception e) {
+            logger.error("Failed to initiate Momo payment for rental {}: {}", rentalId, e.getMessage());
             throw new RuntimeException("Failed to initiate Momo payment", e);
         }
     }
 
-    public boolean verifyPayment(Long rentalId, String requestId, String partnerCode)
-            throws RuntimeException {
+    @Transactional
+    public boolean verifyPayment(String orderId, String requestId, String partnerCode) {
         try {
-            String rawSignature = String.format("accessKey=%s&orderId=%s&partnerCode=%s&requestId=%s",
-                    momoConfig.getAccessKey(), rentalId, partnerCode, requestId);
+            // Build signature exactly as in working example
+            String rawSignature = "accessKey=" + momoConfig.getAccessKey() +
+                    "&orderId=" + orderId +
+                    "&partnerCode=" + partnerCode +
+                    "&requestId=" + requestId;
 
-            String signature = HMACUtil.HMacHexStringEncode(HMACUtil.HMACSHA256,
-                    momoConfig.getSecretKey(), rawSignature);
-
-            MomoQueryRequest queryRequest = MomoQueryRequest.builder()
-                    .partnerCode(partnerCode)
-                    .requestId(requestId)
-                    .rentalId(rentalId)
-                    .signature(signature)
-                    .lang("en")
-                    .build();
+            String signature = HMACUtil.HMacHexStringEncode(HMACUtil.HMACSHA256, momoConfig.getSecretKey(), rawSignature);
 
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("partnerCode", queryRequest.getPartnerCode());
-            requestBody.put("requestId", queryRequest.getRequestId());
-            requestBody.put("orderId", queryRequest.getRentalId());
-            requestBody.put("signature", queryRequest.getSignature());
-            requestBody.put("lang", queryRequest.getLang());
+            requestBody.put("partnerCode", partnerCode);
+            requestBody.put("requestId", requestId);
+            requestBody.put("orderId", orderId);
+            requestBody.put("signature", signature);
+            requestBody.put("lang", "en");
 
-            JSONObject jsonResult = HttpUtil.doPost(momoConfig.getQueryEndpoint(), requestBody, null);
-            boolean isSuccess = jsonResult.getInt("resultCode") == 0;
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+            ResponseEntity<JSONObject> response = restTemplate.postForEntity(
+                    momoConfig.getQueryEndpoint(),
+                    entity,
+                    JSONObject.class
+            );
+
+            JSONObject jsonResult = Objects.requireNonNull(response.getBody());
+            boolean isSuccess = jsonResult.getAsNumber("resultCode").intValue() == 0;
 
             if (isSuccess) {
-                Rental rental = rentalQueryService.findRentalById(rentalId);
-
-                rental.setPaid(true);
-                rentalRepository.save(rental);
+                Long rentalId = Long.parseLong(jsonResult.getAsString("orderId"));
+                updateRentalPaymentStatus(rentalId);
             }
 
             return isSuccess;
-
         } catch (Exception e) {
+            logger.error("Failed to verify Momo payment for order {}: {}", orderId, e.getMessage());
             throw new RuntimeException("Failed to verify Momo payment", e);
         }
     }
 
-    private String generateSignature(MomoPaymentRequest request) throws Exception {
-        String data = String.format("accessKey=%s&amount=%s&extraData=%s&ipnUrl=%s&orderId=%s&orderInfo=%s" +
-                        "&partnerCode=%s&redirectUrl=%s&requestId=%s&requestType=%s",
-                momoConfig.getAccessKey(),
-                request.getAmount(),
-                request.getExtraData(),
-                request.getIpnUrl(),
-                request.getOrderId(),
-                request.getOrderInfo(),
-                momoConfig.getPartnerCode(),
-                request.getRedirectUrl(),
-                request.getRequestId(),
-                request.getRequestType());
-
-        return HMACUtil.HMacHexStringEncode(HMACUtil.HMACSHA256, momoConfig.getSecretKey(), data);
+    private int calculateAmount(BigDecimal totalPrice) {
+        return totalPrice.multiply(BigDecimal.ONE).intValue();
     }
 
-    private Map<String, Object> createRequestBody(MomoPaymentRequest request, String signature) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("partnerCode", momoConfig.getPartnerCode());
-        body.put("accessKey", momoConfig.getAccessKey());
-        body.put("requestId", request.getRequestId());
-        body.put("amount", request.getAmount());
-        body.put("orderId", request.getOrderId());
-        body.put("orderInfo", request.getOrderInfo());
-        body.put("redirectUrl", request.getRedirectUrl());
-        body.put("ipnUrl", request.getIpnUrl());
-        body.put("extraData", request.getExtraData());
-        body.put("requestType", request.getRequestType());
-        body.put("signature", signature);
-        body.put("lang", "en");
-        return body;
+    private void updateRentalPaymentStatus(Long rentalId) {
+        Rental rental = getRentalOrThrow(rentalId);
+        rental.setPaid(true);
+        rentalRepository.save(rental);
+    }
+
+    private Rental getRentalOrThrow(Long rentalId) {
+        return rentalQueryService.findRentalById(rentalId);
     }
 }
