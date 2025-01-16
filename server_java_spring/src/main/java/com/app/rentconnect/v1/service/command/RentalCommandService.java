@@ -41,6 +41,9 @@ public class RentalCommandService {
 
         CarResponseDTO car = carQueryService.findCarById(rentalRequestDTO.getCarId());
         long rentalPeriodInDays = ChronoUnit.DAYS.between(rentalRequestDTO.getStartDate(), rentalRequestDTO.getEndDate());
+        if (rentalPeriodInDays == 0) {
+            rentalPeriodInDays = 1;
+        }
         BigDecimal totalPrice = BigDecimal.valueOf(rentalPeriodInDays).multiply(car.getPricePerDay());
         rental.setTotalPrice(totalPrice);
 

@@ -1,6 +1,9 @@
 import Location from "@/models/Location";
 import CarImage from "@/models/CarImage";
 import Amenity from "@/models/Amenity";
+import Fuel from "@/models/Fuel";
+import Transmission from "@/models/Transmission";
+import UserDetail from "@/models/UserDetail";
 
 export default interface Car {
     carId: number;
@@ -9,21 +12,10 @@ export default interface Car {
     pricePerDay: number;
     images: CarImage;
     location: Location;
-    transmission: {
-        transmissionId: number;
-        transmissionType: string;
-    };
+    transmission: Transmission;
     rangePerChargeOrTank : string;
-    fuel : {
-        fuelId : number;
-        fuelType : string;
-    }
+    fuel : Fuel;
     seats: number;
     amenities: Amenity[];
-    owner: {
-        userId: number;
-        fullName: string;
-        email: string;
-        phoneNumber: string;
-    };
+    owner: UserDetail;
 }

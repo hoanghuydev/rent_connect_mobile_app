@@ -93,7 +93,15 @@ const carsApi = {
             throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách xe của bạn');
         }
     },
-
+    getCarById : async (carId:number) =>{
+        try {
+            const response = await axiosToken.get(`${CAR_API}/${carId}`);
+            return response.data.data.car;
+        } catch (error: any) {
+            console.error('Get rentals error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lấy xe');
+        }
+    },
     // Thêm xe mới (yêu cầu đăng nhập)
     addCar: async (carData: any) => {
         try {

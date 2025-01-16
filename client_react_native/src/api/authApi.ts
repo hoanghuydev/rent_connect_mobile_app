@@ -18,10 +18,10 @@ export const authApi = {
 
             if (apiResponse && apiResponse.status === 200) {
                 const { user, token } = apiResponse.data.data;
-
+                const token2 = token.replace('Bearer ', '');
                 // Lưu trữ token và thông tin người dùng vào AsyncStorage
-                await AsyncStorage.setItem('token', token);
-                await tokenManager.setToken(token);
+                await AsyncStorage.setItem('token', token2);
+                await tokenManager.setToken(token2);
                 await AsyncStorage.setItem('user', JSON.stringify(user));
                 const userData = new User(user);
                 await UserManager.setUser(userData);

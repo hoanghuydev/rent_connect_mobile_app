@@ -1,5 +1,7 @@
 import { axiosToken } from './axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import carsApi from "@/api/carsApi";
+import Rental from "@/models/Rental";
 
 const RENT_API = '/rent';
 
@@ -66,7 +68,7 @@ const rentApi = {
             });
 
             console.log('Rent response:', response.data);
-            return response.data;
+            return response.data.data.rental;
 
         } catch (error: any) {
             console.error('Rent car error details:', error.response || error);
@@ -79,6 +81,18 @@ const rentApi = {
             throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi đặt xe');
         }
     },
+    getRentDetailById : async (rentalId : number) =>{
+        try {
+            const response = await axiosToken.get(`${RENT_API}/${rentalId}`);
+            const rental = response.data.data.rental as Rental;
+            const car = await carsApi.getCarById(rental.car.carId);
+            rental.car = car;
+            return rental;
+        } catch (error: any) {
+            console.error('Get rentals error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lấy giao dịch thuê xe');
+        }
+    },
     getRentalsByCustomer: async (customerId: number) => {
         try {
             const response = await axiosToken.get(`${RENT_API}/customer/${customerId}`);
@@ -88,6 +102,42 @@ const rentApi = {
             throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lấy lịch sử thuê xe');
         }
     },
+    getRentalsByOwner: async (ownerId: number) => {
+        try {
+            const response = await axiosToken.get(`${RENT_API}/owner/${ownerId}`);
+            return response.data.data.rental;
+        } catch (error: any) {
+            console.error('Get rentals error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lấy lịch sử thuê xe');
+        }
+    },
+    approveRent : async (rentalId : number) => {
+        try {
+            const response = await axiosToken.post(`${RENT_API}/${rentalId}/approve`);
+            return response.data.data.rental;
+        } catch (error: any) {
+            console.error('Get rentals error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lấy lịch sử thuê xe');
+        }
+    },
+    rejectRent : async (rentalId : number) => {
+        try {
+            const response = await axiosToken.post(`${RENT_API}/${rentalId}/reject`);
+            return response.data.data.rental;
+        } catch (error: any) {
+            console.error('Get rentals error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lấy lịch sử thuê xe');
+        }
+    },
+    cancelRent : async (rentalId : number) => {
+        try {
+            const response = await axiosToken.post(`${RENT_API}/${rentalId}/cancel`);
+            return response.data.data.rental;
+        } catch (error: any) {
+            console.error('Get rentals error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lấy lịch sử thuê xe');
+        }
+    }
 };
 
 export default rentApi;

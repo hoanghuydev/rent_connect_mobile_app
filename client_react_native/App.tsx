@@ -26,6 +26,7 @@ import RentScreen from '@/screens/rent/RentScreen';
 import RentSucccess from '@/screens/rent/RentSuccess';
 import CreateCar from '@/screens/createCar/CreateCar';
 import {GestureHandlerRootView} from "react-native-gesture-handler";
+import RentDetail from "@/screens/rent/RentDetail";
 
 
 const Tab = createBottomTabNavigator();
@@ -64,6 +65,7 @@ export default function App() {
              headerShown: true,
            }}/>
            <Stack.Screen name="CreateCar" component={CreateCar} />
+           <Stack.Screen name="RentDetail" component={RentDetail} />
          </Stack.Navigator>
        </NavigationContainer>
      </GestureHandlerRootView>

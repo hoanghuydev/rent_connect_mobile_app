@@ -5,6 +5,7 @@ import com.app.rentconnect.v1.dto.car.request.CreateCarRequestDTO;
 import com.app.rentconnect.v1.dto.car.response.CarResponseDTO;
 import com.app.rentconnect.v1.dto.rental.request.RentalRequestDTO;
 import com.app.rentconnect.v1.dto.rental.response.RentalResponseDTO;
+import com.app.rentconnect.v1.dto.request.AmenityRequestDTO;
 import com.app.rentconnect.v1.dto.response.ApiResponse;
 import com.app.rentconnect.v1.service.command.CarCommandService;
 import com.app.rentconnect.v1.service.command.RentalCommandService;
@@ -63,6 +64,12 @@ public class CarController {
     public ResponseEntity<ApiResponse<List<CarResponseDTO>>> getAll(){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse<>(HttpStatus.OK, "get all car successfully", "car", carQueryService.findAllCars()));
+    }
+
+    @GetMapping("/aminites")
+    public ResponseEntity<ApiResponse<List<AmenityRequestDTO>>> getAllAmenities(){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse<>(HttpStatus.OK, "Get all amenity successfully", "amenities", carQueryService.findAllAmenities()));
     }
 
 }

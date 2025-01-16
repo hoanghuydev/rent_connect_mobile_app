@@ -93,6 +93,7 @@ public class MomoCommandService {
             );
 
             JSONObject jsonResult = Objects.requireNonNull(response.getBody());
+            if (jsonResult.getAsString("payUrl")==null) throw new RuntimeException("Failed to initiate momo payment");
             return MomoPaymentResponse.builder()
                     .payUrl(jsonResult.getAsString("payUrl"))
                     .build();

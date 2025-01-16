@@ -43,7 +43,7 @@ const SupportScreen = () => {
                         <Text className="text-base mb-4">
                             Cần hỗ trợ nhanh vui lòng gọi 1900 9217 (7:00AM - 10:00PM) hoặc gửi tin nhắn vào Mioto Fanpage.
                         </Text>
-                        <View className="flex-row space-x-4">
+                        <View className="flex-row space-x-4 gap-5">
                             <TouchableOpacity className="flex-1 border border-green-500 rounded-lg py-2 items-center">
                                 <Text className="text-green-500">Gọi</Text>
                             </TouchableOpacity>
