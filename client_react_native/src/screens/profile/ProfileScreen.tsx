@@ -63,7 +63,7 @@ useEffect(() => {
                     baseMenuItems.splice(1, 0, { icon: 'car', title: 'Xe của tôi', screen: 'MyVeh'});
                 }
                 if (userRoles.includes('ROLE_CUSTOMER')) {
-                    baseMenuItems.splice(1, 0, { icon: 'history', title: 'Lịch sử', screen: 'HistoryScreen'});
+                    baseMenuItems.splice(1, 0, { icon: 'history', title: 'Lịch sử', screen: 'BookingHistory' });
                 }
 
                 setMainMenuItems(baseMenuItems);

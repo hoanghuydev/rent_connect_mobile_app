@@ -32,7 +32,7 @@ public class RentalQueryService {
     }
 
     public List<RentalResponseDTO> findAllByCustomerId(Long customerId) {
-        var rentals = rentalRepository.findAllByCar_Owner_UserId(customerId);
+        var rentals = rentalRepository.findAllByCustomer_UserId(customerId);
         return rentals.stream()
                 .map(rentalMapper::toResponseDTO)
                 .collect(Collectors.toList());

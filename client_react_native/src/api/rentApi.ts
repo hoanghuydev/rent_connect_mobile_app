@@ -3,6 +3,49 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RENT_API = '/rent';
 
+interface Amenity {
+    amenityId: number;
+    amenityName: string;
+    icon: string;
+}
+
+interface Location {
+    addressLine: string;
+    province: string;
+    district: string;
+    ward: string;
+    latitude: number;
+    longitude: number;
+}
+
+interface Car {
+    carId: number;
+    carName: string;
+    description: string;
+    pricePerDay: number;
+    amenities: Amenity[];
+    location: Location;
+    transmission: {
+        transmissionId: number;
+        transmissionType: string;
+    };
+}
+
+interface RentalResponse {
+    rentalId: number;
+    car: Car;
+    customer: {
+        userId: number;
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+    };
+    startDate: string;
+    endDate: string;
+    status: string;
+    createdAt: string;
+}
+
 const rentApi = {
     rentCar: async (carId: number, startDate: string, endDate: string) => {
         try {
@@ -34,6 +77,15 @@ const rentApi = {
                 throw new Error('Ngày bạn chọn đã được thuê. Vui lòng chọn ngày khác!');
             }
             throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi đặt xe');
+        }
+    },
+    getRentalsByCustomer: async (customerId: number) => {
+        try {
+            const response = await axiosToken.get(`${RENT_API}/customer/${customerId}`);
+            return response.data.data.rental;
+        } catch (error: any) {
+            console.error('Get rentals error:', error.response?.data || error);
+            throw new Error(error.response?.data?.message || 'Có lỗi xảy ra khi lấy lịch sử thuê xe');
         }
     },
 };
