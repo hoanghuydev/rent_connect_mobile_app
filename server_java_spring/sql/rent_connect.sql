@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 15, 2025 at 04:31 AM
+-- Generation Time: Jan 16, 2025 at 06:52 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -28,14 +28,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `additional_fees` (
-                                   `fee_id` bigint(20) NOT NULL,
-                                   `fee_name` varchar(100) NOT NULL,
-                                   `description` longtext DEFAULT NULL,
                                    `amount` decimal(38,2) NOT NULL,
+                                   `created_at` datetime(6) NOT NULL,
+                                   `deleted_at` datetime(6) DEFAULT NULL,
+                                   `fee_id` bigint(20) NOT NULL,
+                                   `updated_at` datetime(6) DEFAULT NULL,
                                    `unit` varchar(50) NOT NULL,
-                                   `created_at` datetime DEFAULT current_timestamp(),
-                                   `updated_at` datetime DEFAULT NULL,
-                                   `deleted_at` datetime DEFAULT NULL
+                                   `fee_name` varchar(100) NOT NULL,
+                                   `description` longtext DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -45,18 +45,18 @@ CREATE TABLE `additional_fees` (
 --
 
 CREATE TABLE `addresses` (
+                             `is_default` bit(1) DEFAULT NULL,
                              `address_id` bigint(20) NOT NULL,
-                             `user_id` bigint(20) DEFAULT NULL,
-                             `address_type` enum('HOME','COMPANY','OTHER') NOT NULL,
-                             `address_line` varchar(255) NOT NULL,
-                             `province` varchar(100) NOT NULL,
-                             `district` varchar(100) NOT NULL,
-                             `ward` varchar(100) NOT NULL,
-                             `specific_address` varchar(255) NOT NULL,
+                             `created_at` datetime(6) NOT NULL,
+                             `deleted_at` datetime(6) DEFAULT NULL,
+                             `user_id` bigint(20) NOT NULL,
                              `address_label` varchar(100) DEFAULT NULL,
-                             `is_default` tinyint(1) DEFAULT 0,
-                             `created_at` datetime DEFAULT current_timestamp(),
-                             `deleted_at` datetime DEFAULT NULL
+                             `district` varchar(100) NOT NULL,
+                             `province` varchar(100) NOT NULL,
+                             `ward` varchar(100) NOT NULL,
+                             `address_line` varchar(255) NOT NULL,
+                             `specific_address` varchar(255) NOT NULL,
+                             `address_type` enum('COMPANY','HOME','OTHER') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -126,11 +126,11 @@ INSERT INTO `amenities` (`amenity_id`, `amenity_name`, `icon`, `deleted_at`) VAL
 --
 
 CREATE TABLE `booking_history` (
+                                   `deleted_at` datetime(6) DEFAULT NULL,
                                    `history_id` bigint(20) NOT NULL,
-                                   `rental_id` bigint(20) DEFAULT NULL,
-                                   `status` enum('REQUESTED','APPROVED','REJECTED','COMPLETED','CANCELED') NOT NULL,
-                                   `updated_at` datetime DEFAULT current_timestamp(),
-                                   `deleted_at` datetime DEFAULT NULL
+                                   `rental_id` bigint(20) NOT NULL,
+                                   `updated_at` datetime(6) NOT NULL,
+                                   `status` enum('APPROVED','CANCELED','COMPLETED','REJECTED','REQUESTED') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -170,27 +170,27 @@ INSERT INTO `cars` (`car_id`, `owner_id`, `car_name`, `description`, `price_per_
 --
 
 CREATE TABLE `car_amenities` (
-                                 `car_id` bigint(20) NOT NULL,
-                                 `amenity_id` bigint(20) NOT NULL
+                                 `amenity_id` bigint(20) NOT NULL,
+                                 `car_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `car_amenities`
 --
 
-INSERT INTO `car_amenities` (`car_id`, `amenity_id`) VALUES
-                                                         (2, 1),
+INSERT INTO `car_amenities` (`amenity_id`, `car_id`) VALUES
+                                                         (1, 2),
                                                          (2, 2),
-                                                         (2, 3),
-                                                         (2, 4),
-                                                         (2, 8),
-                                                         (2, 15),
-                                                         (5, 4),
-                                                         (5, 7),
-                                                         (5, 9),
-                                                         (5, 10),
-                                                         (5, 12),
-                                                         (5, 13);
+                                                         (3, 2),
+                                                         (4, 2),
+                                                         (4, 5),
+                                                         (7, 5),
+                                                         (8, 2),
+                                                         (9, 5),
+                                                         (10, 5),
+                                                         (12, 5),
+                                                         (13, 5),
+                                                         (15, 2);
 
 -- --------------------------------------------------------
 
@@ -223,27 +223,27 @@ CREATE TABLE `car_feature_map` (
 --
 
 CREATE TABLE `car_images` (
+                              `car_id` bigint(20) NOT NULL,
+                              `deleted_at` datetime(6) DEFAULT NULL,
                               `image_id` varchar(40) NOT NULL,
-                              `car_id` bigint(20) DEFAULT NULL,
-                              `image_url` varchar(255) NOT NULL,
-                              `deleted_at` datetime DEFAULT NULL
+                              `image_url` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `car_images`
 --
 
-INSERT INTO `car_images` (`image_id`, `car_id`, `image_url`, `deleted_at`) VALUES
-                                                                               ('diynlf4cvenhzf5evpi3', 5, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910486/diynlf4cvenhzf5evpi3.jpg', NULL),
-                                                                               ('eonimjkx3qwwfb2qtx82', 5, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910482/eonimjkx3qwwfb2qtx82.jpg', NULL),
-                                                                               ('hbma3siuxqvvmtgtldkd', 2, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585526/hbma3siuxqvvmtgtldkd.jpg', NULL),
-                                                                               ('icwarin1pdcsu220pvbe', 2, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585530/icwarin1pdcsu220pvbe.jpg', NULL),
-                                                                               ('iqcjwxjg08rql4cva1ub', 5, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910493/iqcjwxjg08rql4cva1ub.jpg', NULL),
-                                                                               ('ncebefazgxojhvug18uq', 2, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585533/ncebefazgxojhvug18uq.jpg', NULL),
-                                                                               ('qg9i2ipwwb3rpuyglku8', 2, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585523/qg9i2ipwwb3rpuyglku8.jpg', NULL),
-                                                                               ('rlruk2x4l8rqybhc5npb', 5, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910496/rlruk2x4l8rqybhc5npb.jpg', NULL),
-                                                                               ('vpiijii10tjh59zo3ich', 2, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585535/vpiijii10tjh59zo3ich.jpg', NULL),
-                                                                               ('zd0uuv5x6cjghkjouy4i', 5, 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910489/zd0uuv5x6cjghkjouy4i.jpg', NULL);
+INSERT INTO `car_images` (`car_id`, `deleted_at`, `image_id`, `image_url`) VALUES
+                                                                               (5, NULL, 'diynlf4cvenhzf5evpi3', 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910486/diynlf4cvenhzf5evpi3.jpg'),
+                                                                               (5, NULL, 'eonimjkx3qwwfb2qtx82', 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910482/eonimjkx3qwwfb2qtx82.jpg'),
+                                                                               (2, NULL, 'hbma3siuxqvvmtgtldkd', 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585526/hbma3siuxqvvmtgtldkd.jpg'),
+                                                                               (2, NULL, 'icwarin1pdcsu220pvbe', 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585530/icwarin1pdcsu220pvbe.jpg'),
+                                                                               (5, NULL, 'iqcjwxjg08rql4cva1ub', 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910493/iqcjwxjg08rql4cva1ub.jpg'),
+                                                                               (2, NULL, 'ncebefazgxojhvug18uq', 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585533/ncebefazgxojhvug18uq.jpg'),
+                                                                               (2, NULL, 'qg9i2ipwwb3rpuyglku8', 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585523/qg9i2ipwwb3rpuyglku8.jpg'),
+                                                                               (5, NULL, 'rlruk2x4l8rqybhc5npb', 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910496/rlruk2x4l8rqybhc5npb.jpg'),
+                                                                               (2, NULL, 'vpiijii10tjh59zo3ich', 'http://res.cloudinary.com/dwuypueso/image/upload/v1736585535/vpiijii10tjh59zo3ich.jpg'),
+                                                                               (5, NULL, 'zd0uuv5x6cjghkjouy4i', 'http://res.cloudinary.com/dwuypueso/image/upload/v1736910489/zd0uuv5x6cjghkjouy4i.jpg');
 
 -- --------------------------------------------------------
 
@@ -279,8 +279,8 @@ INSERT INTO `car_locations` (`location_id`, `address_line`, `province`, `distric
 CREATE TABLE `conversations` (
                                  `conversation_id` bigint(20) NOT NULL,
                                  `created_at` datetime(6) NOT NULL,
-                                 `deleted_at` datetime(6) DEFAULT NULL,
                                  `customer_id` bigint(20) NOT NULL,
+                                 `deleted_at` datetime(6) DEFAULT NULL,
                                  `owner_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -314,12 +314,12 @@ INSERT INTO `fuels` (`fuel_id`, `fuel_type`, `deleted_at`) VALUES
 --
 
 CREATE TABLE `messages` (
-                            `message_id` bigint(20) NOT NULL,
-                            `deleted_at` datetime(6) DEFAULT NULL,
-                            `message_text` varchar(255) NOT NULL,
-                            `sent_at` datetime(6) NOT NULL,
                             `conversation_id` bigint(20) NOT NULL,
-                            `sender_id` bigint(20) NOT NULL
+                            `deleted_at` datetime(6) DEFAULT NULL,
+                            `message_id` bigint(20) NOT NULL,
+                            `sender_id` bigint(20) NOT NULL,
+                            `sent_at` datetime(6) NOT NULL,
+                            `message_text` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -329,18 +329,11 @@ CREATE TABLE `messages` (
 --
 
 CREATE TABLE `otp_verification` (
+                                    `expires_at` datetime(6) NOT NULL,
                                     `otp_id` bigint(20) NOT NULL,
-                                    `user_id` bigint(20) DEFAULT NULL,
-                                    `otp_code` varchar(50) NOT NULL,
-                                    `expires_at` datetime NOT NULL
+                                    `user_id` bigint(20) NOT NULL,
+                                    `otp_code` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `otp_verification`
---
-
-INSERT INTO `otp_verification` (`otp_id`, `user_id`, `otp_code`, `expires_at`) VALUES
-    (1, 17, 'H/akPSYOjcPZB4vY1wbd9A==', '2024-12-26 22:08:48');
 
 -- --------------------------------------------------------
 
@@ -349,16 +342,25 @@ INSERT INTO `otp_verification` (`otp_id`, `user_id`, `otp_code`, `expires_at`) V
 --
 
 CREATE TABLE `rentals` (
+                           `car_id` bigint(20) NOT NULL,
+                           `created_at` datetime(6) NOT NULL,
+                           `customer_id` bigint(20) NOT NULL,
+                           `deleted_at` datetime(6) DEFAULT NULL,
+                           `end_date` datetime(6) NOT NULL,
                            `rental_id` bigint(20) NOT NULL,
-                           `car_id` bigint(20) DEFAULT NULL,
-                           `customer_id` bigint(20) DEFAULT NULL,
-                           `owner_id` bigint(20) DEFAULT NULL,
-                           `start_date` datetime NOT NULL,
-                           `end_date` datetime NOT NULL,
-                           `status` enum('REQUESTED','APPROVED','REJECTED','COMPLETED','CANCELED') DEFAULT 'REQUESTED',
-                           `created_at` datetime DEFAULT current_timestamp(),
-                           `deleted_at` datetime DEFAULT NULL
+                           `start_date` datetime(6) NOT NULL,
+                           `status` enum('APPROVED','CANCELED','COMPLETED','REJECTED','REQUESTED') NOT NULL,
+                           `paid` tinyint(1) DEFAULT 1,
+                           `total_price` int(11) DEFAULT 0,
+                           `updated_at` datetime(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `rentals`
+--
+
+INSERT INTO `rentals` (`car_id`, `created_at`, `customer_id`, `deleted_at`, `end_date`, `rental_id`, `start_date`, `status`, `paid`, `total_price`, `updated_at`) VALUES
+    (2, '2025-01-16 11:11:27.000000', 17, NULL, '2025-01-25 10:00:00.000000', 1, '2025-01-22 10:00:00.000000', 'REQUESTED', 0, 3300000, '2025-01-16 11:11:27.000000');
 
 -- --------------------------------------------------------
 
@@ -367,13 +369,14 @@ CREATE TABLE `rentals` (
 --
 
 CREATE TABLE `reviews` (
-                           `review_id` bigint(20) NOT NULL,
-                           `car_id` bigint(20) DEFAULT NULL,
-                           `customer_id` bigint(20) DEFAULT NULL,
                            `rating` int(11) NOT NULL,
+                           `car_id` bigint(20) NOT NULL,
+                           `created_at` datetime(6) NOT NULL,
+                           `customer_id` bigint(20) NOT NULL,
+                           `deleted_at` datetime(6) DEFAULT NULL,
+                           `review_id` bigint(20) NOT NULL,
                            `review_text` longtext DEFAULT NULL,
-                           `created_at` datetime DEFAULT current_timestamp(),
-                           `deleted_at` datetime DEFAULT NULL
+                           `updated_at` datetime(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -410,11 +413,11 @@ INSERT INTO `roles` (`role_id`, `role_name`, `description`, `created_at`, `updat
 --
 
 CREATE TABLE `terms` (
+                         `created_at` datetime(6) NOT NULL,
+                         `deleted_at` datetime(6) DEFAULT NULL,
                          `term_id` bigint(20) NOT NULL,
-                         `term_text` tinytext NOT NULL,
-                         `created_at` datetime DEFAULT current_timestamp(),
-                         `updated_at` datetime DEFAULT NULL,
-                         `deleted_at` datetime DEFAULT NULL
+                         `updated_at` datetime(6) DEFAULT NULL,
+                         `term_text` tinytext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -464,8 +467,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `password`, `phone_number`, `created_at`, `updated_at`, `verified`, `login_platform`, `platform_id`, `deleted_at`) VALUES
-                                                                                                                                                                             (17, 'Trần Võ Hoàng Huy', '21130386st.hcmuaf.edu.vn', '$2a$10$vMtd9uQadcWtCvAXzwVCFeqJI8IsIu1IDO6xcsC7oJM/do1PzzD/K', '094694447', '2024-12-26 22:03:45', '2024-12-26 15:20:59', 1, 'EMAIL', NULL, NULL),
-                                                                                                                                                                             (19, 'Super Admin', 'tranvohoanghuy12ab@gmail.com', '$2a$10$Z09tgWZdBpAYfIxIh5.c5eof.VM3l7Bb/ZfiiPXxTmF5yLC/p1GIu', NULL, '2024-12-27 19:37:03', '2024-12-27 12:37:03', 1, 'EMAIL', NULL, NULL);
+                                                                                                                                                                             (17, 'Name updated', '21130386st.hcmuaf.edu.vn', '$2a$10$vMtd9uQadcWtCvAXzwVCFeqJI8IsIu1IDO6xcsC7oJM/do1PzzD/K', '0702315168', '2024-12-26 22:03:45', '2025-01-15 16:37:36', 1, 'EMAIL', NULL, NULL),
+                                                                                                                                                                             (19, 'Super Admin', 'tranvohoanghuy12ab@gmail.com', '$2a$10$Z09tgWZdBpAYfIxIh5.c5eof.VM3l7Bb/ZfiiPXxTmF5yLC/p1GIu', NULL, '2024-12-27 19:37:03', '2024-12-27 12:37:03', 1, 'EMAIL', NULL, NULL),
+                                                                                                                                                                             (22, 'Huy Trần Võ Hoàng', 'tranvohoanghuydev@gmail.com', '$2a$10$vhadwFKudz6g1XKcWLRSmutLnXtlF6DrbZ.AToeAGdUaaRgquV5UO', NULL, '2025-01-15 18:29:16', '2025-01-16 01:37:42', 1, 'GOOGLE', NULL, NULL),
+                                                                                                                                                                             (23, 'Trần Võ Hoàng Huy', '21130386@st.hcmuaf.edu.vn', '$2a$10$K7.gSYEbhqG9IQpK0u/X1ejZbXAY9jXGMM9sn3yrrxeWpaAvfaXG2', NULL, '2025-01-15 18:40:02', '2025-01-15 11:40:02', 1, 'GOOGLE', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -474,18 +479,19 @@ INSERT INTO `users` (`user_id`, `full_name`, `email`, `password`, `phone_number`
 --
 
 CREATE TABLE `user_roles` (
-                              `user_id` bigint(20) NOT NULL,
-                              `role_id` bigint(20) NOT NULL
+                              `role_id` bigint(20) NOT NULL,
+                              `user_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_roles`
 --
 
-INSERT INTO `user_roles` (`user_id`, `role_id`) VALUES
-                                                    (17, 4),
-                                                    (17, 5),
-                                                    (19, 3);
+INSERT INTO `user_roles` (`role_id`, `user_id`) VALUES
+                                                    (3, 19),
+                                                    (4, 17),
+                                                    (4, 22),
+                                                    (5, 17);
 
 --
 -- Indexes for dumped tables
@@ -502,20 +508,21 @@ ALTER TABLE `additional_fees`
 --
 ALTER TABLE `addresses`
     ADD PRIMARY KEY (`address_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `FK1fa36y2oqhao3wgg2rw1pi459` (`user_id`);
 
 --
 -- Indexes for table `amenities`
 --
 ALTER TABLE `amenities`
-    ADD PRIMARY KEY (`amenity_id`);
+    ADD PRIMARY KEY (`amenity_id`),
+  ADD UNIQUE KEY `UKbe8trq6t1oqf3pggbj934s9kj` (`amenity_name`);
 
 --
 -- Indexes for table `booking_history`
 --
 ALTER TABLE `booking_history`
     ADD PRIMARY KEY (`history_id`),
-  ADD KEY `rental_id` (`rental_id`);
+  ADD KEY `FKt7f4ooibme03oge4fl6fjb6mt` (`rental_id`);
 
 --
 -- Indexes for table `cars`
@@ -532,8 +539,8 @@ ALTER TABLE `cars`
 -- Indexes for table `car_amenities`
 --
 ALTER TABLE `car_amenities`
-    ADD PRIMARY KEY (`car_id`,`amenity_id`),
-  ADD KEY `amenity_id` (`amenity_id`);
+    ADD PRIMARY KEY (`amenity_id`,`car_id`),
+  ADD KEY `FKj4qyh0369tx4v7a07pxvlqjrp` (`car_id`);
 
 --
 -- Indexes for table `car_features`
@@ -553,7 +560,7 @@ ALTER TABLE `car_feature_map`
 --
 ALTER TABLE `car_images`
     ADD PRIMARY KEY (`image_id`),
-  ADD KEY `car_id` (`car_id`);
+  ADD KEY `FKet593krc5137jxdk5cxdah2vd` (`car_id`);
 
 --
 -- Indexes for table `car_locations`
@@ -588,24 +595,23 @@ ALTER TABLE `messages`
 --
 ALTER TABLE `otp_verification`
     ADD PRIMARY KEY (`otp_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `FKmtitrif16hpdkhtr4m4kgvfv8` (`user_id`);
 
 --
 -- Indexes for table `rentals`
 --
 ALTER TABLE `rentals`
     ADD PRIMARY KEY (`rental_id`),
-  ADD KEY `car_id` (`car_id`),
-  ADD KEY `customer_id` (`customer_id`),
-  ADD KEY `owner_id` (`owner_id`);
+  ADD KEY `FKb3vpbdnk78p1epicm7a7urvfh` (`car_id`),
+  ADD KEY `FKevwks1tm1ubio8i4ewq4g2imj` (`customer_id`);
 
 --
 -- Indexes for table `reviews`
 --
 ALTER TABLE `reviews`
     ADD PRIMARY KEY (`review_id`),
-  ADD KEY `car_id` (`car_id`),
-  ADD KEY `customer_id` (`customer_id`);
+  ADD KEY `FKieeb3p5v84i1xja7nbj1vkkeg` (`car_id`),
+  ADD KEY `FKkquncb1glvrldaui8v52xfd5q` (`customer_id`);
 
 --
 -- Indexes for table `roles`
@@ -632,14 +638,15 @@ ALTER TABLE `transmissions`
 ALTER TABLE `users`
     ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `UK6dotkott2kjsp8vw4d0m25fb7` (`email`),
   ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `user_roles`
 --
 ALTER TABLE `user_roles`
-    ADD PRIMARY KEY (`user_id`,`role_id`),
-  ADD KEY `role_id` (`role_id`);
+    ADD PRIMARY KEY (`role_id`,`user_id`),
+  ADD KEY `FKhfh9dx7w3ubf1co1vdev94g3f` (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -709,13 +716,13 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `otp_verification`
 --
 ALTER TABLE `otp_verification`
-    MODIFY `otp_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+    MODIFY `otp_id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `rentals`
 --
 ALTER TABLE `rentals`
-    MODIFY `rental_id` bigint(20) NOT NULL AUTO_INCREMENT;
+    MODIFY `rental_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `reviews`
@@ -745,7 +752,7 @@ ALTER TABLE `transmissions`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-    MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+    MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Constraints for dumped tables
@@ -755,19 +762,23 @@ ALTER TABLE `users`
 -- Constraints for table `addresses`
 --
 ALTER TABLE `addresses`
-    ADD CONSTRAINT `addresses_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+    ADD CONSTRAINT `FK1fa36y2oqhao3wgg2rw1pi459` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `booking_history`
 --
 ALTER TABLE `booking_history`
-    ADD CONSTRAINT `booking_history_ibfk_1` FOREIGN KEY (`rental_id`) REFERENCES `rentals` (`rental_id`) ON DELETE CASCADE;
+    ADD CONSTRAINT `FKt7f4ooibme03oge4fl6fjb6mt` FOREIGN KEY (`rental_id`) REFERENCES `rentals` (`rental_id`);
 
 --
 -- Constraints for table `cars`
 --
 ALTER TABLE `cars`
-    ADD CONSTRAINT `cars_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+    ADD CONSTRAINT `FK2jj44fxll6ceempw7uri3gdvg` FOREIGN KEY (`fuel_id`) REFERENCES `fuels` (`fuel_id`),
+  ADD CONSTRAINT `FKc61a4jv9119g5jbpi51wsu876` FOREIGN KEY (`transmission_id`) REFERENCES `transmissions` (`transmission_id`),
+  ADD CONSTRAINT `FKm5ibu05fg8g81fo6491puswuu` FOREIGN KEY (`owner_id`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `FKqbaqh2m8dbwmbgs5ufg7y6cwy` FOREIGN KEY (`location_id`) REFERENCES `car_locations` (`location_id`),
+  ADD CONSTRAINT `cars_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cars_ibfk_2` FOREIGN KEY (`transmission_id`) REFERENCES `transmissions` (`transmission_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `cars_ibfk_3` FOREIGN KEY (`fuel_id`) REFERENCES `fuels` (`fuel_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `cars_ibfk_4` FOREIGN KEY (`location_id`) REFERENCES `car_locations` (`location_id`) ON DELETE SET NULL;
@@ -776,8 +787,8 @@ ALTER TABLE `cars`
 -- Constraints for table `car_amenities`
 --
 ALTER TABLE `car_amenities`
-    ADD CONSTRAINT `car_amenities_ibfk_1` FOREIGN KEY (`car_id`) REFERENCES `cars` (`car_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `car_amenities_ibfk_2` FOREIGN KEY (`amenity_id`) REFERENCES `amenities` (`amenity_id`) ON DELETE CASCADE;
+    ADD CONSTRAINT `FK5sdhi8yn6jdrdub6dd6er0aie` FOREIGN KEY (`amenity_id`) REFERENCES `amenities` (`amenity_id`),
+  ADD CONSTRAINT `FKj4qyh0369tx4v7a07pxvlqjrp` FOREIGN KEY (`car_id`) REFERENCES `cars` (`car_id`);
 
 --
 -- Constraints for table `car_feature_map`
@@ -790,7 +801,7 @@ ALTER TABLE `car_feature_map`
 -- Constraints for table `car_images`
 --
 ALTER TABLE `car_images`
-    ADD CONSTRAINT `car_images_ibfk_1` FOREIGN KEY (`car_id`) REFERENCES `cars` (`car_id`) ON DELETE CASCADE;
+    ADD CONSTRAINT `FKet593krc5137jxdk5cxdah2vd` FOREIGN KEY (`car_id`) REFERENCES `cars` (`car_id`);
 
 --
 -- Constraints for table `conversations`
@@ -810,29 +821,28 @@ ALTER TABLE `messages`
 -- Constraints for table `otp_verification`
 --
 ALTER TABLE `otp_verification`
-    ADD CONSTRAINT `otp_verification_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+    ADD CONSTRAINT `FKmtitrif16hpdkhtr4m4kgvfv8` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `rentals`
 --
 ALTER TABLE `rentals`
-    ADD CONSTRAINT `rentals_ibfk_1` FOREIGN KEY (`car_id`) REFERENCES `cars` (`car_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `rentals_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `rentals_ibfk_3` FOREIGN KEY (`owner_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+    ADD CONSTRAINT `FKb3vpbdnk78p1epicm7a7urvfh` FOREIGN KEY (`car_id`) REFERENCES `cars` (`car_id`),
+  ADD CONSTRAINT `FKevwks1tm1ubio8i4ewq4g2imj` FOREIGN KEY (`customer_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `reviews`
 --
 ALTER TABLE `reviews`
-    ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`car_id`) REFERENCES `cars` (`car_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+    ADD CONSTRAINT `FKieeb3p5v84i1xja7nbj1vkkeg` FOREIGN KEY (`car_id`) REFERENCES `cars` (`car_id`),
+  ADD CONSTRAINT `FKkquncb1glvrldaui8v52xfd5q` FOREIGN KEY (`customer_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `user_roles`
 --
 ALTER TABLE `user_roles`
-    ADD CONSTRAINT `user_roles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `user_roles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`) ON DELETE CASCADE;
+    ADD CONSTRAINT `FKh8ciramu9cc9q3qcqiv4ue8a6` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`),
+  ADD CONSTRAINT `FKhfh9dx7w3ubf1co1vdev94g3f` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

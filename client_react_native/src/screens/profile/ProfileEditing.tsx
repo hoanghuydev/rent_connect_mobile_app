@@ -3,6 +3,9 @@ import { View, StyleSheet, ScrollView, SafeAreaView, StatusBar, Platform } from 
 import { TextInput, Button, Card, Avatar, Text, useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authApi } from '@/api/authApi';
+import {userApi} from "@/api/userApi";
+import {User} from "@/models/User";
+import UserDetail from "@/models/UserDetail";
 
 
 const primaryColor = '#5fcf86';
@@ -10,10 +13,9 @@ const softGrayColor = '#E0E0E0';
 
 const ProfileEditing = ({ navigation }: any) => {
   const theme = useTheme();
-  const [userId, setUserId] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [user, setUser] = useState<UserDetail>();
+  const [fullName,setFullName] = useState('');
+  const [phoneNumber,setPhoneNumber] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -22,10 +24,12 @@ const ProfileEditing = ({ navigation }: any) => {
         const user = await AsyncStorage.getItem('user');
         if (user) {
           const userData = JSON.parse(user);
-          setUserId(userData.userId);
-          setFullName(userData.fullName);
-          setEmail(userData.email);
-          setPhoneNumber(userData.phoneNumber);
+          const userId = userData.userId;
+          const userDetail = await userApi.getUserById(userId);
+          console.log(userDetail)
+          setFullName(userDetail.fullName);
+          setPhoneNumber(userDetail.phoneNumber)
+          setUser(userDetail)
         }
       } catch (error) {
         console.error('Error fetching user ', error);
@@ -37,14 +41,9 @@ const ProfileEditing = ({ navigation }: any) => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const result = await authApi.updateUser(fullName, phoneNumber);
-      if (result.success) {
-        const updatedUser = {
-          userId,
-          fullName,
-          email,
-          phoneNumber
-        };
+      const result = await userApi.updateUser({fullName,phoneNumber,userId : user?.userId});
+      if (result) {
+        const updatedUser = result;
         await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
         navigation.goBack();
       }

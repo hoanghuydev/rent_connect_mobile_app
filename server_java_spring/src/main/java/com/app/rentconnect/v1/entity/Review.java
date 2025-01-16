@@ -35,5 +35,19 @@ public class Review {
     @CreatedDate
     LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    LocalDateTime updatedAt = LocalDateTime.now();
+
     LocalDateTime deletedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
