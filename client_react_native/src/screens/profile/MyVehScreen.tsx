@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
+import { FAB } from 'react-native-paper';
 import carsApi from '@/api/carsApi';
 import carImageApi from '@/api/carImageApi';
 import Car from "@/models/Car";
@@ -99,6 +100,21 @@ const MyVehScreen = () => {
                     )}
                 />
             )}
+            {/* Floating Action Button */}
+            <FAB
+                icon="plus"
+                style={{
+                    position: 'absolute',
+                    margin: 16,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: '#5fcf86'
+                }}
+                color="white"
+                onPress={() => {
+                    navigation.navigate('CreateCar')
+                }}
+            />
         </View>
     );
 };
