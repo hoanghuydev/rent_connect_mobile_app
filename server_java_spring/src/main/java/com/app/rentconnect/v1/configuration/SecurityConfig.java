@@ -35,8 +35,9 @@ import java.util.Collections;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    private final String[] PUBLIC_POST_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/verify","/api/v1/otp/send","/api/v1/auth/login"};
-    private final String[] PUBLIC_GET_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/login","/api/v1/user/{id}","/api/v1/car/{carId}", "/api/v1/user","/api/v1/carImage","/api/v1/carImage/{carId}"};
+    private final String[] PUBLIC_POST_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/verify","/api/v1/otp/send","/api/v1/auth/login", "/api/v1/review/{carId}"};
+    private final String[] PUBLIC_GET_ENDPOINT = {"/api/v1/auth/register","/api/v1/auth/login","/api/v1/user/{id}","/api/v1/car/{carId}",
+            "/api/v1/user","/api/v1/carImage","/api/v1/carImage/{carId}","/api/v1/review/{carId}", "/api/v1/review/{reviewId}"};
     private final String[] ROLE_ADMIN_ENDPOINT = {};
     private final String[] ROLE_OWNER_ENDPOINT = {"/api/v1/car/add"};
     private final String[] ROLE_CUSTOMER_ENDPOINT = {};
