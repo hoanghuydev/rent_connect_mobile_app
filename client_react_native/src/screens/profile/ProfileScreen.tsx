@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { List, Card, Divider, Avatar } from 'react-native-paper';
-import { useNavigation } from "@react-navigation/native";
+import {useFocusEffect, useNavigation} from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authApi } from '@/api/authApi';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -15,7 +15,7 @@ const ProfileScreen = ({ route }) => {
     const [loading, setLoading] = useState(true);
     const role = AsyncStorage.getItem('roles');
 
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
         const fetchUserData = async () => {
             try {
                 const storedUser = await AsyncStorage.getItem('user');
@@ -30,7 +30,7 @@ const ProfileScreen = ({ route }) => {
         };
 
         fetchUserData();
-    }, []);
+    }, []));
 
     const handleLogout = async () => {
         try {

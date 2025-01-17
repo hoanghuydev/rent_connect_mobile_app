@@ -43,40 +43,45 @@ public class CarCommandService {
 
 
     public CarResponseDTO createCar(List<MultipartFile> imageFiles, CreateCarRequestDTO createCarRequestDTO) {
+        // Map the request DTO to a Car entity
         Car car = carMapper.toEntity(createCarRequestDTO);
 
-        //amenities
+        // Set amenities
         List<Amenity> amenities = amenityRepository.findAllById(createCarRequestDTO.getAmenityIds());
         car.setAmenities(new HashSet<>(amenities));
 
-        //Location car
+        // Set location
         CarLocationRequestDTO carLocationRequestDTO = carLocationMapper.toCarLocationRequest(createCarRequestDTO);
         CarLocation carLocation = carLocationMapper.toEntity(carLocationRequestDTO);
         car.setLocation(carLocation);
 
-        //Owner
+        // Set owner
         User user = SecurityUtil.getUserFromSecurityContext(userRepository);
         car.setOwner(user);
 
-        car = carRepository.save(car);
+        // Save the car entity to ensure it's managed by Hibernate
+        carRepository.save(car);
 
-        //Upload images car
-        Set<CarImage> carImages = new HashSet<>();
-        carImages = uploadCarImages(imageFiles);
-        car.setImages(carImages);
+        // Upload car images and associate them with the existing car entity
+        Set<CarImage> carImages = uploadCarImages(imageFiles);
         for (CarImage carImage : carImages) {
-            carImage.setCar(new Car().builder().carId(car.getCarId()).build());
-            carImageRepository.save(carImage);
+            carImage.setCar(car); // Use the managed car entity
+            carImageRepository.save(carImage); // Persist the image
         }
+
+        // Set images in the car entity
+        car.setImages(carImages);
+        carRepository.save(car); // Update the car with associated images
+
+        // Map the entity to the response DTO
         List<String> imageUrls = carImages.stream()
                 .map(CarImage::getImageUrl)
                 .collect(Collectors.toList());
-
         CarResponseDTO carResponseDTO = carMapper.toCarResponseDTO(car);
         carResponseDTO.setImages(imageUrls);
+
         return carResponseDTO;
     }
-
     private Set<CarImage> uploadCarImages(List<MultipartFile> imageFiles) {
         if (imageFiles.size()> 6) throw new RuntimeException("Cannot upload over 6 images each car");
         for (MultipartFile imageFile : imageFiles) {

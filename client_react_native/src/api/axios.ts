@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { jwtDecode } from 'jwt-decode';
 import tokenManager from '@/utils/tokenManager';
-export const SERVER_IP = '192.168.1.21'
+export const SERVER_IP = '192.168.161.159'
 export const PORT = '8081'
 export const SERVER_URL = `http://${SERVER_IP}:${PORT}`;
 export const baseURL = SERVER_URL + '/api/v1/';
